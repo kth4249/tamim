@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "149188286600",
+    "project_id": "tamim-456104",
+    "storage_bucket": "tamim-456104.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:149188286600:android:fb2f19bbb5b6346084273d",
+        "android_client_info": {
+          "package_name": "com.example.tamim"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "149188286600-50lmk8tf9kmhjaa9h3u9ktht4572b1vd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDLnV_WgFx-p7xqmX0tbvL2_91k72W1Ekc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "149188286600-50lmk8tf9kmhjaa9h3u9ktht4572b1vd.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "149188286600-2f57i7gs1e3u97fp592t6fi5c08tp7jq.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hun.tamim"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
