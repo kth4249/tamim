@@ -1,7 +1,7 @@
 ---
 name: Feature
 about: Suggest an idea for this project
-title: "[Feature]"
+title: "[Feature] "
 labels: ''
 assignees: kth4249
 
@@ -13,8 +13,6 @@ assignees: kth4249
 
 ## 작업 상세 내용
 
-- [ ] TODO
-- [ ] TODO
-- [ ] TODO
+- TODO
 
 ## 참고할만한 자료(선택)
