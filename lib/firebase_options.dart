@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyDLnV_WgFx-p7xqmX0tbvL2_91k72W1Ekc',
-    appId: '1:149188286600:android:fb2f19bbb5b6346084273d',
+    appId: '1:149188286600:android:0282559bc166071184273d',
     messagingSenderId: '149188286600',
     projectId: 'tamim-456104',
     storageBucket: 'tamim-456104.firebasestorage.app',
@@ -59,11 +59,13 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyAkCbfha8S_SVZqG5McX6GUzqy7vx2A15Q',
-    appId: '1:149188286600:ios:3413903cf81a9a5784273d',
+    appId: '1:149188286600:ios:793f0e35557a83d484273d',
     messagingSenderId: '149188286600',
     projectId: 'tamim-456104',
     storageBucket: 'tamim-456104.firebasestorage.app',
     androidClientId: '149188286600-6p9odqq2lp2l8uhgo1altq8ngr9vrlgh.apps.googleusercontent.com',
-    iosBundleId: 'com.example.tamim',
+    iosClientId: '149188286600-2f57i7gs1e3u97fp592t6fi5c08tp7jq.apps.googleusercontent.com',
+    iosBundleId: 'com.hun.tamim',
   );
+
 }

@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:149188286600:android:fb2f19bbb5b6346084273d",
+        "mobilesdk_app_id": "1:149188286600:android:0282559bc166071184273d",
         "android_client_info": {
-          "package_name": "com.example.tamim"
+          "package_name": "com.hun.tamim"
         }
       },
       "oauth_client": [
