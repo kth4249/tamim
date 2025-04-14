@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tamim/screens/position_management_screen.dart';
+import 'package:tamim/screens/volunteer_confirmation_screen.dart';
+import 'package:tamim/screens/volunteer_schedule_screen.dart';
 import '../theme/app_theme.dart';
-// import 'position_management_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -224,8 +226,14 @@ class _MainScreenState extends State<MainScreen> {
     );
 
     // 선택된 탭에 따라 화면 전환
+    if (_selectedIndex == 1) {
+      currentScreen = const VolunteerScheduleScreen();
+    }
     if (_selectedIndex == 2) {
-      // currentScreen = const PositionManagementScreen();
+      currentScreen = const PositionManagementScreen();
+    }
+    if (_selectedIndex == 3) {
+      currentScreen = const VolunteerConfirmationScreen();
     }
 
     return Scaffold(
@@ -235,7 +243,7 @@ class _MainScreenState extends State<MainScreen> {
           '성요한 성당',
           style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
         ),
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         elevation: 0,
         actions: [
           IconButton(

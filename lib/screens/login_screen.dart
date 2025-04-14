@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:tamim/config/router_config.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -33,12 +34,7 @@ class LoginScreen extends StatelessWidget {
               margin: const EdgeInsets.symmetric(horizontal: 24),
               child: ElevatedButton(
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
+                  router.push('/register');
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

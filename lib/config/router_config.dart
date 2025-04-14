@@ -7,7 +7,8 @@ import 'package:tamim/screens/register_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    // GoRoute(path: '/', builder: (context, state) => const LoginScreen()),
+    GoRoute(path: '/', builder: (context, state) => const MainScreen()),
     GoRoute(
       path: '/parish-groups',
       builder: (context, state) => const MainScreen(),

@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:tamim/firebase_options.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tamim/config/router_config.dart';
@@ -7,7 +8,9 @@ import 'package:tamim/config/router_config.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-  runApp(const MyApp());
+  initializeDateFormatting('ko_KR', null).then((_) {
+    runApp(const MyApp());
+  });
 }
 
 class MyApp extends StatelessWidget {

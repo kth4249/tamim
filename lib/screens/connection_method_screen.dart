@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class ConnectionMethodScreen extends StatelessWidget {
   const ConnectionMethodScreen({super.key});
@@ -55,6 +56,7 @@ class ConnectionMethodScreen extends StatelessWidget {
               subtitle: '전달받은 URL을 클릭하여 접속',
               onTap: () {
                 // TODO: URL 접속 처리
+                context.go('/create-meeting');
               },
             ),
             const SizedBox(height: 16),
