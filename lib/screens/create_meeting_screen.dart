@@ -181,7 +181,7 @@ class _CreateMeetingScreenState extends State<CreateMeetingScreen> {
             ),
             const SizedBox(height: 24),
             Tooltip(
-              message: '이 기능은 추후 제공됩니다.',
+              message: '모임 이미지 변경 기능은 준비 중 입니다.',
               triggerMode: TooltipTriggerMode.tap,
               child: Row(
                 children: [
