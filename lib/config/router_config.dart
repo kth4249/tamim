@@ -42,6 +42,9 @@ final GoRouter router = GoRouter(
     if (authProvider.user['status'] == 'profile_completed') {
       return '/connection-method';
     }
+    if (authProvider.user['status'] == 'pending_group_creation') {
+      return '/create-meeting';
+    }
 
     return null;
   },
