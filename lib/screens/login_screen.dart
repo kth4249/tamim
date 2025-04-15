@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:tamim/config/router_config.dart';
-import 'register_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:tamim/providers/auth_provider.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,8 +39,11 @@ class LoginScreen extends StatelessWidget {
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 24),
               child: ElevatedButton(
-                onPressed: () {
-                  router.push('/register');
+                onPressed: () async {
+                  await context.read<AuthProvider>().signIn();
+                  if (context.mounted) {
+                    context.go("/");
+                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

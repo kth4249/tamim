@@ -7,15 +7,7 @@ class ConnectionMethodScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.close),
-            onPressed: () => Navigator.pop(context),
-          ),
-        ],
-      ),
+      appBar: AppBar(),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -56,7 +48,7 @@ class ConnectionMethodScreen extends StatelessWidget {
               subtitle: '전달받은 URL을 클릭하여 접속',
               onTap: () {
                 // TODO: URL 접속 처리
-                context.go('/create-meeting');
+                context.push('/create-meeting');
               },
             ),
             const SizedBox(height: 16),
