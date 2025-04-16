@@ -8,14 +8,14 @@ import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 import 'package:tamim/screens/volunteer_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key, String? id});
+class ParishGroupScreen extends StatefulWidget {
+  const ParishGroupScreen({super.key, String? id});
 
   @override
-  State<MainScreen> createState() => _MainScreenState();
+  State<ParishGroupScreen> createState() => _ParishGroupScreenState();
 }
 
-class _MainScreenState extends State<MainScreen> {
+class _ParishGroupScreenState extends State<ParishGroupScreen> {
   final DateTime _firstDay = DateTime.now().subtract(const Duration(days: 365));
   final DateTime _lastDay = DateTime.now().add(const Duration(days: 365));
   DateTime _focusedDay = DateTime.now();

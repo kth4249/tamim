@@ -106,6 +106,7 @@ class AuthProvider extends ChangeNotifier {
     googleSignIn.signOut();
     supabase.auth.signOut();
     isAuthenticated = false;
+    user = null;
     notifyListeners();
   }
 

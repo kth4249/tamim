@@ -10,11 +10,12 @@ import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/parish-groups/:id',
+  initialLocation: '/parish-groups/4',
   routes: [
     GoRoute(
       path: '/parish-groups/:id',
-      builder: (context, state) => MainScreen(id: state.pathParameters['id']),
+      builder:
+          (context, state) => ParishGroupScreen(id: state.pathParameters['id']),
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(

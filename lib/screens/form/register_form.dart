@@ -113,6 +113,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 'name': _nameController.text,
                 'baptismal_name': _baptismalNameController.text,
                 'status': 'profile_completed',
+                'updated_at': DateTime.now().toIso8601String(),
               });
               if (!context.mounted) return;
               context.go('/');
