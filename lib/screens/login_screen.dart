@@ -42,7 +42,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 onPressed: () async {
                   await context.read<AuthProvider>().signIn();
                   if (context.mounted) {
-                    context.go("/");
+                    context.go("/parish-groups/4");
                   }
                 },
                 style: ElevatedButton.styleFrom(

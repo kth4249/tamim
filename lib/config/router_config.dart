@@ -1,6 +1,7 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
+import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
 import 'package:tamim/screens/create_group_screen.dart';
@@ -10,8 +11,12 @@ import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
 final GoRouter router = GoRouter(
-  initialLocation: '/parish-groups/4',
+  initialLocation: '/parish-groups',
   routes: [
+    GoRoute(
+      path: '/parish-groups',
+      builder: (context, state) => ParishGroupScreen(),
+    ),
     GoRoute(
       path: '/parish-groups/:id',
       builder:
@@ -41,16 +46,27 @@ final GoRouter router = GoRouter(
     if (!authProvider.isAuthenticated) {
       return '/login';
     }
-    if (authProvider.user['status'] == null) {
+    final user = authProvider.user!;
+    if (user.status == null) {
       return '/register';
     }
-    if (authProvider.user['status'] == 'profile_completed') {
+    if (user.status == 'profile_completed') {
       return '/connection-method';
     }
-    if (authProvider.user['status'] == 'pending_group_creation') {
+    if (user.status == 'pending_group_creation') {
       return '/create-meeting';
     }
-
+    if (state.path == '/parish-groups') {
+      final data =
+          await supabase
+              .from('parish_groups')
+              .select('*')
+              .eq('id', user.id)
+              .limit(1)
+              .single();
+      final group = ParishGroup.fromJson(data);
+      return '/parish-groups/${group.id}';
+    }
     return null;
   },
 );

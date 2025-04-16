@@ -1,10 +1,10 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tamim/main.dart';
+import 'package:tamim/models/user_info.dart';
 
 class AuthProvider extends ChangeNotifier {
   late StreamSubscription authSubscription;
@@ -17,7 +17,7 @@ class AuthProvider extends ChangeNotifier {
 
   bool isInitialized = false;
   bool isAuthenticated = false;
-  var user;
+  UserInfo? user;
 
   AuthProvider() {
     authSubscription = supabase.auth.onAuthStateChange.listen((data) async {
@@ -36,7 +36,7 @@ class AuthProvider extends ChangeNotifier {
                     .eq('id', session.user.id)
                     .single();
             isAuthenticated = true;
-            user = data;
+            user = UserInfo.fromJson(data);
           }
           isInitialized = true;
           notifyListeners();
@@ -97,7 +97,7 @@ class AuthProvider extends ChangeNotifier {
             .single();
 
     isAuthenticated = true;
-    user = data;
+    user = UserInfo.fromJson(data);
 
     notifyListeners();
   }
@@ -111,13 +111,15 @@ class AuthProvider extends ChangeNotifier {
   }
 
   Future<void> updateUser(final json) async {
-    user =
+    final data =
         await supabase
             .from('users')
             .update(json)
-            .eq('id', user['id'])
+            .eq('id', user!.id)
             .select()
             .single();
+
+    user = UserInfo.fromJson(data);
     notifyListeners();
   }
 }

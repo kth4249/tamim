@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tamim/main.dart';
+import 'package:tamim/models/parish.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
@@ -9,7 +12,9 @@ import 'package:tamim/screens/volunteer_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
-  const ParishGroupScreen({super.key, String? id});
+  const ParishGroupScreen({super.key, this.id});
+
+  final String? id;
 
   @override
   State<ParishGroupScreen> createState() => _ParishGroupScreenState();
@@ -21,6 +26,27 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   int _selectedIndex = 0;
+  late String? parishGroupId;
+  late Future<PostgrestMap> _parishGroup;
+  late Future<Parish> _parish;
+
+  @override
+  void initState() {
+    // _parishGroup =
+    //     supabase
+    //         .from('parish_groups')
+    //         .select('*,parish_group_members(*),parishs!inner(*)')
+    //         .eq('parish_group_members.user_id', supabase.auth.currentUser!.id)
+    //         .single();
+    _parish = fetchParish();
+    super.initState();
+  }
+
+  Future<Parish> fetchParish() async {
+    final response = await supabase.from('parishs').select().single();
+    logger.d('Supabase response: $response');
+    return Parish.fromJson(response);
+  }
 
   final List<Map<String, dynamic>> _schedules = [
     {
@@ -103,7 +129,13 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
             },
           ),
         ),
-        const SizedBox(height: 16),
+        FutureBuilder(
+          future: _parish,
+          builder: (context, snapshot) {
+            logger.d('snapshot: ${snapshot.data}');
+            return const SizedBox(height: 16);
+          },
+        ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
