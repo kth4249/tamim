@@ -3,15 +3,19 @@ import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
-import 'package:tamim/screens/create_meeting_screen.dart';
+import 'package:tamim/screens/create_group_screen.dart';
 import 'package:tamim/screens/login_screen.dart';
 import 'package:tamim/screens/main_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
 final GoRouter router = GoRouter(
+  initialLocation: '/parish-groups/:id',
   routes: [
-    GoRoute(path: '/', builder: (context, state) => const MainScreen()),
+    GoRoute(
+      path: '/parish-groups/:id',
+      builder: (context, state) => MainScreen(id: state.pathParameters['id']),
+    ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
       path: '/register',
@@ -23,7 +27,7 @@ final GoRouter router = GoRouter(
     ),
     GoRoute(
       path: '/create-meeting',
-      builder: (context, state) => const CreateMeetingScreen(),
+      builder: (context, state) => const CreateGroupScreen(),
     ),
     GoRoute(
       path: '/volunteer-confirmation',

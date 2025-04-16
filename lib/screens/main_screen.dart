@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
@@ -10,7 +9,7 @@ import 'package:tamim/screens/volunteer_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  const MainScreen({super.key, String? id});
 
   @override
   State<MainScreen> createState() => _MainScreenState();

@@ -85,7 +85,6 @@ class AuthProvider extends ChangeNotifier {
       accessToken: accessToken,
     );
 
-    // TODO: status 추가
     final data =
         await supabase
             .from('users')
@@ -110,15 +109,11 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUserStatus(String name, String baptismalName) async {
+  Future<void> updateUser(final json) async {
     user =
         await supabase
             .from('users')
-            .update({
-              'name': name,
-              'baptismal_name': baptismalName,
-              'status': 'profile_completed',
-            })
+            .update(json)
             .eq('id', user['id'])
             .select()
             .single();

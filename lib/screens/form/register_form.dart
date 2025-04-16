@@ -109,10 +109,11 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
                 return;
               }
-              await context.read<AuthProvider>().updateUserStatus(
-                _nameController.text,
-                _baptismalNameController.text,
-              );
+              await context.read<AuthProvider>().updateUser({
+                'name': _nameController.text,
+                'baptismal_name': _baptismalNameController.text,
+                'status': 'profile_completed',
+              });
               if (!context.mounted) return;
               context.go('/');
             },
