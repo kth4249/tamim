@@ -5,7 +5,7 @@ import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
 import 'package:tamim/screens/create_group_screen.dart';
 import 'package:tamim/screens/login_screen.dart';
-import 'package:tamim/screens/main_screen.dart';
+import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
