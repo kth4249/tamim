@@ -9,37 +9,37 @@ part of 'user_info.dart';
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
   id: json['id'] as String,
   name: json['name'] as String?,
-  baptismalName: json['baptismalName'] as String?,
-  nickName: json['nickName'] as String?,
+  baptismalName: json['baptismal_name'] as String?,
+  nickName: json['nick_name'] as String?,
   status: json['status'] as String?,
   email: json['email'] as String?,
   createdAt:
-      json['createdAt'] == null
+      json['created_at'] == null
           ? null
-          : DateTime.parse(json['createdAt'] as String),
+          : DateTime.parse(json['created_at'] as String),
   updatedAt:
-      json['updatedAt'] == null
+      json['updated_at'] == null
           ? null
-          : DateTime.parse(json['updatedAt'] as String),
+          : DateTime.parse(json['updated_at'] as String),
   lastSignInAt:
-      json['lastSignInAt'] == null
+      json['last_sign_in_at'] == null
           ? null
-          : DateTime.parse(json['lastSignInAt'] as String),
+          : DateTime.parse(json['last_sign_in_at'] as String),
   agreePushAt:
-      json['agreePushAt'] == null
+      json['agree_push_at'] == null
           ? null
-          : DateTime.parse(json['agreePushAt'] as String),
+          : DateTime.parse(json['agree_push_at'] as String),
 );
 
 Map<String, dynamic> _$UserInfoToJson(_UserInfo instance) => <String, dynamic>{
   'id': instance.id,
   'name': instance.name,
-  'baptismalName': instance.baptismalName,
-  'nickName': instance.nickName,
+  'baptismal_name': instance.baptismalName,
+  'nick_name': instance.nickName,
   'status': instance.status,
   'email': instance.email,
-  'createdAt': instance.createdAt?.toIso8601String(),
-  'updatedAt': instance.updatedAt?.toIso8601String(),
-  'lastSignInAt': instance.lastSignInAt?.toIso8601String(),
-  'agreePushAt': instance.agreePushAt?.toIso8601String(),
+  'created_at': instance.createdAt?.toIso8601String(),
+  'updated_at': instance.updatedAt?.toIso8601String(),
+  'last_sign_in_at': instance.lastSignInAt?.toIso8601String(),
+  'agree_push_at': instance.agreePushAt?.toIso8601String(),
 };

@@ -9,12 +9,12 @@ part of 'parish_group_category.dart';
 _ParishGroupCategory _$ParishGroupCategoryFromJson(Map<String, dynamic> json) =>
     _ParishGroupCategory(
       id: (json['id'] as num).toInt(),
-      categoryName: json['categoryName'] as String,
+      categoryName: json['category_name'] as String,
     );
 
 Map<String, dynamic> _$ParishGroupCategoryToJson(
   _ParishGroupCategory instance,
 ) => <String, dynamic>{
   'id': instance.id,
-  'categoryName': instance.categoryName,
+  'category_name': instance.categoryName,
 };

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Parish {
 
- int get id;@JsonKey(name: 'diocese_id') int get dioceseId;@JsonKey(name: 'parish_name') String get parishName;@JsonKey(name: 'register_key') String get registerKey;@JsonKey(name: 'created_at') DateTime get createdAt;
+ int get id; int get dioceseId; String get parishName; String get registerKey; DateTime get createdAt;
 /// Create a copy of Parish
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -49,7 +49,7 @@ abstract mixin class $ParishCopyWith<$Res>  {
   factory $ParishCopyWith(Parish value, $Res Function(Parish) _then) = _$ParishCopyWithImpl;
 @useResult
 $Res call({
- int id,@JsonKey(name: 'diocese_id') int dioceseId,@JsonKey(name: 'parish_name') String parishName,@JsonKey(name: 'register_key') String registerKey,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, int dioceseId, String parishName, String registerKey, DateTime createdAt
 });
 
 
@@ -84,14 +84,14 @@ as DateTime,
 @JsonSerializable()
 
 class _Parish implements Parish {
-  const _Parish({required this.id, @JsonKey(name: 'diocese_id') required this.dioceseId, @JsonKey(name: 'parish_name') required this.parishName, @JsonKey(name: 'register_key') required this.registerKey, @JsonKey(name: 'created_at') required this.createdAt});
+  const _Parish({required this.id, required this.dioceseId, required this.parishName, required this.registerKey, required this.createdAt});
   factory _Parish.fromJson(Map<String, dynamic> json) => _$ParishFromJson(json);
 
 @override final  int id;
-@override@JsonKey(name: 'diocese_id') final  int dioceseId;
-@override@JsonKey(name: 'parish_name') final  String parishName;
-@override@JsonKey(name: 'register_key') final  String registerKey;
-@override@JsonKey(name: 'created_at') final  DateTime createdAt;
+@override final  int dioceseId;
+@override final  String parishName;
+@override final  String registerKey;
+@override final  DateTime createdAt;
 
 /// Create a copy of Parish
 /// with the given fields replaced by the non-null parameter values.
@@ -126,7 +126,7 @@ abstract mixin class _$ParishCopyWith<$Res> implements $ParishCopyWith<$Res> {
   factory _$ParishCopyWith(_Parish value, $Res Function(_Parish) _then) = __$ParishCopyWithImpl;
 @override @useResult
 $Res call({
- int id,@JsonKey(name: 'diocese_id') int dioceseId,@JsonKey(name: 'parish_name') String parishName,@JsonKey(name: 'register_key') String registerKey,@JsonKey(name: 'created_at') DateTime createdAt
+ int id, int dioceseId, String parishName, String registerKey, DateTime createdAt
 });
 
 
