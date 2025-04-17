@@ -1,20 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 import 'package:tamim/screens/volunteer_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
-  const ParishGroupScreen({super.key, this.id});
+  const ParishGroupScreen({super.key, required this.id});
 
-  final String? id;
+  final String id;
 
   @override
   State<ParishGroupScreen> createState() => _ParishGroupScreenState();
@@ -26,27 +28,19 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
   int _selectedIndex = 0;
-  late String? parishGroupId;
-  late Future<PostgrestMap> _parishGroup;
-  late Future<Parish> _parish;
+  // late Future<PostgrestMap> _parishGroup;
 
   @override
   void initState() {
-    // _parishGroup =
-    //     supabase
-    //         .from('parish_groups')
-    //         .select('*,parish_group_members(*),parishs!inner(*)')
-    //         .eq('parish_group_members.user_id', supabase.auth.currentUser!.id)
-    //         .single();
-    _parish = fetchParish();
+    context.read<ParishGroupProvider>().fetchDatas(widget.id);
     super.initState();
   }
 
-  Future<Parish> fetchParish() async {
-    final response = await supabase.from('parishs').select().single();
-    logger.d('Supabase response: $response');
-    return Parish.fromJson(response);
-  }
+  // Future<Parish> fetchParish() async {
+  //   final response = await supabase.from('parishs').select().single();
+
+  //   return Parish.fromJson(response);
+  // }
 
   final List<Map<String, dynamic>> _schedules = [
     {
@@ -127,15 +121,71 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                 _focusedDay = focusedDay;
               });
             },
+            calendarBuilders: CalendarBuilders(
+              dowBuilder: (context, day) {
+                if (day.weekday == DateTime.sunday) {
+                  final text = DateFormat.E().format(day);
+
+                  return Center(
+                    child: Text(text, style: TextStyle(color: Colors.red)),
+                  );
+                }
+                return null;
+              },
+              markerBuilder: (context, day, events) {
+                if (events.isNotEmpty) {
+                  List iconEvents = events;
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: events.length,
+                    itemBuilder: (context, index) {
+                      Map key = iconEvents[index];
+                      if (key['iconIndex'] == 1) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 40),
+                          child: Icon(
+                            size: 20,
+                            Icons.pets_outlined,
+                            color: Colors.purpleAccent,
+                          ),
+                        );
+                      } else if (key['iconIndex'] == 2) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 40),
+                          child: Icon(
+                            size: 20,
+                            Icons.rice_bowl_outlined,
+                            color: Colors.teal,
+                          ),
+                        );
+                      } else if (key['iconIndex'] == 3) {
+                        return Container(
+                          margin: const EdgeInsets.only(top: 40),
+                          child: Icon(
+                            size: 20,
+                            Icons.water_drop_outlined,
+                            color: Colors.redAccent,
+                          ),
+                        );
+                      }
+                      return null;
+                    },
+                  );
+                }
+                return null;
+              },
+            ),
           ),
         ),
-        FutureBuilder(
-          future: _parish,
-          builder: (context, snapshot) {
-            logger.d('snapshot: ${snapshot.data}');
-            return const SizedBox(height: 16);
-          },
-        ),
+        // FutureBuilder(
+        //   future: _parishGroup,
+        //   builder: (context, snapshot) {
+        //     logger.d('snapshot: ${snapshot.data}');
+        //     return const SizedBox(height: 16);
+        //   },
+        // ),
+        const SizedBox(height: 16),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           child: Column(
@@ -274,13 +324,25 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: const Text(
-          '성요한 성당',
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
+        title: Text(
+          context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
+          style: const TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+          ),
         ),
         // backgroundColor: Colors.white,
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(
+              Icons.calendar_month_outlined,
+              color: Colors.black87,
+            ),
+            onPressed: () {
+              context.push('/calendar');
+            },
+          ),
           IconButton(
             icon: const Icon(
               Icons.notifications_outlined,

@@ -3,9 +3,11 @@ import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/screens/calendar_sample.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
 import 'package:tamim/screens/create_group_screen.dart';
 import 'package:tamim/screens/login_screen.dart';
+import 'package:tamim/screens/parish_group_list_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
@@ -14,13 +16,18 @@ final GoRouter router = GoRouter(
   initialLocation: '/parish-groups',
   routes: [
     GoRoute(
+      path: '/calendar',
+      builder: (context, state) => const CalendarPage(),
+    ),
+    GoRoute(
       path: '/parish-groups',
-      builder: (context, state) => ParishGroupScreen(),
+      builder: (context, state) => ParishGroupListScreen(),
     ),
     GoRoute(
       path: '/parish-groups/:id',
       builder:
-          (context, state) => ParishGroupScreen(id: state.pathParameters['id']),
+          (context, state) =>
+              ParishGroupScreen(id: state.pathParameters['id']!),
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
@@ -56,17 +63,17 @@ final GoRouter router = GoRouter(
     if (user.status == 'pending_group_creation') {
       return '/create-meeting';
     }
-    if (state.path == '/parish-groups') {
-      final data =
-          await supabase
-              .from('parish_groups')
-              .select('*')
-              .eq('id', user.id)
-              .limit(1)
-              .single();
-      final group = ParishGroup.fromJson(data);
-      return '/parish-groups/${group.id}';
-    }
+    // if (state.path == '/parish-groups') {
+    //   final data =
+    //       await supabase
+    //           .from('parish_groups')
+    //           .select('*')
+    //           .eq('id', user.id)
+    //           .limit(1)
+    //           .single();
+    //   final group = ParishGroup.fromJson(data);
+    //   return '/parish-groups/${group.id}';
+    // }
     return null;
   },
 );

@@ -13,9 +13,9 @@ abstract class ParishGroup with _$ParishGroup {
     required String description,
     required String joinKey,
     required String status,
-    required String createId,
+    required String createdBy,
     required DateTime createdAt,
-    required String updateId,
+    required String updatedBy,
     required DateTime updatedAt,
   }) = _ParishGroup;
 

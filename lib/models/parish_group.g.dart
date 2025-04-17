@@ -14,9 +14,9 @@ _ParishGroup _$ParishGroupFromJson(Map<String, dynamic> json) => _ParishGroup(
   description: json['description'] as String,
   joinKey: json['join_key'] as String,
   status: json['status'] as String,
-  createId: json['create_id'] as String,
+  createdBy: json['created_by'] as String,
   createdAt: DateTime.parse(json['created_at'] as String),
-  updateId: json['update_id'] as String,
+  updatedBy: json['updated_by'] as String,
   updatedAt: DateTime.parse(json['updated_at'] as String),
 );
 
@@ -29,8 +29,8 @@ Map<String, dynamic> _$ParishGroupToJson(_ParishGroup instance) =>
       'description': instance.description,
       'join_key': instance.joinKey,
       'status': instance.status,
-      'create_id': instance.createId,
+      'created_by': instance.createdBy,
       'created_at': instance.createdAt.toIso8601String(),
-      'update_id': instance.updateId,
+      'updated_by': instance.updatedBy,
       'updated_at': instance.updatedAt.toIso8601String(),
     };

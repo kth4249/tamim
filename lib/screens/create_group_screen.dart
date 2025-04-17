@@ -274,9 +274,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               'category_id': selectedCategory,
               'group_name': _meetingNameController.text,
               'description': _meetingDescriptionController.text,
-              'create_id': supabase.auth.currentUser!.id,
+              'created_by': supabase.auth.currentUser!.id,
               'status': 'active',
-              'update_id': supabase.auth.currentUser!.id,
+              'updated_by': supabase.auth.currentUser!.id,
             })
             .select()
             .single();
