@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$VolunteerEvent {
 
- String get id; String get positionId; String get positionName; String get userId; String get name; String get baptismalName;
+ int get id; DateTime get volunteerDate; Position get position; UserInfo get user;
 /// Create a copy of VolunteerEvent
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -29,16 +29,16 @@ $VolunteerEventCopyWith<VolunteerEvent> get copyWith => _$VolunteerEventCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VolunteerEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.positionId, positionId) || other.positionId == positionId)&&(identical(other.positionName, positionName) || other.positionName == positionName)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.baptismalName, baptismalName) || other.baptismalName == baptismalName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VolunteerEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.volunteerDate, volunteerDate) || other.volunteerDate == volunteerDate)&&(identical(other.position, position) || other.position == position)&&(identical(other.user, user) || other.user == user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,positionId,positionName,userId,name,baptismalName);
+int get hashCode => Object.hash(runtimeType,id,volunteerDate,position,user);
 
 @override
 String toString() {
-  return 'VolunteerEvent(id: $id, positionId: $positionId, positionName: $positionName, userId: $userId, name: $name, baptismalName: $baptismalName)';
+  return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user)';
 }
 
 
@@ -49,11 +49,11 @@ abstract mixin class $VolunteerEventCopyWith<$Res>  {
   factory $VolunteerEventCopyWith(VolunteerEvent value, $Res Function(VolunteerEvent) _then) = _$VolunteerEventCopyWithImpl;
 @useResult
 $Res call({
- String id, String positionId, String positionName, String userId, String name, String baptismalName
+ int id, DateTime volunteerDate, Position position, UserInfo user
 });
 
 
-
+$PositionCopyWith<$Res> get position;$UserInfoCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -66,18 +66,34 @@ class _$VolunteerEventCopyWithImpl<$Res>
 
 /// Create a copy of VolunteerEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? positionId = null,Object? positionName = null,Object? userId = null,Object? name = null,Object? baptismalName = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? volunteerDate = null,Object? position = null,Object? user = null,}) {
   return _then(_self.copyWith(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,positionId: null == positionId ? _self.positionId : positionId // ignore: cast_nullable_to_non_nullable
-as String,positionName: null == positionName ? _self.positionName : positionName // ignore: cast_nullable_to_non_nullable
-as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,baptismalName: null == baptismalName ? _self.baptismalName : baptismalName // ignore: cast_nullable_to_non_nullable
-as String,
+as int,volunteerDate: null == volunteerDate ? _self.volunteerDate : volunteerDate // ignore: cast_nullable_to_non_nullable
+as DateTime,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Position,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserInfo,
   ));
 }
-
+/// Create a copy of VolunteerEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PositionCopyWith<$Res> get position {
+  
+  return $PositionCopyWith<$Res>(_self.position, (value) {
+    return _then(_self.copyWith(position: value));
+  });
+}/// Create a copy of VolunteerEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserInfoCopyWith<$Res> get user {
+  
+  return $UserInfoCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 
@@ -85,15 +101,13 @@ as String,
 @JsonSerializable()
 
 class _VolunteerEvent implements VolunteerEvent {
-  const _VolunteerEvent({required this.id, required this.positionId, required this.positionName, required this.userId, required this.name, required this.baptismalName});
+  const _VolunteerEvent({required this.id, required this.volunteerDate, required this.position, required this.user});
   factory _VolunteerEvent.fromJson(Map<String, dynamic> json) => _$VolunteerEventFromJson(json);
 
-@override final  String id;
-@override final  String positionId;
-@override final  String positionName;
-@override final  String userId;
-@override final  String name;
-@override final  String baptismalName;
+@override final  int id;
+@override final  DateTime volunteerDate;
+@override final  Position position;
+@override final  UserInfo user;
 
 /// Create a copy of VolunteerEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -108,16 +122,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VolunteerEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.positionId, positionId) || other.positionId == positionId)&&(identical(other.positionName, positionName) || other.positionName == positionName)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.name, name) || other.name == name)&&(identical(other.baptismalName, baptismalName) || other.baptismalName == baptismalName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VolunteerEvent&&(identical(other.id, id) || other.id == id)&&(identical(other.volunteerDate, volunteerDate) || other.volunteerDate == volunteerDate)&&(identical(other.position, position) || other.position == position)&&(identical(other.user, user) || other.user == user));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,positionId,positionName,userId,name,baptismalName);
+int get hashCode => Object.hash(runtimeType,id,volunteerDate,position,user);
 
 @override
 String toString() {
-  return 'VolunteerEvent(id: $id, positionId: $positionId, positionName: $positionName, userId: $userId, name: $name, baptismalName: $baptismalName)';
+  return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user)';
 }
 
 
@@ -128,11 +142,11 @@ abstract mixin class _$VolunteerEventCopyWith<$Res> implements $VolunteerEventCo
   factory _$VolunteerEventCopyWith(_VolunteerEvent value, $Res Function(_VolunteerEvent) _then) = __$VolunteerEventCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String positionId, String positionName, String userId, String name, String baptismalName
+ int id, DateTime volunteerDate, Position position, UserInfo user
 });
 
 
-
+@override $PositionCopyWith<$Res> get position;@override $UserInfoCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -145,19 +159,35 @@ class __$VolunteerEventCopyWithImpl<$Res>
 
 /// Create a copy of VolunteerEvent
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? positionId = null,Object? positionName = null,Object? userId = null,Object? name = null,Object? baptismalName = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? volunteerDate = null,Object? position = null,Object? user = null,}) {
   return _then(_VolunteerEvent(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,positionId: null == positionId ? _self.positionId : positionId // ignore: cast_nullable_to_non_nullable
-as String,positionName: null == positionName ? _self.positionName : positionName // ignore: cast_nullable_to_non_nullable
-as String,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,baptismalName: null == baptismalName ? _self.baptismalName : baptismalName // ignore: cast_nullable_to_non_nullable
-as String,
+as int,volunteerDate: null == volunteerDate ? _self.volunteerDate : volunteerDate // ignore: cast_nullable_to_non_nullable
+as DateTime,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Position,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
+as UserInfo,
   ));
 }
 
-
+/// Create a copy of VolunteerEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PositionCopyWith<$Res> get position {
+  
+  return $PositionCopyWith<$Res>(_self.position, (value) {
+    return _then(_self.copyWith(position: value));
+  });
+}/// Create a copy of VolunteerEvent
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$UserInfoCopyWith<$Res> get user {
+  
+  return $UserInfoCopyWith<$Res>(_self.user, (value) {
+    return _then(_self.copyWith(user: value));
+  });
+}
 }
 
 // dart format on

@@ -1,14 +1,16 @@
+import 'dart:collection';
+
+import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/parish_group_member.dart';
 import 'package:tamim/models/position.dart';
-import 'package:tamim/models/user_info.dart';
 import 'package:tamim/models/volunteer_event.dart';
-import 'package:tamim/models/volunteer_schedule.dart';
 
 class ParishGroupProvider extends ChangeNotifier {
   final supabase = Supabase.instance.client;
@@ -16,12 +18,12 @@ class ParishGroupProvider extends ChangeNotifier {
   Parish? parish;
   ParishGroup? parishGroup;
   List<Position> positions = [];
-  List<VolunteerSchedule> volunteerSchedules = [];
+  List<VolunteerEvent> volunteerEvents = [];
   List<ParishGroupMember> parishGroupMembers = [];
   // List<UserInfo> groupMembers = [];
-  Map<String, List<VolunteerEvent>>? volunteerEvents;
+  Map<DateTime, List<VolunteerEvent>> groupByVolunteerEvents = {};
 
-  Future<void> fetchDatas(String parishGroupId) async {
+  Future<void> fetchData(String parishGroupId) async {
     final response =
         await supabase
             .from('parish_groups')
@@ -31,7 +33,6 @@ class ParishGroupProvider extends ChangeNotifier {
             .eq('id', parishGroupId)
             .eq('parish_group_members.status', 'active')
             .single();
-    logger.d('response: $response');
 
     final parishResponse =
         await supabase
@@ -46,10 +47,19 @@ class ParishGroupProvider extends ChangeNotifier {
         (response['positions'] as List<dynamic>)
             .map((json) => Position.fromJson(json))
             .toList();
-    volunteerSchedules =
-        (response['volunteer_schedules'] as List<dynamic>)
-            .map((json) => VolunteerSchedule.fromJson(json))
-            .toList();
+
+    final volunteerResponse = await supabase
+        .from('volunteer_schedules')
+        .select('*,position: positions(*),user: users(*)')
+        .eq('group_id', parishGroupId);
+    logger.d('volunteerResponse: $volunteerResponse');
+    final volunteerEvents =
+        volunteerResponse.map((json) => VolunteerEvent.fromJson(json)).toList();
+    groupByVolunteerEvents = LinkedHashMap(
+      equals: isSameDay,
+      hashCode: getHashCode,
+    )..addAll(groupBy(volunteerEvents, (event) => event.volunteerDate));
+
     parishGroupMembers =
         (response['parish_group_members'] as List<dynamic>)
             .map((json) => ParishGroupMember.fromJson(json))
@@ -78,5 +88,9 @@ class ParishGroupProvider extends ChangeNotifier {
     // groupMembers =
     //     fetchUserInfo.map((json) => UserInfo.fromJson(json)).toList();
     notifyListeners();
+  }
+
+  int getHashCode(DateTime key) {
+    return key.day * 1000000 + key.month * 10000 + key.year;
   }
 }

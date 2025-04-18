@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tamim/main.dart';
-import 'package:tamim/models/parish.dart';
+import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/position_management_screen.dart';
@@ -26,288 +24,188 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
   final DateTime _firstDay = DateTime.now().subtract(const Duration(days: 365));
   final DateTime _lastDay = DateTime.now().add(const Duration(days: 365));
   DateTime _focusedDay = DateTime.now();
-  DateTime? _selectedDay;
+  DateTime? _selectedDay = DateTime.now();
   int _selectedIndex = 0;
-  // late Future<PostgrestMap> _parishGroup;
 
   @override
   void initState() {
-    context.read<ParishGroupProvider>().fetchDatas(widget.id);
+    context.read<ParishGroupProvider>().fetchData(widget.id);
     super.initState();
   }
 
-  // Future<Parish> fetchParish() async {
-  //   final response = await supabase.from('parishs').select().single();
-
-  //   return Parish.fromJson(response);
-  // }
-
-  final List<Map<String, dynamic>> _schedules = [
-    {
-      'name': '김민지',
-      'role': '성가대 반주',
-      'date': DateTime(2024, 3, 3),
-      'time': '오전 11시',
-      'status': '출석 완료',
-    },
-    {
-      'name': '박서연',
-      'role': '독서 봉사',
-      'date': DateTime(2024, 3, 17),
-      'time': '오전 11시',
-    },
-    {
-      'name': '최준호',
-      'role': '해설 봉사',
-      'date': DateTime(2024, 3, 24),
-      'time': '오전 11시',
-    },
-    {
-      'name': '정다은',
-      'role': '성가대',
-      'date': DateTime(2024, 3, 31),
-      'time': '오전 11시',
-    },
-  ];
+  List<VolunteerEvent> _getEventsForDay(DateTime day) {
+    return context.read<ParishGroupProvider>().groupByVolunteerEvents[day] ??
+        [];
+  }
 
   @override
   Widget build(BuildContext context) {
-    Widget currentScreen = Column(
-      children: [
-        Container(
-          color: Colors.white,
-          child: TableCalendar(
-            firstDay: _firstDay,
-            lastDay: _lastDay,
-            focusedDay: _focusedDay,
-            selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-            calendarFormat: CalendarFormat.month,
-            headerStyle: HeaderStyle(
-              titleCentered: true,
-              formatButtonVisible: false,
-              titleTextStyle: const TextStyle(
-                fontSize: 17,
-                fontWeight: FontWeight.w600,
+    final selectedDay =
+        context
+            .read<ParishGroupProvider>()
+            .groupByVolunteerEvents[_selectedDay];
+    Widget currentScreen = SingleChildScrollView(
+      scrollDirection: Axis.vertical,
+      child: Column(
+        children: [
+          Container(
+            color: Colors.white,
+            child: TableCalendar(
+              firstDay: _firstDay,
+              lastDay: _lastDay,
+              focusedDay: _focusedDay,
+              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
+              calendarFormat: CalendarFormat.month,
+              eventLoader: _getEventsForDay,
+              headerStyle: HeaderStyle(
+                titleCentered: true,
+                formatButtonVisible: false,
+                titleTextStyle: const TextStyle(
+                  fontSize: 17,
+                  fontWeight: FontWeight.w600,
+                ),
+                leftChevronIcon: const Icon(
+                  Icons.chevron_left,
+                  color: Colors.black54,
+                ),
+                rightChevronIcon: const Icon(
+                  Icons.chevron_right,
+                  color: Colors.black54,
+                ),
               ),
-              leftChevronIcon: const Icon(
-                Icons.chevron_left,
-                color: Colors.black54,
+              calendarStyle: CalendarStyle(
+                outsideDaysVisible: true,
+                weekendTextStyle: const TextStyle(color: Colors.red),
+                holidayTextStyle: const TextStyle(color: Colors.red),
+                selectedDecoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                todayDecoration: BoxDecoration(
+                  color: AppTheme.primaryColor.withAlpha(51),
+                  shape: BoxShape.circle,
+                ),
+                markerDecoration: BoxDecoration(
+                  color: AppTheme.primaryColor,
+                  shape: BoxShape.circle,
+                ),
               ),
-              rightChevronIcon: const Icon(
-                Icons.chevron_right,
-                color: Colors.black54,
-              ),
-            ),
-            calendarStyle: CalendarStyle(
-              outsideDaysVisible: true,
-              weekendTextStyle: const TextStyle(color: Colors.red),
-              holidayTextStyle: const TextStyle(color: Colors.red),
-              selectedDecoration: BoxDecoration(
-                color: AppTheme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-              todayDecoration: BoxDecoration(
-                color: AppTheme.primaryColor.withAlpha(51),
-                shape: BoxShape.circle,
-              ),
-              markerDecoration: BoxDecoration(
-                color: AppTheme.primaryColor,
-                shape: BoxShape.circle,
-              ),
-            ),
-            onDaySelected: (selectedDay, focusedDay) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-            },
-            calendarBuilders: CalendarBuilders(
-              dowBuilder: (context, day) {
-                if (day.weekday == DateTime.sunday) {
-                  final text = DateFormat.E().format(day);
+              onDaySelected: (selectedDay, focusedDay) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+              },
+              calendarBuilders: CalendarBuilders(
+                dowBuilder: (context, day) {
+                  if (day.weekday == DateTime.sunday) {
+                    final text = DateFormat.E().format(day);
 
-                  return Center(
-                    child: Text(text, style: TextStyle(color: Colors.red)),
-                  );
-                }
-                return null;
-              },
-              markerBuilder: (context, day, events) {
-                if (events.isNotEmpty) {
-                  List iconEvents = events;
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    scrollDirection: Axis.horizontal,
-                    itemCount: events.length,
-                    itemBuilder: (context, index) {
-                      Map key = iconEvents[index];
-                      if (key['iconIndex'] == 1) {
+                    return Center(
+                      child: Text(text, style: TextStyle(color: Colors.red)),
+                    );
+                  }
+                  return null;
+                },
+                markerBuilder: (context, day, events) {
+                  if (events.isNotEmpty) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: events.length,
+                      itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.only(top: 40),
                           child: Icon(
                             size: 20,
-                            Icons.pets_outlined,
-                            color: Colors.purpleAccent,
+                            Icons.church_outlined,
+                            color: Colors.green,
                           ),
                         );
-                      } else if (key['iconIndex'] == 2) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 40),
-                          child: Icon(
-                            size: 20,
-                            Icons.rice_bowl_outlined,
-                            color: Colors.teal,
-                          ),
-                        );
-                      } else if (key['iconIndex'] == 3) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 40),
-                          child: Icon(
-                            size: 20,
-                            Icons.water_drop_outlined,
-                            color: Colors.redAccent,
-                          ),
-                        );
-                      }
-                      return null;
-                    },
-                  );
-                }
-                return null;
-              },
+                      },
+                    );
+                  }
+                  return null;
+                },
+              ),
             ),
           ),
-        ),
-        // FutureBuilder(
-        //   future: _parishGroup,
-        //   builder: (context, snapshot) {
-        //     logger.d('snapshot: ${snapshot.data}');
-        //     return const SizedBox(height: 16);
-        //   },
-        // ),
-        const SizedBox(height: 16),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '오늘의 봉사',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(13),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: AppTheme.primaryColor.withAlpha(26),
-                    child: Text(
-                      '김',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+          const SizedBox(height: 16),
+          if (selectedDay != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '이 날 봉사자',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                  title: const Text(
-                    '김민지',
-                    style: TextStyle(fontWeight: FontWeight.w600),
-                  ),
-                  subtitle: const Text('성가대 반주'),
-                  trailing: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12,
-                      vertical: 6,
-                    ),
-                    decoration: BoxDecoration(
-                      color: AppTheme.primaryColor.withAlpha(26),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    child: Text(
-                      '출석 완료',
-                      style: TextStyle(
-                        color: AppTheme.primaryColor,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(height: 24),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const Text(
-                '다음 봉사 일정',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 12),
-              for (var schedule in _schedules.skip(1))
-                if (schedule['date'].isAfter(DateTime.now()))
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 12),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(12),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withAlpha(13),
-                            blurRadius: 10,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: ListTile(
-                        title: Text(
-                          schedule['name'],
-                          style: const TextStyle(fontWeight: FontWeight.w600),
-                        ),
-                        subtitle: Text(schedule['role']),
-                        trailing: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '${schedule['date'].month}월 ${schedule['date'].day}일',
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 12,
-                              ),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              schedule['time'],
-                              style: const TextStyle(
-                                color: Colors.black54,
-                                fontSize: 12,
-                              ),
+                  const SizedBox(height: 12),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: selectedDay.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(13),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
                             ),
                           ],
                         ),
-                      ),
-                    ),
+                        child: ListTile(
+                          leading: CircleAvatar(
+                            backgroundColor: AppTheme.primaryColor.withAlpha(
+                              26,
+                            ),
+                            child: Text(
+                              '김',
+                              style: TextStyle(
+                                color: AppTheme.primaryColor,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          title: Text(
+                            "${selectedDay[index].user.name}",
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            selectedDay[index].position.positionName,
+                          ),
+                          // trailing: Container(
+                          //   padding: const EdgeInsets.symmetric(
+                          //     horizontal: 12,
+                          //     vertical: 6,
+                          //   ),
+                          //   decoration: BoxDecoration(
+                          //     color: AppTheme.primaryColor.withAlpha(26),
+                          //     borderRadius: BorderRadius.circular(20),
+                          //   ),
+                          //   child: Text(
+                          //     '출석 완료',
+                          //     style: TextStyle(
+                          //       color: AppTheme.primaryColor,
+                          //       fontSize: 12,
+                          //       fontWeight: FontWeight.w600,
+                          //     ),
+                          //   ),
+                          // ),
+                        ),
+                      );
+                    },
                   ),
-            ],
-          ),
-        ),
-      ],
+                ],
+              ),
+            ),
+          const SizedBox(height: 24),
+        ],
+      ),
     );
 
     // 선택된 탭에 따라 화면 전환

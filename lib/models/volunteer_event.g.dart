@@ -8,20 +8,16 @@ part of 'volunteer_event.dart';
 
 _VolunteerEvent _$VolunteerEventFromJson(Map<String, dynamic> json) =>
     _VolunteerEvent(
-      id: json['id'] as String,
-      positionId: json['position_id'] as String,
-      positionName: json['position_name'] as String,
-      userId: json['user_id'] as String,
-      name: json['name'] as String,
-      baptismalName: json['baptismal_name'] as String,
+      id: (json['id'] as num).toInt(),
+      volunteerDate: DateTime.parse(json['volunteer_date'] as String),
+      position: Position.fromJson(json['position'] as Map<String, dynamic>),
+      user: UserInfo.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$VolunteerEventToJson(_VolunteerEvent instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'position_id': instance.positionId,
-      'position_name': instance.positionName,
-      'user_id': instance.userId,
-      'name': instance.name,
-      'baptismal_name': instance.baptismalName,
+      'volunteer_date': instance.volunteerDate.toIso8601String(),
+      'position': instance.position,
+      'user': instance.user,
     };
