@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
 import 'package:tamim/models/position.dart';
+import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import '../theme/app_theme.dart';
 
@@ -65,11 +66,248 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
     }
   }
 
+  void _showPositionDialog({Position? position}) {
+    final TextEditingController nameController =
+        TextEditingController(text: position?.positionName);
+    final TextEditingController descController =
+        TextEditingController(text: position?.description);
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  Icon(
+                    position == null
+                        ? Icons.add_circle_outline
+                        : Icons.edit_outlined,
+                    color: AppTheme.primaryColor,
+                    size: 24,
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    position == null ? '새 포지션 추가' : '포지션 수정',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              TextField(
+                controller: nameController,
+                decoration: InputDecoration(
+                  labelText: '포지션 이름',
+                  hintText: '포지션 이름을 입력하세요',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  prefixIcon: const Icon(Icons.work_outline),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: descController,
+                decoration: InputDecoration(
+                  labelText: '설명',
+                  hintText: '포지션에 대한 설명을 입력하세요',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  prefixIcon: const Icon(Icons.description_outlined),
+                ),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                    ),
+                    child: const Text(
+                      '취소',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      if (nameController.text.isEmpty) return;
+
+                      if (position == null) {
+                        await supabase.from('positions').insert({
+                          'position_name': nameController.text,
+                          'description': descController.text,
+                          'group_id': context
+                              .read<ParishGroupProvider>()
+                              .parishGroup!
+                              .id,
+                          'created_by': context.read<AuthProvider>().user?.id,
+                          "updated_by": context.read<AuthProvider>().user?.id,
+                          "updated_at": DateTime.now().toIso8601String(),
+                        });
+                      } else {
+                        await supabase.from('positions').update({
+                          'position_name': nameController.text,
+                          'description': descController.text,
+                          "updated_by": context.read<AuthProvider>().user?.id,
+                          "updated_at": DateTime.now().toIso8601String(),
+                        }).eq('id', position.id);
+                      }
+                      _loadData();
+
+                      if (mounted) {
+                        Navigator.pop(context);
+                        context.read<ParishGroupProvider>().loadPositions();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppTheme.primaryColor,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: Text(
+                      position == null ? '추가' : '수정',
+                      style: const TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showDeleteConfirmDialog(Position position) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.warning_rounded,
+                color: Colors.red,
+                size: 48,
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                '포지션 삭제',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                '${position.positionName} 포지션을 삭제하시겠습니까?',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 16,
+                  color: Colors.black87,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                '이 작업은 되돌릴 수 없습니다.',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                    ),
+                    child: const Text(
+                      '취소',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  ElevatedButton(
+                    onPressed: () async {
+                      await supabase
+                          .from('positions')
+                          .delete()
+                          .eq('id', position.id);
+                      _loadData();
+
+                      if (mounted) {
+                        Navigator.pop(context);
+                        context.read<ParishGroupProvider>().loadPositions();
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.red,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    child: const Text(
+                      '삭제',
+                      style: TextStyle(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Position> positions = context.read<ParishGroupProvider>().positions;
+    List<Position> positions = context.watch<ParishGroupProvider>().positions;
     List<ParishGroupMemberInfo> members =
-        context.read<ParishGroupProvider>().parishGroupMemberInfos;
+        context.watch<ParishGroupProvider>().parishGroupMemberInfos;
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
@@ -87,25 +325,6 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // 검색창
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey[300]!),
-                ),
-                child: TextField(
-                  controller: _searchController,
-                  decoration: const InputDecoration(
-                    hintText: '이름으로 검색',
-                    border: InputBorder.none,
-                    icon: Icon(Icons.search, color: Colors.grey),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-
               // 포지션 목록
               const Text(
                 '포지션 목록',
@@ -117,8 +336,8 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                 (position) => _buildPositionCard(
                   position.positionName,
                   position.description ?? '',
-                  onEdit: () {},
-                  onDelete: () {},
+                  onEdit: () => _showPositionDialog(position: position),
+                  onDelete: () => _showDeleteConfirmDialog(position),
                 ),
               ),
               const SizedBox(height: 24),
@@ -217,7 +436,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
       ),
       // 새 포지션 추가 버튼
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: () => _showPositionDialog(),
         backgroundColor: AppTheme.primaryColor,
         child: const Icon(Icons.add),
       ),

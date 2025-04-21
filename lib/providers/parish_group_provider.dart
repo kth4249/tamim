@@ -69,4 +69,19 @@ class ParishGroupProvider extends ChangeNotifier {
   int getHashCode(DateTime key) {
     return key.day * 1000000 + key.month * 10000 + key.year;
   }
+
+  Future<void> loadPositions() async {
+    if (parishGroup == null) return;
+
+    final response = await supabase
+        .from('positions')
+        .select('*')
+        .eq('group_id', parishGroup!.id);
+
+    positions = (response as List<dynamic>)
+        .map((json) => Position.fromJson(json))
+        .toList();
+
+    notifyListeners();
+  }
 }
