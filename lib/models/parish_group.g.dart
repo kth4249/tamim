@@ -7,18 +7,18 @@ part of 'parish_group.dart';
 // **************************************************************************
 
 _ParishGroup _$ParishGroupFromJson(Map<String, dynamic> json) => _ParishGroup(
-  id: (json['id'] as num).toInt(),
-  parishId: (json['parish_id'] as num).toInt(),
-  categoryId: (json['category_id'] as num).toInt(),
-  groupName: json['group_name'] as String,
-  description: json['description'] as String,
-  joinKey: json['join_key'] as String,
-  status: json['status'] as String,
-  createdBy: json['created_by'] as String,
-  createdAt: DateTime.parse(json['created_at'] as String),
-  updatedBy: json['updated_by'] as String,
-  updatedAt: DateTime.parse(json['updated_at'] as String),
-);
+      id: (json['id'] as num).toInt(),
+      parishId: (json['parish_id'] as num).toInt(),
+      categoryId: (json['category_id'] as num).toInt(),
+      groupName: json['group_name'] as String,
+      description: json['description'] as String,
+      joinKey: json['join_key'] as String,
+      status: json['status'] as String,
+      createdBy: json['created_by'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedBy: json['updated_by'] as String,
+      updatedAt: DateTime.parse(json['updated_at'] as String),
+    );
 
 Map<String, dynamic> _$ParishGroupToJson(_ParishGroup instance) =>
     <String, dynamic>{

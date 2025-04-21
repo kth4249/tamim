@@ -4,7 +4,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'parish_group_member.dart';
+part of 'parish_group_member_info.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -14,30 +14,31 @@ part of 'parish_group_member.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$ParishGroupMember {
+mixin _$ParishGroupMemberInfo {
   int get groupId;
   String get userId;
   int get roleId;
   String get status;
   DateTime get createdAt;
   DateTime get updatedAt;
+  UserInfo get user;
 
-  /// Create a copy of ParishGroupMember
+  /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $ParishGroupMemberCopyWith<ParishGroupMember> get copyWith =>
-      _$ParishGroupMemberCopyWithImpl<ParishGroupMember>(
-          this as ParishGroupMember, _$identity);
+  $ParishGroupMemberInfoCopyWith<ParishGroupMemberInfo> get copyWith =>
+      _$ParishGroupMemberInfoCopyWithImpl<ParishGroupMemberInfo>(
+          this as ParishGroupMemberInfo, _$identity);
 
-  /// Serializes this ParishGroupMember to a JSON map.
+  /// Serializes this ParishGroupMemberInfo to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is ParishGroupMember &&
+            other is ParishGroupMemberInfo &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.roleId, roleId) || other.roleId == roleId) &&
@@ -45,25 +46,26 @@ mixin _$ParishGroupMember {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.user, user) || other.user == user));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, groupId, userId, roleId, status, createdAt, updatedAt);
+      runtimeType, groupId, userId, roleId, status, createdAt, updatedAt, user);
 
   @override
   String toString() {
-    return 'ParishGroupMember(groupId: $groupId, userId: $userId, roleId: $roleId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ParishGroupMemberInfo(groupId: $groupId, userId: $userId, roleId: $roleId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, user: $user)';
   }
 }
 
 /// @nodoc
-abstract mixin class $ParishGroupMemberCopyWith<$Res> {
-  factory $ParishGroupMemberCopyWith(
-          ParishGroupMember value, $Res Function(ParishGroupMember) _then) =
-      _$ParishGroupMemberCopyWithImpl;
+abstract mixin class $ParishGroupMemberInfoCopyWith<$Res> {
+  factory $ParishGroupMemberInfoCopyWith(ParishGroupMemberInfo value,
+          $Res Function(ParishGroupMemberInfo) _then) =
+      _$ParishGroupMemberInfoCopyWithImpl;
   @useResult
   $Res call(
       {int groupId,
@@ -71,18 +73,21 @@ abstract mixin class $ParishGroupMemberCopyWith<$Res> {
       int roleId,
       String status,
       DateTime createdAt,
-      DateTime updatedAt});
+      DateTime updatedAt,
+      UserInfo user});
+
+  $UserInfoCopyWith<$Res> get user;
 }
 
 /// @nodoc
-class _$ParishGroupMemberCopyWithImpl<$Res>
-    implements $ParishGroupMemberCopyWith<$Res> {
-  _$ParishGroupMemberCopyWithImpl(this._self, this._then);
+class _$ParishGroupMemberInfoCopyWithImpl<$Res>
+    implements $ParishGroupMemberInfoCopyWith<$Res> {
+  _$ParishGroupMemberInfoCopyWithImpl(this._self, this._then);
 
-  final ParishGroupMember _self;
-  final $Res Function(ParishGroupMember) _then;
+  final ParishGroupMemberInfo _self;
+  final $Res Function(ParishGroupMemberInfo) _then;
 
-  /// Create a copy of ParishGroupMember
+  /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -93,6 +98,7 @@ class _$ParishGroupMemberCopyWithImpl<$Res>
     Object? status = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? user = null,
   }) {
     return _then(_self.copyWith(
       groupId: null == groupId
@@ -119,22 +125,37 @@ class _$ParishGroupMemberCopyWithImpl<$Res>
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      user: null == user
+          ? _self.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
     ));
+  }
+
+  /// Create a copy of ParishGroupMemberInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get user {
+    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+      return _then(_self.copyWith(user: value));
+    });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _ParishGroupMember implements ParishGroupMember {
-  const _ParishGroupMember(
+class _ParishGroupMemberInfo implements ParishGroupMemberInfo {
+  const _ParishGroupMemberInfo(
       {required this.groupId,
       required this.userId,
       required this.roleId,
       required this.status,
       required this.createdAt,
-      required this.updatedAt});
-  factory _ParishGroupMember.fromJson(Map<String, dynamic> json) =>
-      _$ParishGroupMemberFromJson(json);
+      required this.updatedAt,
+      required this.user});
+  factory _ParishGroupMemberInfo.fromJson(Map<String, dynamic> json) =>
+      _$ParishGroupMemberInfoFromJson(json);
 
   @override
   final int groupId;
@@ -148,18 +169,21 @@ class _ParishGroupMember implements ParishGroupMember {
   final DateTime createdAt;
   @override
   final DateTime updatedAt;
+  @override
+  final UserInfo user;
 
-  /// Create a copy of ParishGroupMember
+  /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ParishGroupMemberCopyWith<_ParishGroupMember> get copyWith =>
-      __$ParishGroupMemberCopyWithImpl<_ParishGroupMember>(this, _$identity);
+  _$ParishGroupMemberInfoCopyWith<_ParishGroupMemberInfo> get copyWith =>
+      __$ParishGroupMemberInfoCopyWithImpl<_ParishGroupMemberInfo>(
+          this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$ParishGroupMemberToJson(
+    return _$ParishGroupMemberInfoToJson(
       this,
     );
   }
@@ -168,7 +192,7 @@ class _ParishGroupMember implements ParishGroupMember {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ParishGroupMember &&
+            other is _ParishGroupMemberInfo &&
             (identical(other.groupId, groupId) || other.groupId == groupId) &&
             (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.roleId, roleId) || other.roleId == roleId) &&
@@ -176,26 +200,27 @@ class _ParishGroupMember implements ParishGroupMember {
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.user, user) || other.user == user));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, groupId, userId, roleId, status, createdAt, updatedAt);
+      runtimeType, groupId, userId, roleId, status, createdAt, updatedAt, user);
 
   @override
   String toString() {
-    return 'ParishGroupMember(groupId: $groupId, userId: $userId, roleId: $roleId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'ParishGroupMemberInfo(groupId: $groupId, userId: $userId, roleId: $roleId, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, user: $user)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$ParishGroupMemberCopyWith<$Res>
-    implements $ParishGroupMemberCopyWith<$Res> {
-  factory _$ParishGroupMemberCopyWith(
-          _ParishGroupMember value, $Res Function(_ParishGroupMember) _then) =
-      __$ParishGroupMemberCopyWithImpl;
+abstract mixin class _$ParishGroupMemberInfoCopyWith<$Res>
+    implements $ParishGroupMemberInfoCopyWith<$Res> {
+  factory _$ParishGroupMemberInfoCopyWith(_ParishGroupMemberInfo value,
+          $Res Function(_ParishGroupMemberInfo) _then) =
+      __$ParishGroupMemberInfoCopyWithImpl;
   @override
   @useResult
   $Res call(
@@ -204,18 +229,22 @@ abstract mixin class _$ParishGroupMemberCopyWith<$Res>
       int roleId,
       String status,
       DateTime createdAt,
-      DateTime updatedAt});
+      DateTime updatedAt,
+      UserInfo user});
+
+  @override
+  $UserInfoCopyWith<$Res> get user;
 }
 
 /// @nodoc
-class __$ParishGroupMemberCopyWithImpl<$Res>
-    implements _$ParishGroupMemberCopyWith<$Res> {
-  __$ParishGroupMemberCopyWithImpl(this._self, this._then);
+class __$ParishGroupMemberInfoCopyWithImpl<$Res>
+    implements _$ParishGroupMemberInfoCopyWith<$Res> {
+  __$ParishGroupMemberInfoCopyWithImpl(this._self, this._then);
 
-  final _ParishGroupMember _self;
-  final $Res Function(_ParishGroupMember) _then;
+  final _ParishGroupMemberInfo _self;
+  final $Res Function(_ParishGroupMemberInfo) _then;
 
-  /// Create a copy of ParishGroupMember
+  /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
@@ -226,8 +255,9 @@ class __$ParishGroupMemberCopyWithImpl<$Res>
     Object? status = null,
     Object? createdAt = null,
     Object? updatedAt = null,
+    Object? user = null,
   }) {
-    return _then(_ParishGroupMember(
+    return _then(_ParishGroupMemberInfo(
       groupId: null == groupId
           ? _self.groupId
           : groupId // ignore: cast_nullable_to_non_nullable
@@ -252,7 +282,21 @@ class __$ParishGroupMemberCopyWithImpl<$Res>
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      user: null == user
+          ? _self.user
+          : user // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
     ));
+  }
+
+  /// Create a copy of ParishGroupMemberInfo
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get user {
+    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+      return _then(_self.copyWith(user: value));
+    });
   }
 }
 

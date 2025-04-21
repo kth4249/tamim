@@ -15,47 +15,49 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$ParishGroupCategory {
+  int get id;
+  String get categoryName;
 
- int get id; String get categoryName;
-/// Create a copy of ParishGroupCategory
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ParishGroupCategoryCopyWith<ParishGroupCategory> get copyWith => _$ParishGroupCategoryCopyWithImpl<ParishGroupCategory>(this as ParishGroupCategory, _$identity);
+  /// Create a copy of ParishGroupCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ParishGroupCategoryCopyWith<ParishGroupCategory> get copyWith =>
+      _$ParishGroupCategoryCopyWithImpl<ParishGroupCategory>(
+          this as ParishGroupCategory, _$identity);
 
   /// Serializes this ParishGroupCategory to a JSON map.
   Map<String, dynamic> toJson();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ParishGroupCategory &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.categoryName, categoryName) ||
+                other.categoryName == categoryName));
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ParishGroupCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryName, categoryName) || other.categoryName == categoryName));
-}
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, categoryName);
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,categoryName);
-
-@override
-String toString() {
-  return 'ParishGroupCategory(id: $id, categoryName: $categoryName)';
-}
-
-
+  @override
+  String toString() {
+    return 'ParishGroupCategory(id: $id, categoryName: $categoryName)';
+  }
 }
 
 /// @nodoc
-abstract mixin class $ParishGroupCategoryCopyWith<$Res>  {
-  factory $ParishGroupCategoryCopyWith(ParishGroupCategory value, $Res Function(ParishGroupCategory) _then) = _$ParishGroupCategoryCopyWithImpl;
-@useResult
-$Res call({
- int id, String categoryName
-});
-
-
-
-
+abstract mixin class $ParishGroupCategoryCopyWith<$Res> {
+  factory $ParishGroupCategoryCopyWith(
+          ParishGroupCategory value, $Res Function(ParishGroupCategory) _then) =
+      _$ParishGroupCategoryCopyWithImpl;
+  @useResult
+  $Res call({int id, String categoryName});
 }
+
 /// @nodoc
 class _$ParishGroupCategoryCopyWithImpl<$Res>
     implements $ParishGroupCategoryCopyWith<$Res> {
@@ -64,69 +66,86 @@ class _$ParishGroupCategoryCopyWithImpl<$Res>
   final ParishGroupCategory _self;
   final $Res Function(ParishGroupCategory) _then;
 
-/// Create a copy of ParishGroupCategory
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? categoryName = null,}) {
-  return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,categoryName: null == categoryName ? _self.categoryName : categoryName // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
+  /// Create a copy of ParishGroupCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? categoryName = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      categoryName: null == categoryName
+          ? _self.categoryName
+          : categoryName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
-
-}
-
 
 /// @nodoc
 @JsonSerializable()
-
 class _ParishGroupCategory implements ParishGroupCategory {
   const _ParishGroupCategory({required this.id, required this.categoryName});
-  factory _ParishGroupCategory.fromJson(Map<String, dynamic> json) => _$ParishGroupCategoryFromJson(json);
+  factory _ParishGroupCategory.fromJson(Map<String, dynamic> json) =>
+      _$ParishGroupCategoryFromJson(json);
 
-@override final  int id;
-@override final  String categoryName;
+  @override
+  final int id;
+  @override
+  final String categoryName;
 
-/// Create a copy of ParishGroupCategory
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ParishGroupCategoryCopyWith<_ParishGroupCategory> get copyWith => __$ParishGroupCategoryCopyWithImpl<_ParishGroupCategory>(this, _$identity);
+  /// Create a copy of ParishGroupCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ParishGroupCategoryCopyWith<_ParishGroupCategory> get copyWith =>
+      __$ParishGroupCategoryCopyWithImpl<_ParishGroupCategory>(
+          this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$ParishGroupCategoryToJson(this, );
-}
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ParishGroupCategoryToJson(
+      this,
+    );
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ParishGroupCategory&&(identical(other.id, id) || other.id == id)&&(identical(other.categoryName, categoryName) || other.categoryName == categoryName));
-}
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ParishGroupCategory &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.categoryName, categoryName) ||
+                other.categoryName == categoryName));
+  }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,categoryName);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, categoryName);
 
-@override
-String toString() {
-  return 'ParishGroupCategory(id: $id, categoryName: $categoryName)';
-}
-
-
+  @override
+  String toString() {
+    return 'ParishGroupCategory(id: $id, categoryName: $categoryName)';
+  }
 }
 
 /// @nodoc
-abstract mixin class _$ParishGroupCategoryCopyWith<$Res> implements $ParishGroupCategoryCopyWith<$Res> {
-  factory _$ParishGroupCategoryCopyWith(_ParishGroupCategory value, $Res Function(_ParishGroupCategory) _then) = __$ParishGroupCategoryCopyWithImpl;
-@override @useResult
-$Res call({
- int id, String categoryName
-});
-
-
-
-
+abstract mixin class _$ParishGroupCategoryCopyWith<$Res>
+    implements $ParishGroupCategoryCopyWith<$Res> {
+  factory _$ParishGroupCategoryCopyWith(_ParishGroupCategory value,
+          $Res Function(_ParishGroupCategory) _then) =
+      __$ParishGroupCategoryCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id, String categoryName});
 }
+
 /// @nodoc
 class __$ParishGroupCategoryCopyWithImpl<$Res>
     implements _$ParishGroupCategoryCopyWith<$Res> {
@@ -135,17 +154,25 @@ class __$ParishGroupCategoryCopyWithImpl<$Res>
   final _ParishGroupCategory _self;
   final $Res Function(_ParishGroupCategory) _then;
 
-/// Create a copy of ParishGroupCategory
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? categoryName = null,}) {
-  return _then(_ParishGroupCategory(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,categoryName: null == categoryName ? _self.categoryName : categoryName // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
+  /// Create a copy of ParishGroupCategory
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? categoryName = null,
+  }) {
+    return _then(_ParishGroupCategory(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      categoryName: null == categoryName
+          ? _self.categoryName
+          : categoryName // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
 // dart format on

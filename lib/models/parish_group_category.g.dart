@@ -13,8 +13,8 @@ _ParishGroupCategory _$ParishGroupCategoryFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$ParishGroupCategoryToJson(
-  _ParishGroupCategory instance,
-) => <String, dynamic>{
-  'id': instance.id,
-  'category_name': instance.categoryName,
-};
+        _ParishGroupCategory instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'category_name': instance.categoryName,
+    };

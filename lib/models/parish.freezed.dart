@@ -15,146 +15,224 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$Parish {
+  int get id;
+  int get dioceseId;
+  String get parishName;
+  String get registerKey;
+  DateTime get createdAt;
 
- int get id; int get dioceseId; String get parishName; String get registerKey; DateTime get createdAt;
-/// Create a copy of Parish
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ParishCopyWith<Parish> get copyWith => _$ParishCopyWithImpl<Parish>(this as Parish, _$identity);
+  /// Create a copy of Parish
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ParishCopyWith<Parish> get copyWith =>
+      _$ParishCopyWithImpl<Parish>(this as Parish, _$identity);
 
   /// Serializes this Parish to a JSON map.
   Map<String, dynamic> toJson();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is Parish &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.dioceseId, dioceseId) ||
+                other.dioceseId == dioceseId) &&
+            (identical(other.parishName, parishName) ||
+                other.parishName == parishName) &&
+            (identical(other.registerKey, registerKey) ||
+                other.registerKey == registerKey) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt));
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Parish&&(identical(other.id, id) || other.id == id)&&(identical(other.dioceseId, dioceseId) || other.dioceseId == dioceseId)&&(identical(other.parishName, parishName) || other.parishName == parishName)&&(identical(other.registerKey, registerKey) || other.registerKey == registerKey)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
-}
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, id, dioceseId, parishName, registerKey, createdAt);
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,dioceseId,parishName,registerKey,createdAt);
-
-@override
-String toString() {
-  return 'Parish(id: $id, dioceseId: $dioceseId, parishName: $parishName, registerKey: $registerKey, createdAt: $createdAt)';
-}
-
-
+  @override
+  String toString() {
+    return 'Parish(id: $id, dioceseId: $dioceseId, parishName: $parishName, registerKey: $registerKey, createdAt: $createdAt)';
+  }
 }
 
 /// @nodoc
-abstract mixin class $ParishCopyWith<$Res>  {
-  factory $ParishCopyWith(Parish value, $Res Function(Parish) _then) = _$ParishCopyWithImpl;
-@useResult
-$Res call({
- int id, int dioceseId, String parishName, String registerKey, DateTime createdAt
-});
-
-
-
-
+abstract mixin class $ParishCopyWith<$Res> {
+  factory $ParishCopyWith(Parish value, $Res Function(Parish) _then) =
+      _$ParishCopyWithImpl;
+  @useResult
+  $Res call(
+      {int id,
+      int dioceseId,
+      String parishName,
+      String registerKey,
+      DateTime createdAt});
 }
+
 /// @nodoc
-class _$ParishCopyWithImpl<$Res>
-    implements $ParishCopyWith<$Res> {
+class _$ParishCopyWithImpl<$Res> implements $ParishCopyWith<$Res> {
   _$ParishCopyWithImpl(this._self, this._then);
 
   final Parish _self;
   final $Res Function(Parish) _then;
 
-/// Create a copy of Parish
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? dioceseId = null,Object? parishName = null,Object? registerKey = null,Object? createdAt = null,}) {
-  return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,dioceseId: null == dioceseId ? _self.dioceseId : dioceseId // ignore: cast_nullable_to_non_nullable
-as int,parishName: null == parishName ? _self.parishName : parishName // ignore: cast_nullable_to_non_nullable
-as String,registerKey: null == registerKey ? _self.registerKey : registerKey // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
-  ));
+  /// Create a copy of Parish
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? dioceseId = null,
+    Object? parishName = null,
+    Object? registerKey = null,
+    Object? createdAt = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      dioceseId: null == dioceseId
+          ? _self.dioceseId
+          : dioceseId // ignore: cast_nullable_to_non_nullable
+              as int,
+      parishName: null == parishName
+          ? _self.parishName
+          : parishName // ignore: cast_nullable_to_non_nullable
+              as String,
+      registerKey: null == registerKey
+          ? _self.registerKey
+          : registerKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
 }
-
-}
-
 
 /// @nodoc
 @JsonSerializable()
-
 class _Parish implements Parish {
-  const _Parish({required this.id, required this.dioceseId, required this.parishName, required this.registerKey, required this.createdAt});
+  const _Parish(
+      {required this.id,
+      required this.dioceseId,
+      required this.parishName,
+      required this.registerKey,
+      required this.createdAt});
   factory _Parish.fromJson(Map<String, dynamic> json) => _$ParishFromJson(json);
 
-@override final  int id;
-@override final  int dioceseId;
-@override final  String parishName;
-@override final  String registerKey;
-@override final  DateTime createdAt;
+  @override
+  final int id;
+  @override
+  final int dioceseId;
+  @override
+  final String parishName;
+  @override
+  final String registerKey;
+  @override
+  final DateTime createdAt;
 
-/// Create a copy of Parish
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$ParishCopyWith<_Parish> get copyWith => __$ParishCopyWithImpl<_Parish>(this, _$identity);
+  /// Create a copy of Parish
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ParishCopyWith<_Parish> get copyWith =>
+      __$ParishCopyWithImpl<_Parish>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$ParishToJson(this, );
-}
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ParishToJson(
+      this,
+    );
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Parish&&(identical(other.id, id) || other.id == id)&&(identical(other.dioceseId, dioceseId) || other.dioceseId == dioceseId)&&(identical(other.parishName, parishName) || other.parishName == parishName)&&(identical(other.registerKey, registerKey) || other.registerKey == registerKey)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
-}
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _Parish &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.dioceseId, dioceseId) ||
+                other.dioceseId == dioceseId) &&
+            (identical(other.parishName, parishName) ||
+                other.parishName == parishName) &&
+            (identical(other.registerKey, registerKey) ||
+                other.registerKey == registerKey) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt));
+  }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,dioceseId,parishName,registerKey,createdAt);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, id, dioceseId, parishName, registerKey, createdAt);
 
-@override
-String toString() {
-  return 'Parish(id: $id, dioceseId: $dioceseId, parishName: $parishName, registerKey: $registerKey, createdAt: $createdAt)';
-}
-
-
+  @override
+  String toString() {
+    return 'Parish(id: $id, dioceseId: $dioceseId, parishName: $parishName, registerKey: $registerKey, createdAt: $createdAt)';
+  }
 }
 
 /// @nodoc
 abstract mixin class _$ParishCopyWith<$Res> implements $ParishCopyWith<$Res> {
-  factory _$ParishCopyWith(_Parish value, $Res Function(_Parish) _then) = __$ParishCopyWithImpl;
-@override @useResult
-$Res call({
- int id, int dioceseId, String parishName, String registerKey, DateTime createdAt
-});
-
-
-
-
+  factory _$ParishCopyWith(_Parish value, $Res Function(_Parish) _then) =
+      __$ParishCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      int dioceseId,
+      String parishName,
+      String registerKey,
+      DateTime createdAt});
 }
+
 /// @nodoc
-class __$ParishCopyWithImpl<$Res>
-    implements _$ParishCopyWith<$Res> {
+class __$ParishCopyWithImpl<$Res> implements _$ParishCopyWith<$Res> {
   __$ParishCopyWithImpl(this._self, this._then);
 
   final _Parish _self;
   final $Res Function(_Parish) _then;
 
-/// Create a copy of Parish
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? dioceseId = null,Object? parishName = null,Object? registerKey = null,Object? createdAt = null,}) {
-  return _then(_Parish(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,dioceseId: null == dioceseId ? _self.dioceseId : dioceseId // ignore: cast_nullable_to_non_nullable
-as int,parishName: null == parishName ? _self.parishName : parishName // ignore: cast_nullable_to_non_nullable
-as String,registerKey: null == registerKey ? _self.registerKey : registerKey // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
-  ));
-}
-
-
+  /// Create a copy of Parish
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? dioceseId = null,
+    Object? parishName = null,
+    Object? registerKey = null,
+    Object? createdAt = null,
+  }) {
+    return _then(_Parish(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      dioceseId: null == dioceseId
+          ? _self.dioceseId
+          : dioceseId // ignore: cast_nullable_to_non_nullable
+              as int,
+      parishName: null == parishName
+          ? _self.parishName
+          : parishName // ignore: cast_nullable_to_non_nullable
+              as String,
+      registerKey: null == registerKey
+          ? _self.registerKey
+          : registerKey // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
 }
 
 // dart format on

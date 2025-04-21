@@ -1,4 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:tamim/main.dart';
+import 'package:tamim/models/parish_group_member_info.dart';
+import 'package:tamim/models/position.dart';
+import 'package:tamim/providers/parish_group_provider.dart';
 import '../theme/app_theme.dart';
 
 class PositionManagementScreen extends StatefulWidget {
@@ -11,28 +16,13 @@ class PositionManagementScreen extends StatefulWidget {
 
 class _PositionManagementScreenState extends State<PositionManagementScreen> {
   final TextEditingController _searchController = TextEditingController();
+  Set<MemberPositionKey> _assigned = {};
 
-  // 봉사자 데이터
-  final List<Map<String, dynamic>> _volunteers = [
-    {
-      'name': '김민지',
-      'isChairperson': false,
-      'isLector': true,
-      'isCommentator': true,
-    },
-    {
-      'name': '이준호',
-      'isChairperson': true,
-      'isLector': false,
-      'isCommentator': false,
-    },
-    {
-      'name': '박서연',
-      'isChairperson': false,
-      'isLector': true,
-      'isCommentator': false,
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
 
   @override
   void dispose() {
@@ -40,8 +30,47 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
     super.dispose();
   }
 
+  _loadData() async {
+    final mapRes = await supabase
+        .from('member_positions')
+        .select('group_id, user_id, position_id');
+
+    setState(() {
+      _assigned = (mapRes as List)
+          .map((e) => MemberPositionKey(
+              groupId: e['group_id'] as int,
+              userId: e['user_id'] as String,
+              positionId: e['position_id'] as int))
+          .toSet();
+    });
+  }
+
+  Future<void> _toggleAssignment(
+      int groupId, String userId, int positionId, bool newValue) async {
+    final key = MemberPositionKey(
+        groupId: groupId, userId: userId, positionId: positionId);
+    if (newValue) {
+      // 추가
+      await supabase.from('member_positions').insert({
+        'group_id': groupId,
+        'user_id': userId,
+        'position_id': positionId,
+      });
+      setState(() => _assigned.add(key));
+    } else {
+      // 삭제
+      await supabase.from('member_positions').delete().match(
+          {'group_id': groupId, 'user_id': userId, 'position_id': positionId});
+      setState(() => _assigned.remove(key));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    List<Position> positions = context.read<ParishGroupProvider>().positions;
+    List<ParishGroupMemberInfo> members =
+        context.read<ParishGroupProvider>().parishGroupMemberInfos;
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
@@ -84,30 +113,13 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
               ),
               const SizedBox(height: 8),
 
-              // 성가대 지휘자
-              _buildPositionCard(
-                '성가대 지휘자',
-                '주일 미사 성가대 지휘 및 연습 지도',
-                onEdit: () {},
-                onDelete: () {},
-              ),
-              const SizedBox(height: 12),
-
-              // 독서자
-              _buildPositionCard(
-                '독서자',
-                '미사 중 독서와 복음 낭독',
-                onEdit: () {},
-                onDelete: () {},
-              ),
-              const SizedBox(height: 12),
-
-              // 해설자
-              _buildPositionCard(
-                '해설자',
-                '미사 진행 순서 안내 및 공지사항 전달',
-                onEdit: () {},
-                onDelete: () {},
+              ...positions.map(
+                (position) => _buildPositionCard(
+                  position.positionName,
+                  position.description ?? '',
+                  onEdit: () {},
+                  onDelete: () {},
+                ),
               ),
               const SizedBox(height: 24),
 
@@ -137,8 +149,8 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Row(
-                        children: const [
-                          Expanded(
+                        children: [
+                          const Expanded(
                             flex: 2,
                             child: Text(
                               '이름',
@@ -148,35 +160,15 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                               ),
                             ),
                           ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                '지휘자',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                '독서자',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: Text(
-                                '해설자',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black87,
+                          ...positions.map(
+                            (position) => Expanded(
+                              child: Center(
+                                child: Text(
+                                  position.positionName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black87,
+                                  ),
                                 ),
                               ),
                             ),
@@ -186,34 +178,28 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                     ),
                     const Divider(height: 1),
                     // 봉사자 목록
-                    ..._volunteers.map(
-                      (volunteer) => Padding(
+                    ...members.map(
+                      (member) => Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           children: [
                             Expanded(
                               flex: 2,
                               child: Text(
-                                volunteer['name'],
+                                member.user.name ?? '',
                                 style: const TextStyle(color: Colors.black87),
                               ),
                             ),
-                            Expanded(
-                              child: Center(
-                                child: _buildCheckbox(
-                                  volunteer['isChairperson'],
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: _buildCheckbox(volunteer['isLector']),
-                              ),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: _buildCheckbox(
-                                  volunteer['isCommentator'],
+                            ...positions.map(
+                              (e) => Expanded(
+                                child: Center(
+                                  child: _buildCheckbox(
+                                    MemberPositionKey(
+                                      groupId: member.groupId,
+                                      userId: member.userId,
+                                      positionId: e.id,
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -225,25 +211,6 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                 ),
               ),
               const SizedBox(height: 24),
-
-              // 변경사항 저장 버튼
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppTheme.primaryColor,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: const Text(
-                    '변경사항 저장',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -265,6 +232,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
   }) {
     return Container(
       padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -318,20 +286,46 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
     );
   }
 
-  Widget _buildCheckbox(bool value) {
-    return Container(
-      width: 24,
-      height: 24,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(4),
-        border: Border.all(
-          color: value ? AppTheme.primaryColor : Colors.grey[300]!,
-          width: 2,
+  Widget _buildCheckbox(MemberPositionKey key) {
+    final value = _assigned.contains(key);
+    return InkWell(
+      onTap: () =>
+          _toggleAssignment(key.groupId, key.userId, key.positionId, !value),
+      child: Container(
+        width: 24,
+        height: 24,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(4),
+          border: Border.all(
+            color: value ? AppTheme.primaryColor : Colors.grey[300]!,
+            width: 2,
+          ),
+          color: value ? AppTheme.primaryColor : Colors.white,
         ),
-        color: value ? AppTheme.primaryColor : Colors.white,
+        child: value
+            ? const Icon(Icons.check, size: 16, color: Colors.white)
+            : null,
       ),
-      child:
-          value ? const Icon(Icons.check, size: 16, color: Colors.white) : null,
     );
   }
+}
+
+// 매핑 키
+class MemberPositionKey {
+  final int groupId;
+  final String userId;
+  final int positionId;
+  MemberPositionKey(
+      {required this.groupId, required this.userId, required this.positionId});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is MemberPositionKey &&
+          groupId == other.groupId &&
+          userId == other.userId &&
+          positionId == other.positionId;
+
+  @override
+  int get hashCode => groupId.hashCode ^ userId.hashCode ^ positionId.hashCode;
 }

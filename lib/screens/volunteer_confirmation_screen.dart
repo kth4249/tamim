@@ -126,11 +126,11 @@ class _VolunteerConfirmationScreenState
           lastDay: DateTime.utc(2024, 12, 31),
           focusedDay: _focusedDay,
           selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-          calendarFormat: CalendarFormat.week, // 한 주만 보이도록 설정
-          availableCalendarFormats: const {
-            // 포맷 변경 버튼 숨김
-            CalendarFormat.week: 'Week',
-          },
+          // calendarFormat: CalendarFormat.week, // 한 주만 보이도록 설정
+          // availableCalendarFormats: const {
+          //   // 포맷 변경 버튼 숨김
+          //   CalendarFormat.week: 'Week',
+          // },
           onDaySelected: (selectedDay, focusedDay) {
             // 봉사 가능일만 선택 가능하도록 조건 추가 (선택사항)
             if (_volunteerDays.any((d) => isSameDay(d, selectedDay))) {

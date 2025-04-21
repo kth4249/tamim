@@ -15,47 +15,70 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$VolunteerSchedule {
+  int get id;
+  int get groupId;
+  DateTime get volunteerDate;
+  int get positionId;
+  String get userId;
+  DateTime get createdAt;
+  DateTime get updatedAt;
 
- int get id; int get groupId; DateTime get volunteerDate; int get positionId; String get userId; DateTime get createdAt; DateTime get updatedAt;
-/// Create a copy of VolunteerSchedule
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$VolunteerScheduleCopyWith<VolunteerSchedule> get copyWith => _$VolunteerScheduleCopyWithImpl<VolunteerSchedule>(this as VolunteerSchedule, _$identity);
+  /// Create a copy of VolunteerSchedule
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $VolunteerScheduleCopyWith<VolunteerSchedule> get copyWith =>
+      _$VolunteerScheduleCopyWithImpl<VolunteerSchedule>(
+          this as VolunteerSchedule, _$identity);
 
   /// Serializes this VolunteerSchedule to a JSON map.
   Map<String, dynamic> toJson();
 
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is VolunteerSchedule &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.groupId, groupId) || other.groupId == groupId) &&
+            (identical(other.volunteerDate, volunteerDate) ||
+                other.volunteerDate == volunteerDate) &&
+            (identical(other.positionId, positionId) ||
+                other.positionId == positionId) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VolunteerSchedule&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.volunteerDate, volunteerDate) || other.volunteerDate == volunteerDate)&&(identical(other.positionId, positionId) || other.positionId == positionId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
-}
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, groupId, volunteerDate,
+      positionId, userId, createdAt, updatedAt);
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,groupId,volunteerDate,positionId,userId,createdAt,updatedAt);
-
-@override
-String toString() {
-  return 'VolunteerSchedule(id: $id, groupId: $groupId, volunteerDate: $volunteerDate, positionId: $positionId, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt)';
-}
-
-
+  @override
+  String toString() {
+    return 'VolunteerSchedule(id: $id, groupId: $groupId, volunteerDate: $volunteerDate, positionId: $positionId, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
 }
 
 /// @nodoc
-abstract mixin class $VolunteerScheduleCopyWith<$Res>  {
-  factory $VolunteerScheduleCopyWith(VolunteerSchedule value, $Res Function(VolunteerSchedule) _then) = _$VolunteerScheduleCopyWithImpl;
-@useResult
-$Res call({
- int id, int groupId, DateTime volunteerDate, int positionId, String userId, DateTime createdAt, DateTime updatedAt
-});
-
-
-
-
+abstract mixin class $VolunteerScheduleCopyWith<$Res> {
+  factory $VolunteerScheduleCopyWith(
+          VolunteerSchedule value, $Res Function(VolunteerSchedule) _then) =
+      _$VolunteerScheduleCopyWithImpl;
+  @useResult
+  $Res call(
+      {int id,
+      int groupId,
+      DateTime volunteerDate,
+      int positionId,
+      String userId,
+      DateTime createdAt,
+      DateTime updatedAt});
 }
+
 /// @nodoc
 class _$VolunteerScheduleCopyWithImpl<$Res>
     implements $VolunteerScheduleCopyWith<$Res> {
@@ -64,79 +87,143 @@ class _$VolunteerScheduleCopyWithImpl<$Res>
   final VolunteerSchedule _self;
   final $Res Function(VolunteerSchedule) _then;
 
-/// Create a copy of VolunteerSchedule
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? groupId = null,Object? volunteerDate = null,Object? positionId = null,Object? userId = null,Object? createdAt = null,Object? updatedAt = null,}) {
-  return _then(_self.copyWith(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
-as int,volunteerDate: null == volunteerDate ? _self.volunteerDate : volunteerDate // ignore: cast_nullable_to_non_nullable
-as DateTime,positionId: null == positionId ? _self.positionId : positionId // ignore: cast_nullable_to_non_nullable
-as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
-  ));
+  /// Create a copy of VolunteerSchedule
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? groupId = null,
+    Object? volunteerDate = null,
+    Object? positionId = null,
+    Object? userId = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      groupId: null == groupId
+          ? _self.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      volunteerDate: null == volunteerDate
+          ? _self.volunteerDate
+          : volunteerDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      positionId: null == positionId
+          ? _self.positionId
+          : positionId // ignore: cast_nullable_to_non_nullable
+              as int,
+      userId: null == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
 }
-
-}
-
 
 /// @nodoc
 @JsonSerializable()
-
 class _VolunteerSchedule implements VolunteerSchedule {
-  const _VolunteerSchedule({required this.id, required this.groupId, required this.volunteerDate, required this.positionId, required this.userId, required this.createdAt, required this.updatedAt});
-  factory _VolunteerSchedule.fromJson(Map<String, dynamic> json) => _$VolunteerScheduleFromJson(json);
+  const _VolunteerSchedule(
+      {required this.id,
+      required this.groupId,
+      required this.volunteerDate,
+      required this.positionId,
+      required this.userId,
+      required this.createdAt,
+      required this.updatedAt});
+  factory _VolunteerSchedule.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerScheduleFromJson(json);
 
-@override final  int id;
-@override final  int groupId;
-@override final  DateTime volunteerDate;
-@override final  int positionId;
-@override final  String userId;
-@override final  DateTime createdAt;
-@override final  DateTime updatedAt;
+  @override
+  final int id;
+  @override
+  final int groupId;
+  @override
+  final DateTime volunteerDate;
+  @override
+  final int positionId;
+  @override
+  final String userId;
+  @override
+  final DateTime createdAt;
+  @override
+  final DateTime updatedAt;
 
-/// Create a copy of VolunteerSchedule
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$VolunteerScheduleCopyWith<_VolunteerSchedule> get copyWith => __$VolunteerScheduleCopyWithImpl<_VolunteerSchedule>(this, _$identity);
+  /// Create a copy of VolunteerSchedule
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$VolunteerScheduleCopyWith<_VolunteerSchedule> get copyWith =>
+      __$VolunteerScheduleCopyWithImpl<_VolunteerSchedule>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$VolunteerScheduleToJson(this, );
-}
+  @override
+  Map<String, dynamic> toJson() {
+    return _$VolunteerScheduleToJson(
+      this,
+    );
+  }
 
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _VolunteerSchedule&&(identical(other.id, id) || other.id == id)&&(identical(other.groupId, groupId) || other.groupId == groupId)&&(identical(other.volunteerDate, volunteerDate) || other.volunteerDate == volunteerDate)&&(identical(other.positionId, positionId) || other.positionId == positionId)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
-}
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _VolunteerSchedule &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.groupId, groupId) || other.groupId == groupId) &&
+            (identical(other.volunteerDate, volunteerDate) ||
+                other.volunteerDate == volunteerDate) &&
+            (identical(other.positionId, positionId) ||
+                other.positionId == positionId) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.createdAt, createdAt) ||
+                other.createdAt == createdAt) &&
+            (identical(other.updatedAt, updatedAt) ||
+                other.updatedAt == updatedAt));
+  }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,id,groupId,volunteerDate,positionId,userId,createdAt,updatedAt);
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, groupId, volunteerDate,
+      positionId, userId, createdAt, updatedAt);
 
-@override
-String toString() {
-  return 'VolunteerSchedule(id: $id, groupId: $groupId, volunteerDate: $volunteerDate, positionId: $positionId, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt)';
-}
-
-
+  @override
+  String toString() {
+    return 'VolunteerSchedule(id: $id, groupId: $groupId, volunteerDate: $volunteerDate, positionId: $positionId, userId: $userId, createdAt: $createdAt, updatedAt: $updatedAt)';
+  }
 }
 
 /// @nodoc
-abstract mixin class _$VolunteerScheduleCopyWith<$Res> implements $VolunteerScheduleCopyWith<$Res> {
-  factory _$VolunteerScheduleCopyWith(_VolunteerSchedule value, $Res Function(_VolunteerSchedule) _then) = __$VolunteerScheduleCopyWithImpl;
-@override @useResult
-$Res call({
- int id, int groupId, DateTime volunteerDate, int positionId, String userId, DateTime createdAt, DateTime updatedAt
-});
-
-
-
-
+abstract mixin class _$VolunteerScheduleCopyWith<$Res>
+    implements $VolunteerScheduleCopyWith<$Res> {
+  factory _$VolunteerScheduleCopyWith(
+          _VolunteerSchedule value, $Res Function(_VolunteerSchedule) _then) =
+      __$VolunteerScheduleCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int id,
+      int groupId,
+      DateTime volunteerDate,
+      int positionId,
+      String userId,
+      DateTime createdAt,
+      DateTime updatedAt});
 }
+
 /// @nodoc
 class __$VolunteerScheduleCopyWithImpl<$Res>
     implements _$VolunteerScheduleCopyWith<$Res> {
@@ -145,22 +232,50 @@ class __$VolunteerScheduleCopyWithImpl<$Res>
   final _VolunteerSchedule _self;
   final $Res Function(_VolunteerSchedule) _then;
 
-/// Create a copy of VolunteerSchedule
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? groupId = null,Object? volunteerDate = null,Object? positionId = null,Object? userId = null,Object? createdAt = null,Object? updatedAt = null,}) {
-  return _then(_VolunteerSchedule(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as int,groupId: null == groupId ? _self.groupId : groupId // ignore: cast_nullable_to_non_nullable
-as int,volunteerDate: null == volunteerDate ? _self.volunteerDate : volunteerDate // ignore: cast_nullable_to_non_nullable
-as DateTime,positionId: null == positionId ? _self.positionId : positionId // ignore: cast_nullable_to_non_nullable
-as int,userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
-as DateTime,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as DateTime,
-  ));
-}
-
-
+  /// Create a copy of VolunteerSchedule
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? groupId = null,
+    Object? volunteerDate = null,
+    Object? positionId = null,
+    Object? userId = null,
+    Object? createdAt = null,
+    Object? updatedAt = null,
+  }) {
+    return _then(_VolunteerSchedule(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      groupId: null == groupId
+          ? _self.groupId
+          : groupId // ignore: cast_nullable_to_non_nullable
+              as int,
+      volunteerDate: null == volunteerDate
+          ? _self.volunteerDate
+          : volunteerDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      positionId: null == positionId
+          ? _self.positionId
+          : positionId // ignore: cast_nullable_to_non_nullable
+              as int,
+      userId: null == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as String,
+      createdAt: null == createdAt
+          ? _self.createdAt
+          : createdAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      updatedAt: null == updatedAt
+          ? _self.updatedAt
+          : updatedAt // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+    ));
+  }
 }
 
 // dart format on

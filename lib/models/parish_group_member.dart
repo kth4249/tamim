@@ -6,7 +6,6 @@ part 'parish_group_member.g.dart';
 @freezed
 abstract class ParishGroupMember with _$ParishGroupMember {
   const factory ParishGroupMember({
-    required int id,
     required int groupId,
     required String userId,
     required int roleId,

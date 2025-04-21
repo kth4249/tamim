@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷팅을 위해 추가
+import 'package:postgrest/src/types.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tamim/main.dart';
+import 'package:tamim/models/volunteer_schedule.dart';
 
-class VolunteerScheduleScreen extends StatefulWidget {
-  const VolunteerScheduleScreen({super.key});
+class AvailableScheduleScreen extends StatefulWidget {
+  const AvailableScheduleScreen({super.key});
 
   @override
-  State<VolunteerScheduleScreen> createState() =>
-      _VolunteerScheduleScreenState();
+  State<AvailableScheduleScreen> createState() =>
+      _AvailableScheduleScreenState();
 }
 
-class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
+class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
   // 선택된 날짜들을 관리하기 위한 Set
   final Set<DateTime> _selectedDays = {
     DateTime.utc(2024, 3, 5),
@@ -22,6 +25,8 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
   DateTime? _rangeEnd;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
+  late Future<PostgrestList> _availableSchedule;
+
   // @override
   // void initState() {
   //   super.initState();
@@ -29,16 +34,40 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
   // }
 
   @override
+  void initState() {
+    super.initState();
+    _availableSchedule = _fetchAvailableSchedule();
+  }
+
+  Future<PostgrestList> _fetchAvailableSchedule() async {
+    // 다음 달 봉사 가능일 조회
+    final nextMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
+    // format nextMonth yyyy-MM
+    final nextMonthString = DateFormat('yyyy-MM').format(nextMonth);
+
+    final volunteerMonth = await supabase
+        .from("volunteer_months")
+        .select('*')
+        .eq('volunteer_month', nextMonthString);
+    if (volunteerMonth.isNotEmpty) {
+      return await supabase
+          .from("volunteer_schedule")
+          .select('*')
+          .eq('volunteer_month_id', volunteerMonth[0]['id']);
+    }
+    return [];
+  }
+
+  @override
   Widget build(BuildContext context) {
     // 선택된 날짜 목록을 문자열로 변환 (예: "3월 5일, 13일, 20일")
-    String selectedDaysText =
-        _selectedDays.isNotEmpty
-            ? DateFormat('M월 d일', 'ko_KR').format(_selectedDays.first) +
-                _selectedDays
-                    .skip(1)
-                    .map((day) => DateFormat('d일', 'ko_KR').format(day))
-                    .join(', ')
-            : '';
+    String selectedDaysText = _selectedDays.isNotEmpty
+        ? DateFormat('M월 d일', 'ko_KR').format(_selectedDays.first) +
+            _selectedDays
+                .skip(1)
+                .map((day) => DateFormat('d일', 'ko_KR').format(day))
+                .join(', ')
+        : '';
 
     return Scaffold(
       appBar: AppBar(
@@ -106,11 +135,11 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
           children: [
             TextButton(
               onPressed: _selectAllVisibleDays,
-              child: const Text('전체 선택'),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size(50, 30),
               ),
+              child: const Text('전체 선택'),
             ),
             const SizedBox(width: 8),
             TextButton(
@@ -119,11 +148,11 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
                   _selectedDays.clear();
                 });
               },
-              child: const Text('선택 해제'),
               style: TextButton.styleFrom(
                 padding: EdgeInsets.zero,
                 minimumSize: Size(50, 30),
               ),
+              child: const Text('선택 해제'),
             ),
           ],
         ),
@@ -167,11 +196,9 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
           // 기존 선택 지우고 범위 내 날짜 추가 (요구사항에 맞게 수정 필요)
           _selectedDays.clear();
           if (start != null && end != null) {
-            for (
-              DateTime day = start;
-              day.isBefore(end.add(const Duration(days: 1)));
-              day = day.add(const Duration(days: 1))
-            ) {
+            for (DateTime day = start;
+                day.isBefore(end.add(const Duration(days: 1)));
+                day = day.add(const Duration(days: 1))) {
               _selectedDays.add(day);
             }
           } else if (start != null) {
@@ -284,11 +311,9 @@ class _VolunteerScheduleScreenState extends State<VolunteerScheduleScreen> {
         0,
       );
 
-      for (
-        DateTime day = firstDayOfMonth;
-        day.isBefore(lastDayOfMonth.add(const Duration(days: 1)));
-        day = day.add(const Duration(days: 1))
-      ) {
+      for (DateTime day = firstDayOfMonth;
+          day.isBefore(lastDayOfMonth.add(const Duration(days: 1)));
+          day = day.add(const Duration(days: 1))) {
         // lastDay은 3월 31일이어야 함 (DateTime.utc(2024, 3, 31))
         // lastDay 생성 시 주의 필요
         if (day.month == _focusedDay.month) {

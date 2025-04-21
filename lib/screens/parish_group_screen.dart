@@ -6,9 +6,9 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
-import 'package:tamim/screens/position_management_screen.dart';
+import 'package:tamim/screens/group_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
-import 'package:tamim/screens/volunteer_schedule_screen.dart';
+import 'package:tamim/screens/available_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
@@ -40,10 +40,9 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDay =
-        context
-            .read<ParishGroupProvider>()
-            .groupByVolunteerEvents[_selectedDay];
+    final selectedDay = context
+        .read<ParishGroupProvider>()
+        .groupByVolunteerEvents[_selectedDay];
     Widget currentScreen = SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(
@@ -57,18 +56,18 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
               selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
               calendarFormat: CalendarFormat.month,
               eventLoader: _getEventsForDay,
-              headerStyle: HeaderStyle(
+              headerStyle: const HeaderStyle(
                 titleCentered: true,
                 formatButtonVisible: false,
-                titleTextStyle: const TextStyle(
+                titleTextStyle: TextStyle(
                   fontSize: 17,
                   fontWeight: FontWeight.w600,
                 ),
-                leftChevronIcon: const Icon(
+                leftChevronIcon: Icon(
                   Icons.chevron_left,
                   color: Colors.black54,
                 ),
-                rightChevronIcon: const Icon(
+                rightChevronIcon: Icon(
                   Icons.chevron_right,
                   color: Colors.black54,
                 ),
@@ -77,7 +76,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                 outsideDaysVisible: true,
                 weekendTextStyle: const TextStyle(color: Colors.red),
                 holidayTextStyle: const TextStyle(color: Colors.red),
-                selectedDecoration: BoxDecoration(
+                selectedDecoration: const BoxDecoration(
                   color: AppTheme.primaryColor,
                   shape: BoxShape.circle,
                 ),
@@ -102,7 +101,8 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                     final text = DateFormat.E().format(day);
 
                     return Center(
-                      child: Text(text, style: TextStyle(color: Colors.red)),
+                      child:
+                          Text(text, style: const TextStyle(color: Colors.red)),
                     );
                   }
                   return null;
@@ -116,7 +116,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                       itemBuilder: (context, index) {
                         return Container(
                           margin: const EdgeInsets.only(top: 40),
-                          child: Icon(
+                          child: const Icon(
                             size: 20,
                             Icons.church_outlined,
                             color: Colors.green,
@@ -163,7 +163,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                             backgroundColor: AppTheme.primaryColor.withAlpha(
                               26,
                             ),
-                            child: Text(
+                            child: const Text(
                               '김',
                               style: TextStyle(
                                 color: AppTheme.primaryColor,
@@ -210,13 +210,13 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
     // 선택된 탭에 따라 화면 전환
     if (_selectedIndex == 1) {
-      currentScreen = const VolunteerScheduleScreen();
+      currentScreen = const AvailableScheduleScreen();
     }
     if (_selectedIndex == 2) {
-      currentScreen = const PositionManagementScreen();
+      currentScreen = const VolunteerConfirmationScreen();
     }
     if (_selectedIndex == 3) {
-      currentScreen = const VolunteerConfirmationScreen();
+      currentScreen = const GroupManagementScreen();
     }
 
     return Scaffold(
@@ -233,19 +233,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         elevation: 0,
         actions: [
           IconButton(
-            icon: const Icon(
-              Icons.calendar_month_outlined,
-              color: Colors.black87,
-            ),
-            onPressed: () {
-              context.push('/calendar');
-            },
-          ),
-          IconButton(
-            icon: const Icon(
-              Icons.notifications_outlined,
-              color: Colors.black87,
-            ),
+            icon: const Icon(Icons.logout_outlined, color: Colors.black87),
             onPressed: () {
               context.read<AuthProvider>().signOut();
               context.go('/login');
@@ -270,11 +258,11 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
             icon: Icon(Icons.calendar_today),
             label: '날짜 입력',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.group), label: '포지션 관리'),
           BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: '일정 조정',
           ),
+          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '관리'),
         ],
       ),
     );

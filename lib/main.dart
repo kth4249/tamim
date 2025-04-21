@@ -6,7 +6,6 @@ import 'package:tamim/config/init.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tamim/config/router_config.dart';
 import 'package:tamim/providers/auth_provider.dart';
-import 'package:tamim/providers/event_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/splash_screen.dart';
 
@@ -28,7 +27,6 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (context) => AuthProvider()),
         ChangeNotifierProvider(create: (context) => ParishGroupProvider()),
-        ChangeNotifierProvider(create: (context) => EventsProvider()),
       ],
       builder:
           (context, child) =>

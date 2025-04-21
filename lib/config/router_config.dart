@@ -1,14 +1,15 @@
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/providers/auth_provider.dart';
-import 'package:tamim/screens/calendar_sample.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
 import 'package:tamim/screens/create_group_screen.dart';
 import 'package:tamim/screens/login_screen.dart';
+import 'package:tamim/screens/member_management_screen.dart';
 import 'package:tamim/screens/parish_group_list_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
+import 'package:tamim/screens/position_management_screen.dart';
+import 'package:tamim/screens/position_sample.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
@@ -16,18 +17,13 @@ final GoRouter router = GoRouter(
   initialLocation: '/parish-groups',
   routes: [
     GoRoute(
-      path: '/calendar',
-      builder: (context, state) => const CalendarPage(),
-    ),
-    GoRoute(
       path: '/parish-groups',
-      builder: (context, state) => ParishGroupListScreen(),
+      builder: (context, state) => const ParishGroupListScreen(),
     ),
     GoRoute(
       path: '/parish-groups/:id',
-      builder:
-          (context, state) =>
-              ParishGroupScreen(id: state.pathParameters['id']!),
+      builder: (context, state) =>
+          ParishGroupScreen(id: state.pathParameters['id']!),
     ),
     GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
     GoRoute(
@@ -45,6 +41,18 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/volunteer-confirmation',
       builder: (context, state) => const VolunteerConfirmationScreen(),
+    ),
+    GoRoute(
+      path: '/position-management',
+      builder: (context, state) => const PositionManagementScreen(),
+    ),
+    GoRoute(
+      path: '/member-management',
+      builder: (context, state) => MemberManagementScreen(),
+    ),
+    GoRoute(
+      path: '/position-sample',
+      builder: (context, state) => const PositionSample(),
     ),
   ],
   redirect: (context, state) async {
