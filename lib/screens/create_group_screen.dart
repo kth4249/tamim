@@ -87,8 +87,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed:
-                        () => context.go('/parish-groups/${response['id']}'),
+                    onPressed: () =>
+                        context.go('/parish-groups/${response['id']}'),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -132,29 +132,27 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                       return const SizedBox.shrink();
                     }
                     return Row(
-                      children:
-                          snapshot.data!.map((item) {
-                            final int category = item['id']!;
-                            final isSelected = selectedCategory == category;
-                            return Padding(
-                              padding: const EdgeInsets.only(right: 8),
-                              child: ChoiceChip(
-                                label: Text(item['category_name']!),
-                                selected: isSelected,
-                                onSelected: (selected) {
-                                  if (selected) {
-                                    setState(() => selectedCategory = category);
-                                  }
-                                },
-                                backgroundColor: Colors.white,
-                                selectedColor: Colors.blue,
-                                labelStyle: TextStyle(
-                                  color:
-                                      isSelected ? Colors.white : Colors.black,
-                                ),
-                              ),
-                            );
-                          }).toList(),
+                      children: snapshot.data!.map((item) {
+                        final int category = item['id']!;
+                        final isSelected = selectedCategory == category;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: ChoiceChip(
+                            label: Text(item['category_name']!),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() => selectedCategory = category);
+                              }
+                            },
+                            backgroundColor: Colors.white,
+                            selectedColor: Colors.blue,
+                            labelStyle: TextStyle(
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        );
+                      }).toList(),
                     );
                   },
                 ),
@@ -181,19 +179,19 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 },
               ),
               const SizedBox(height: 24),
-              Tooltip(
+              const Tooltip(
                 message: '단체 이미지 변경 기능은 준비 중 입니다.',
                 triggerMode: TooltipTriggerMode.tap,
                 child: Row(
                   children: [
-                    const Text(
+                    Text(
                       '단체 이미지',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Icon(Icons.info_outline),
+                    Icon(Icons.info_outline),
                   ],
                 ),
               ),
@@ -250,13 +248,12 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child:
-                      _isLoading
-                          ? const CircularProgressIndicator()
-                          : const Text(
-                            '모임 생성하기',
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                          '모임 생성하기',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
                 ),
               ),
             ],
@@ -267,19 +264,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   }
 
   Future<Map<String, dynamic>> _createGroup() async {
-    final groupResponse =
-        await supabase
-            .from('parish_groups')
-            .insert({
-              'category_id': selectedCategory,
-              'group_name': _meetingNameController.text,
-              'description': _meetingDescriptionController.text,
-              'created_by': supabase.auth.currentUser!.id,
-              'status': 'active',
-              'updated_by': supabase.auth.currentUser!.id,
-            })
-            .select()
-            .single();
+    final groupResponse = await supabase
+        .from('parish_groups')
+        .insert({
+          'category_id': selectedCategory,
+          'group_name': _meetingNameController.text,
+          'description': _meetingDescriptionController.text,
+          'created_by': supabase.auth.currentUser!.id,
+          'status': 'active',
+          'updated_by': supabase.auth.currentUser!.id,
+        })
+        .select()
+        .single();
     await supabase.from('parish_group_members').insert({
       'group_id': groupResponse['id'],
       'user_id': supabase.auth.currentUser!.id,
