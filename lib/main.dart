@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:tamim/config/router_config.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/volunteer_schedule_provider.dart';
 import 'package:tamim/splash_screen.dart';
 
 void main() async {
@@ -30,6 +31,8 @@ class MyApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(create: (context) => ParishGroupProvider()),
+        ChangeNotifierProvider(
+            create: (context) => VolunteerScheduleProvider()),
       ],
       builder: (context, child) => !context.watch<AuthProvider>().isInitialized
           ? const MaterialApp(home: SplashScreen())

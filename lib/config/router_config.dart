@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
@@ -12,7 +10,6 @@ import 'package:tamim/screens/member_management_screen.dart';
 import 'package:tamim/screens/parish_group_list_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/position_management_screen.dart';
-import 'package:tamim/screens/position_sample.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 

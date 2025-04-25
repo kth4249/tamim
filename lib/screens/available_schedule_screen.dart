@@ -1,13 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷팅을 위해 추가
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tamim/main.dart';
-import 'package:tamim/models/member_dates.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/volunteer_schedule_provider.dart';
 
 class AvailableScheduleScreen extends StatefulWidget {
   const AvailableScheduleScreen({super.key});
@@ -24,41 +20,33 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
     DateTime.utc(2024, 3, 13),
     DateTime.utc(2024, 3, 20),
   };
-  DateTime _focusedDay = DateTime.utc(2024, 3, 1); // 현재 달력이 보여주는 월
-  DateTime? _rangeStart;
-  DateTime? _rangeEnd;
-  RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
-
-  late Future<List<MemberDates>> _availableDateByMember;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   initializeDateFormatting(Localizations.localeOf(context).languageCode);
-  // }
+  final DateTime _firstDay = DateTime.now().subtract(const Duration(days: 365));
+  final DateTime _lastDay = DateTime.now().add(const Duration(days: 365));
+  DateTime _focusedDay = DateTime.now();
+  // DateTime _focusedDay = DateTime(2024, 3, 1); // 현재 달력이 보여주는 월
 
   @override
   void initState() {
     super.initState();
-    _availableDateByMember = _fetchAvailableSchedule();
-  }
-
-  Future<List<MemberDates>> _fetchAvailableSchedule() async {
-    final response = await supabase.from('users').select('''
-            id, name, baptismal_name,
-            parish_group_members(group_id), 
-            member_dates(available_date)
-            ''').eq("parish_group_members.group_id", context.read<ParishGroupProvider>().parishGroup!.id);
-    logger.d(response);
-    return response.map((e) => MemberDates.fromJson(e)).toList();
+    context.read<VolunteerScheduleProvider>().fetchAvailableDateByMember(
+        context.read<ParishGroupProvider>().parishGroup!.id);
   }
 
   @override
   Widget build(BuildContext context) {
+    final availableDateByMember =
+        context.watch<VolunteerScheduleProvider>().availableDateByMember;
+    final selectedMemberId =
+        context.watch<VolunteerScheduleProvider>().selectedMemberId;
+    final selectedDays = availableDateByMember.isEmpty
+        ? []
+        : availableDateByMember
+            .firstWhere((element) => element.id == selectedMemberId)
+            .memberDates;
     // 선택된 날짜 목록을 문자열로 변환 (예: "3월 5일, 13일, 20일")
-    String selectedDaysText = _selectedDays.isNotEmpty
-        ? DateFormat('M월 d일', 'ko_KR').format(_selectedDays.first) +
-            _selectedDays
+    String selectedDaysText = selectedDays.isNotEmpty
+        ? DateFormat('M월 d일', 'ko_KR').format(selectedDays.first) +
+            selectedDays
                 .skip(1)
                 .map((day) => DateFormat('d일', 'ko_KR').format(day))
                 .join(', ')
@@ -66,32 +54,31 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('다음 달 봉사 가능일 선택'),
-        // backgroundColor: Colors.white,
-        // foregroundColor: Colors.black,
-        // elevation: 1,
+        centerTitle: true,
+        title: const Text('봉사 가능일 선택'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            FutureBuilder(
-                future: _availableDateByMember,
-                builder: (context, snapshot) {
-                  final data = snapshot.data;
-                  return Row(
-                    children: [
-                      if (data != null)
-                        for (var d in data) Text(d.name),
-                    ],
-                  );
-                }),
-            // _buildCalendarHeader(),
+            Row(
+              children: [
+                for (var d in availableDateByMember)
+                  ElevatedButton(
+                    onPressed: () {
+                      context
+                          .read<VolunteerScheduleProvider>()
+                          .selectMember(d.id);
+                    },
+                    child: Text(d.name),
+                  ),
+              ],
+            ),
             const SizedBox(height: 16),
             _buildCalendar(),
             const SizedBox(height: 24),
-            Text(
+            const Text(
               '선택하신 날짜',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
@@ -168,16 +155,30 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
 
   // 달력 위젯 생성
   Widget _buildCalendar() {
+    final availableDateByMember =
+        context.watch<VolunteerScheduleProvider>().availableDateByMember;
+    final selectedMemberId =
+        context.watch<VolunteerScheduleProvider>().selectedMemberId;
+    final selectedDays = availableDateByMember
+        .firstWhere((element) => element.id == selectedMemberId)
+        .memberDates;
     return TableCalendar<DateTime>(
       locale: 'ko_KR',
-      firstDay: DateTime.utc(2024, 3, 1),
-      lastDay: DateTime.utc(2024, 3, 31),
+      firstDay: _firstDay,
+      lastDay: _lastDay,
       focusedDay: _focusedDay,
-      selectedDayPredicate: (day) => _selectedDays.contains(day),
-      rangeStartDay: _rangeStart,
-      rangeEndDay: _rangeEnd,
-      rangeSelectionMode: _rangeSelectionMode,
+      // selectedDayPredicate: (day) => _selectedDays.contains(day),
+      selectedDayPredicate: (day) {
+        var flag = false;
+        for (var d in selectedDays) {
+          if (isSameDay(d, day)) {
+            flag = true;
+          }
+        }
+        return flag;
+      },
       onDaySelected: (selectedDay, focusedDay) {
+        // context.read<VolunteerScheduleProvider>().changeDate(selectedDay);
         setState(() {
           _focusedDay = focusedDay; // 사용자가 다른 월로 이동하면 포커스 업데이트
           // 선택 로직: 이미 선택된 날짜면 제거, 아니면 추가
@@ -185,30 +186,6 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
             _selectedDays.remove(selectedDay);
           } else {
             _selectedDays.add(selectedDay);
-          }
-          _rangeSelectionMode =
-              RangeSelectionMode.toggledOff; // 다중 선택 후 범위 선택 모드 해제
-          _rangeStart = null; // 범위 선택 초기화
-          _rangeEnd = null;
-        });
-      },
-      onRangeSelected: (start, end, focusedDay) {
-        // 범위 선택 로직 (현재 요구사항에는 없지만 기본 구현 포함)
-        setState(() {
-          _focusedDay = focusedDay;
-          _rangeStart = start;
-          _rangeEnd = end;
-          _rangeSelectionMode = RangeSelectionMode.toggledOn;
-          // 기존 선택 지우고 범위 내 날짜 추가 (요구사항에 맞게 수정 필요)
-          _selectedDays.clear();
-          if (start != null && end != null) {
-            for (DateTime day = start;
-                day.isBefore(end.add(const Duration(days: 1)));
-                day = day.add(const Duration(days: 1))) {
-              _selectedDays.add(day);
-            }
-          } else if (start != null) {
-            _selectedDays.add(start);
           }
         });
       },
