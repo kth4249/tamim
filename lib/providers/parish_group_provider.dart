@@ -19,6 +19,7 @@ class ParishGroupProvider extends ChangeNotifier {
   List<UserInfo> groupMembers = [];
   Map<DateTime, List<VolunteerEvent>> groupByVolunteerEvents = {};
   List<ParishGroupMemberInfo> parishGroupMemberInfos = [];
+  ParishGroupMemberInfo? myInfo;
 
   Future<void> fetchData(String parishGroupId) async {
     final response = await supabase
@@ -49,6 +50,8 @@ class ParishGroupProvider extends ChangeNotifier {
     parishGroupMemberInfos = (response['parish_group_members'] as List<dynamic>)
         .map((json) => ParishGroupMemberInfo.fromJson(json))
         .toList();
+    myInfo = parishGroupMemberInfos
+        .firstWhere((info) => info.userId == supabase.auth.currentUser!.id);
 
     final volunteerResponse = await supabase
         .from('volunteer_schedules')

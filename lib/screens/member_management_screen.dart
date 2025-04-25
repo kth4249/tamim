@@ -83,7 +83,7 @@ class MemberManagementScreen extends StatelessWidget {
               if (!isCurrentUser && !isGroupLeader) ...[
                 ListTile(
                   leading: const Icon(Icons.leaderboard_outlined),
-                  title: const Text('모임장 위임'),
+                  title: const Text('모임장 권한 부여'),
                   onTap: () async {
                     Navigator.pop(context);
                     _showTransferLeadershipDialog(context, member);
@@ -132,7 +132,7 @@ class MemberManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const Text(
-                '모임장 위임',
+                '모임장 권한 부여',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -140,7 +140,7 @@ class MemberManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                '${member.user.name}님에게 모임장 권한을 위임하시겠습니까?',
+                '${member.user.name}님에게 모임장 권한을 부여하시겠습니까?',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
@@ -183,7 +183,7 @@ class MemberManagementScreen extends StatelessWidget {
                       //     .from('parish_group_members')
                       //     .update({'role_id': 2})
                       //     .eq('group_id', groupId)
-                      //     .eq('user_id', member.userId);
+                      //     .eq('user_id', supabase.auth.currentUser!.id);
 
                       if (context.mounted) {
                         Navigator.pop(context);
@@ -332,7 +332,7 @@ class MemberManagementScreen extends StatelessWidget {
                   children: [
                     QrImageView(
                       data:
-                          'https://tamim.app/join/${context.read<ParishGroupProvider>().parishGroup!.id}/members', // TODO: URL 수정
+                          'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.id}',
                       version: QrVersions.auto,
                       size: 200.0,
                     ),
@@ -340,7 +340,7 @@ class MemberManagementScreen extends StatelessWidget {
                     ElevatedButton(
                       onPressed: () {
                         final url = Uri.parse(
-                            'https://tamim.app/join/${context.read<ParishGroupProvider>().parishGroup!.id}/members'); // TODO: URL 수정
+                            'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.id}');
                         Clipboard.setData(ClipboardData(text: url.toString()));
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('링크가 복사되었습니다.')),

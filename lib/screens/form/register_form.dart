@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 
 class RegisterForm extends StatefulWidget {
@@ -90,7 +91,7 @@ class _RegisterFormState extends State<RegisterForm> {
                 const Padding(
                   padding: EdgeInsets.all(16.0),
                   child: Text(
-                    '세례명은 가톨릭이나 개신교에서 세례를 받을 때 선택하는 이름으로, 본통 성인의 이름을 따서 지어집니다. 세례를 받지 않으신 분들은 입력하지 않으셔도 됩니다.',
+                    '세례명은 가톨릭에서 세례를 받을 때 선택하는 이름으로, 보통 성인의 이름을 따서 지어집니다. 세례를 받지 않으신 분들은 입력하지 않으셔도 됩니다.',
                     style: TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ),
@@ -109,14 +110,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
                 return;
               }
-              await context.read<AuthProvider>().updateUser({
+              await context.read<AuthProvider>().upsetUser({
+                'id': supabase.auth.currentUser!.id,
                 'name': _nameController.text,
                 'baptismal_name': _baptismalNameController.text,
-                'status': 'profile_completed',
-                'updated_at': DateTime.now().toIso8601String(),
+                'status': 'active',
               });
-              if (!context.mounted) return;
-              context.go('/');
             },
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 16),

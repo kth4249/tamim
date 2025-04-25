@@ -17,6 +17,7 @@ class AuthProvider extends ChangeNotifier {
 
   bool isInitialized = false;
   bool isAuthenticated = false;
+
   UserInfo? user;
 
   AuthProvider() {
@@ -29,14 +30,16 @@ class AuthProvider extends ChangeNotifier {
       switch (event) {
         case AuthChangeEvent.initialSession:
           if (session != null) {
-            final data =
-                await supabase
-                    .from('users')
-                    .select()
-                    .eq('id', session.user.id)
-                    .single();
+            final data = await supabase
+                .from('users')
+                .select()
+                .eq('id', session.user.id)
+                .maybeSingle();
             isAuthenticated = true;
-            user = UserInfo.fromJson(data);
+            if (data != null) {
+              final userInfo = UserInfo.fromJson(data);
+              user = userInfo;
+            }
           }
           isInitialized = true;
           notifyListeners();
@@ -79,26 +82,22 @@ class AuthProvider extends ChangeNotifier {
       throw 'No ID Token found.';
     }
 
-    final result = await supabase.auth.signInWithIdToken(
+    final response = await supabase.auth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
     );
-
-    final data =
-        await supabase
-            .from('users')
-            .upsert({
-              'id': result.user!.id,
-              'email': result.user!.email,
-              'last_sign_in_at': result.user!.lastSignInAt,
-            })
-            .select()
-            .single();
-
     isAuthenticated = true;
-    user = UserInfo.fromJson(data);
 
+    final data = await supabase
+        .from('users')
+        .select()
+        .eq('id', response.user!.id)
+        .maybeSingle();
+    if (data != null) {
+      final userInfo = UserInfo.fromJson(data);
+      user = userInfo;
+    }
     notifyListeners();
   }
 
@@ -110,14 +109,13 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateUser(final json) async {
-    final data =
-        await supabase
-            .from('users')
-            .update(json)
-            .eq('id', user!.id)
-            .select()
-            .single();
+  Future<void> upsetUser(final json) async {
+    final data = await supabase
+        .from('users')
+        .upsert(json)
+        .eq('id', supabase.auth.currentUser!.id)
+        .select()
+        .single();
 
     user = UserInfo.fromJson(data);
     notifyListeners();

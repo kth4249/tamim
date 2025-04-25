@@ -20,11 +20,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
         actions: [
           IconButton(
             onPressed: () => context.read<AuthProvider>().signOut(),
-            icon: Icon(Icons.logout),
+            icon: const Icon(Icons.logout),
           ),
         ],
       ),
-      body: Padding(padding: const EdgeInsets.all(16.0), child: RegisterForm()),
+      body: const Padding(padding: EdgeInsets.all(16.0), child: RegisterForm()),
     );
   }
 }

@@ -12,35 +12,36 @@ import 'package:tamim/splash_screen.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await init();
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 final supabase = Supabase.instance.client;
 var logger = Logger();
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  MyApp({super.key});
+
+  final AuthProvider authProvider = AuthProvider();
 
   @override
   Widget build(BuildContext context) {
+    final router = RouterConfigClass(authProvider);
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => AuthProvider()),
+        ChangeNotifierProvider<AuthProvider>.value(value: authProvider),
         ChangeNotifierProvider(create: (context) => ParishGroupProvider()),
       ],
-      builder:
-          (context, child) =>
-              !context.watch<AuthProvider>().isInitialized
-                  ? const MaterialApp(home: SplashScreen())
-                  : MaterialApp.router(
-                    routerConfig: router,
-                    title: 'tamim',
-                    theme: ThemeData(
-                      primarySwatch: Colors.blue,
-                      textTheme: GoogleFonts.notoSansTextTheme(),
-                    ),
-                    debugShowCheckedModeBanner: false,
-                  ),
+      builder: (context, child) => !context.watch<AuthProvider>().isInitialized
+          ? const MaterialApp(home: SplashScreen())
+          : MaterialApp.router(
+              routerConfig: router.router,
+              title: 'tamim',
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+                textTheme: GoogleFonts.notoSansTextTheme(),
+              ),
+              debugShowCheckedModeBanner: false,
+            ),
     );
   }
 }

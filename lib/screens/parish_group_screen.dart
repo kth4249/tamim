@@ -215,7 +215,8 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     if (_selectedIndex == 2) {
       currentScreen = const VolunteerConfirmationScreen();
     }
-    if (_selectedIndex == 3) {
+    if (_selectedIndex == 3 &&
+        context.watch<ParishGroupProvider>().myInfo?.roleId == 1) {
       currentScreen = const GroupManagementScreen();
     }
 
@@ -252,17 +253,21 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
             _selectedIndex = index;
           });
         },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(
+        items: [
+          const BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          const BottomNavigationBarItem(
             icon: Icon(Icons.calendar_today),
             label: '날짜 입력',
           ),
-          BottomNavigationBarItem(
+          const BottomNavigationBarItem(
             icon: Icon(Icons.calendar_month),
             label: '일정 조정',
           ),
-          BottomNavigationBarItem(icon: Icon(Icons.settings), label: '관리'),
+          if (context.watch<ParishGroupProvider>().myInfo?.roleId == 1)
+            const BottomNavigationBarItem(
+              icon: Icon(Icons.settings),
+              label: '관리',
+            ),
         ],
       ),
     );

@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷팅을 위해 추가
-import 'package:postgrest/src/types.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/models/volunteer_schedule.dart';
+import 'package:tamim/models/member_dates.dart';
+import 'package:tamim/providers/parish_group_provider.dart';
 
 class AvailableScheduleScreen extends StatefulWidget {
   const AvailableScheduleScreen({super.key});
@@ -25,7 +29,7 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
   DateTime? _rangeEnd;
   RangeSelectionMode _rangeSelectionMode = RangeSelectionMode.toggledOff;
 
-  late Future<PostgrestList> _availableSchedule;
+  late Future<List<MemberDates>> _availableDateByMember;
 
   // @override
   // void initState() {
@@ -36,26 +40,17 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
   @override
   void initState() {
     super.initState();
-    _availableSchedule = _fetchAvailableSchedule();
+    _availableDateByMember = _fetchAvailableSchedule();
   }
 
-  Future<PostgrestList> _fetchAvailableSchedule() async {
-    // 다음 달 봉사 가능일 조회
-    final nextMonth = DateTime(DateTime.now().year, DateTime.now().month + 1);
-    // format nextMonth yyyy-MM
-    final nextMonthString = DateFormat('yyyy-MM').format(nextMonth);
-
-    final volunteerMonth = await supabase
-        .from("volunteer_months")
-        .select('*')
-        .eq('volunteer_month', nextMonthString);
-    if (volunteerMonth.isNotEmpty) {
-      return await supabase
-          .from("volunteer_schedule")
-          .select('*')
-          .eq('volunteer_month_id', volunteerMonth[0]['id']);
-    }
-    return [];
+  Future<List<MemberDates>> _fetchAvailableSchedule() async {
+    final response = await supabase.from('users').select('''
+            id, name, baptismal_name,
+            parish_group_members(group_id), 
+            member_dates(available_date)
+            ''').eq("parish_group_members.group_id", context.read<ParishGroupProvider>().parishGroup!.id);
+    logger.d(response);
+    return response.map((e) => MemberDates.fromJson(e)).toList();
   }
 
   @override
@@ -81,7 +76,18 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildCalendarHeader(),
+            FutureBuilder(
+                future: _availableDateByMember,
+                builder: (context, snapshot) {
+                  final data = snapshot.data;
+                  return Row(
+                    children: [
+                      if (data != null)
+                        for (var d in data) Text(d.name),
+                    ],
+                  );
+                }),
+            // _buildCalendarHeader(),
             const SizedBox(height: 16),
             _buildCalendar(),
             const SizedBox(height: 24),

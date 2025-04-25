@@ -41,9 +41,6 @@ class _LoginScreenState extends State<LoginScreen> {
               child: ElevatedButton(
                 onPressed: () async {
                   await context.read<AuthProvider>().signIn();
-                  if (context.mounted) {
-                    context.go("/parish-groups/4");
-                  }
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,

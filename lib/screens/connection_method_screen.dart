@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import 'package:tamim/providers/auth_provider.dart';
 
 class ConnectionMethodScreen extends StatelessWidget {
   const ConnectionMethodScreen({super.key});
@@ -48,7 +50,6 @@ class ConnectionMethodScreen extends StatelessWidget {
               subtitle: '전달받은 URL을 클릭하여 접속',
               onTap: () {
                 // TODO: URL 접속 처리
-                context.push('/create-meeting');
               },
             ),
             const SizedBox(height: 16),
@@ -72,6 +73,19 @@ class ConnectionMethodScreen extends StatelessWidget {
                 textAlign: TextAlign.center,
                 style: TextStyle(color: Colors.blue, fontSize: 14),
               ),
+            ),
+            // 다른 계정으로 로그인 버튼 추가
+            const Expanded(child: SizedBox(height: 40)),
+            ElevatedButton(
+              onPressed: () {
+                context.read<AuthProvider>().signOut();
+                context.go('/');
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.white,
+                foregroundColor: Colors.blue,
+              ),
+              child: const Text('다른 계정으로 로그인'),
             ),
           ],
         ),

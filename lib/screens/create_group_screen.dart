@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/models/parish.dart';
 
 class CreateGroupScreen extends StatefulWidget {
-  const CreateGroupScreen({super.key});
+  final String registerKey;
+
+  const CreateGroupScreen({super.key, required this.registerKey});
 
   @override
   State<CreateGroupScreen> createState() => _CreateGroupScreenState();
@@ -18,10 +19,42 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   final TextEditingController _meetingDescriptionController =
       TextEditingController();
   int? selectedCategory;
+  late Parish _parish;
 
   var _isLoading = false;
 
   final categories = supabase.from('parish_group_categories').select('*');
+
+  @override
+  void initState() {
+    super.initState();
+    init();
+  }
+
+  Future<void> init() async {
+    final registerKey = widget.registerKey;
+    final parishRes = await supabase
+        .from('parishs')
+        .select('*')
+        .eq('register_key', registerKey)
+        .maybeSingle();
+    if (parishRes == null) {
+      context.go('/connection-method');
+      return;
+    }
+    final joinedGroupRes = await supabase
+        .from('parish_group_members')
+        .select('*')
+        .eq('user_id', supabase.auth.currentUser!.id)
+        .eq('status', 'active')
+        .maybeSingle();
+    if (joinedGroupRes != null) {
+      context.go('/');
+      return;
+    }
+
+    _parish = Parish.fromJson(parishRes);
+  }
 
   @override
   void dispose() {
@@ -243,6 +276,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     final response = await _createGroup();
                     _showSuccessDialog(response);
                     setState(() => _isLoading = false);
+                    context.go('/parish-groups/${response['id']}');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
@@ -267,6 +301,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     final groupResponse = await supabase
         .from('parish_groups')
         .insert({
+          'parish_id': _parish.id,
           'category_id': selectedCategory,
           'group_name': _meetingNameController.text,
           'description': _meetingDescriptionController.text,
@@ -282,8 +317,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       'role_id': 1,
       'status': 'active',
     });
-
-    await context.read<AuthProvider>().updateUser({'status': 'active'});
 
     return groupResponse;
   }
