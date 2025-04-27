@@ -68,9 +68,9 @@ class GroupManagementScreen extends StatelessWidget {
                     const SizedBox(height: 16),
                     _buildMenuCard(
                       context: context,
-                      label: '차월 봉사 일정 생성',
+                      label: '봉사 일정 관리',
                       icon: Icons.calendar_month,
-                      routeName: '/schedule-creation',
+                      routeName: '/schedule-management',
                       color: colorScheme.tertiaryContainer,
                       iconColor: colorScheme.tertiary,
                     ),

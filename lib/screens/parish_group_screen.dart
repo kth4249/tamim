@@ -255,14 +255,6 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         },
         items: [
           const BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today),
-            label: '날짜 입력',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_month),
-            label: '일정 조정',
-          ),
           if (context.watch<ParishGroupProvider>().myInfo?.roleId == 1)
             const BottomNavigationBarItem(
               icon: Icon(Icons.settings),

@@ -11,6 +11,7 @@ import 'package:tamim/screens/parish_group_list_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
+import 'package:tamim/screens/schedule_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
 class RouterConfigClass {
@@ -61,6 +62,10 @@ class RouterConfigClass {
           path: '/join/:joinKey',
           builder: (context, state) =>
               JoinScreen(joinKey: state.pathParameters['joinKey']!),
+        ),
+        GoRoute(
+          path: '/schedule-management',
+          builder: (context, state) => const ScheduleManagementScreen(),
         ),
       ],
       refreshListenable: authProvider,

@@ -14,12 +14,6 @@ class AvailableScheduleScreen extends StatefulWidget {
 }
 
 class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
-  // 선택된 날짜들을 관리하기 위한 Set
-  final Set<DateTime> _selectedDays = {
-    DateTime.utc(2024, 3, 5),
-    DateTime.utc(2024, 3, 13),
-    DateTime.utc(2024, 3, 20),
-  };
   final DateTime _firstDay = DateTime.now().subtract(const Duration(days: 365));
   final DateTime _lastDay = DateTime.now().add(const Duration(days: 365));
   DateTime _focusedDay = DateTime.now();
@@ -38,11 +32,12 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
         context.watch<VolunteerScheduleProvider>().availableDateByMember;
     final selectedMemberId =
         context.watch<VolunteerScheduleProvider>().selectedMemberId;
-    final selectedDays = availableDateByMember.isEmpty
-        ? []
-        : availableDateByMember
-            .firstWhere((element) => element.id == selectedMemberId)
-            .memberDates;
+    final selectedDays =
+        (availableDateByMember.isNotEmpty && selectedMemberId != null)
+            ? availableDateByMember
+                .firstWhere((element) => element.id == selectedMemberId)
+                .memberDates
+            : [];
     // 선택된 날짜 목록을 문자열로 변환 (예: "3월 5일, 13일, 20일")
     String selectedDaysText = selectedDays.isNotEmpty
         ? DateFormat('M월 d일', 'ko_KR').format(selectedDays.first) +
@@ -53,10 +48,6 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
         : '';
 
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: const Text('봉사 가능일 선택'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -88,68 +79,6 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            // 제출 로직 구현
-            print('Selected days: $_selectedDays');
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('선택된 날짜: $selectedDaysText')),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.teal, // 버튼 색상
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            textStyle: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-            ),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
-          child: const Text('제출하기', style: TextStyle(color: Colors.white)),
-        ),
-      ),
-    );
-  }
-
-  // 달력 헤더 (년월, 전체선택, 선택해제)
-  Widget _buildCalendarHeader() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          DateFormat('yyyy년 M월', 'ko_KR').format(_focusedDay),
-          style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        Row(
-          children: [
-            TextButton(
-              onPressed: _selectAllVisibleDays,
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size(50, 30),
-              ),
-              child: const Text('전체 선택'),
-            ),
-            const SizedBox(width: 8),
-            TextButton(
-              onPressed: () {
-                setState(() {
-                  _selectedDays.clear();
-                });
-              },
-              style: TextButton.styleFrom(
-                padding: EdgeInsets.zero,
-                minimumSize: Size(50, 30),
-              ),
-              child: const Text('선택 해제'),
-            ),
-          ],
-        ),
-      ],
     );
   }
 
@@ -159,35 +88,22 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
         context.watch<VolunteerScheduleProvider>().availableDateByMember;
     final selectedMemberId =
         context.watch<VolunteerScheduleProvider>().selectedMemberId;
-    final selectedDays = availableDateByMember
-        .firstWhere((element) => element.id == selectedMemberId)
-        .memberDates;
+    final selectedDays =
+        (availableDateByMember.isNotEmpty && selectedMemberId != null)
+            ? availableDateByMember
+                .firstWhere((element) => element.id == selectedMemberId)
+                .memberDates
+            : [];
     return TableCalendar<DateTime>(
       locale: 'ko_KR',
       firstDay: _firstDay,
       lastDay: _lastDay,
       focusedDay: _focusedDay,
-      // selectedDayPredicate: (day) => _selectedDays.contains(day),
       selectedDayPredicate: (day) {
-        var flag = false;
-        for (var d in selectedDays) {
-          if (isSameDay(d, day)) {
-            flag = true;
-          }
-        }
-        return flag;
+        return selectedDays.where((e) => isSameDay(e, day)).isNotEmpty;
       },
-      onDaySelected: (selectedDay, focusedDay) {
-        // context.read<VolunteerScheduleProvider>().changeDate(selectedDay);
-        setState(() {
-          _focusedDay = focusedDay; // 사용자가 다른 월로 이동하면 포커스 업데이트
-          // 선택 로직: 이미 선택된 날짜면 제거, 아니면 추가
-          if (_selectedDays.contains(selectedDay)) {
-            _selectedDays.remove(selectedDay);
-          } else {
-            _selectedDays.add(selectedDay);
-          }
-        });
+      onDaySelected: (selectedDay, focusedDay) async {
+        await context.read<VolunteerScheduleProvider>().changeDate(selectedDay);
       },
       onPageChanged: (focusedDay) {
         // 페이지(월) 변경 시 포커스 업데이트
@@ -276,35 +192,6 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
         weekendStyle: TextStyle(color: Colors.red), // 요일 헤더의 주말 텍스트 색상
       ),
     );
-  }
-
-  // 현재 보이는 달의 모든 날짜를 선택하는 함수
-  void _selectAllVisibleDays() {
-    setState(() {
-      _selectedDays.clear();
-      // 현재 포커스된 달의 시작과 끝 날짜 계산
-      final firstDayOfMonth = DateTime.utc(
-        _focusedDay.year,
-        _focusedDay.month,
-        1,
-      );
-      final lastDayOfMonth = DateTime.utc(
-        _focusedDay.year,
-        _focusedDay.month + 1,
-        0,
-      );
-
-      for (DateTime day = firstDayOfMonth;
-          day.isBefore(lastDayOfMonth.add(const Duration(days: 1)));
-          day = day.add(const Duration(days: 1))) {
-        // lastDay은 3월 31일이어야 함 (DateTime.utc(2024, 3, 31))
-        // lastDay 생성 시 주의 필요
-        if (day.month == _focusedDay.month) {
-          // 다른 달 날짜는 포함하지 않음
-          _selectedDays.add(day);
-        }
-      }
-    });
   }
 }
 
