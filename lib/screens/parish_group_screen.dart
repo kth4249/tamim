@@ -7,8 +7,6 @@ import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/group_management_screen.dart';
-import 'package:tamim/screens/volunteer_confirmation_screen.dart';
-import 'package:tamim/screens/available_schedule_screen.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
@@ -235,25 +233,27 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         ],
       ),
       body: currentScreen,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: [
-          const BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          if (context.watch<ParishGroupProvider>().myInfo?.roleId == 1)
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.settings),
-              label: '관리',
-            ),
-        ],
-      ),
+      bottomNavigationBar:
+          context.watch<ParishGroupProvider>().myInfo?.roleId == 1
+              ? BottomNavigationBar(
+                  currentIndex: _selectedIndex,
+                  selectedItemColor: AppTheme.primaryColor,
+                  unselectedItemColor: Colors.grey,
+                  type: BottomNavigationBarType.fixed,
+                  onTap: (index) {
+                    setState(() {
+                      _selectedIndex = index;
+                    });
+                  },
+                  items: const [
+                    BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+                    BottomNavigationBarItem(
+                      icon: Icon(Icons.settings),
+                      label: '관리',
+                    ),
+                  ],
+                )
+              : null,
     );
   }
 }
