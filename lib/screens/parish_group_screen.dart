@@ -207,15 +207,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         ],
       ),
     );
-
-    // 선택된 탭에 따라 화면 전환
-    if (_selectedIndex == 1) {
-      currentScreen = const AvailableScheduleScreen();
-    }
-    if (_selectedIndex == 2) {
-      currentScreen = const VolunteerConfirmationScreen();
-    }
-    if (_selectedIndex == 3 &&
+    if (_selectedIndex == 1 &&
         context.watch<ParishGroupProvider>().myInfo?.roleId == 1) {
       currentScreen = const GroupManagementScreen();
     }

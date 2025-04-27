@@ -311,14 +311,6 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: const Text(
-          '봉사 포지션 관리',
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.w600),
-        ),
-        // backgroundColor: Colors.white,
-        elevation: 0,
-      ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(16.0),

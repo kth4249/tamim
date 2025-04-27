@@ -11,7 +11,7 @@ import 'package:tamim/screens/parish_group_list_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
-import 'package:tamim/screens/schedule_management_screen.dart';
+import 'package:tamim/screens/volunteer_management_screen.dart';
 import 'package:tamim/screens/volunteer_confirmation_screen.dart';
 
 class RouterConfigClass {
@@ -47,7 +47,7 @@ class RouterConfigClass {
           ),
         ),
         GoRoute(
-          path: '/volunteer-confirmation',
+          path: '/create-volunteer-schedule',
           builder: (context, state) => const VolunteerConfirmationScreen(),
         ),
         GoRoute(
@@ -64,8 +64,8 @@ class RouterConfigClass {
               JoinScreen(joinKey: state.pathParameters['joinKey']!),
         ),
         GoRoute(
-          path: '/schedule-management',
-          builder: (context, state) => const ScheduleManagementScreen(),
+          path: '/volunteer-management',
+          builder: (context, state) => const VolunteerManagementScreen(),
         ),
       ],
       refreshListenable: authProvider,
