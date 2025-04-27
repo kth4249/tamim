@@ -226,7 +226,7 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
             color: Theme.of(context).colorScheme.onPrimary,
             fontWeight: FontWeight.w600,
           ),
-          todayDecoration: BoxDecoration(
+          todayDecoration: const BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.circle,
           ),

@@ -50,10 +50,9 @@ class MemberManagementScreen extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  CircleAvatar(
+                  const CircleAvatar(
                     radius: 20,
-                    backgroundImage:
-                        const AssetImage('assets/images/profile.png'),
+                    backgroundImage: AssetImage('assets/images/profile.png'),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
@@ -387,26 +386,26 @@ class MemberManagementScreen extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          CircleAvatar(
+                          const CircleAvatar(
                             radius: 25,
                             // backgroundImage: NetworkImage(member.profileImage),
                             backgroundImage: AssetImage(
                               'assets/images/profile.png',
                             ),
                           ),
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
                                   member.user.name ?? '',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
                                   '가입일: ${member.createdAt}',
                                   style: TextStyle(

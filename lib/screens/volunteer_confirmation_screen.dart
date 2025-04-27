@@ -151,16 +151,16 @@ class _VolunteerConfirmationScreenState
               _focusedDay = focusedDay;
             });
           },
-          headerStyle: HeaderStyle(
+          headerStyle: const HeaderStyle(
             titleCentered: true,
             formatButtonVisible: false, // 'Week' 버튼 숨김
-            titleTextStyle: const TextStyle(
+            titleTextStyle: TextStyle(
               fontSize: 16.0,
               fontWeight: FontWeight.bold,
             ),
             // 좌우 화살표 스타일 변경 (필요시)
-            leftChevronIcon: const Icon(Icons.chevron_left, color: Colors.grey),
-            rightChevronIcon: const Icon(
+            leftChevronIcon: Icon(Icons.chevron_left, color: Colors.grey),
+            rightChevronIcon: Icon(
               Icons.chevron_right,
               color: Colors.grey,
             ),
@@ -268,7 +268,7 @@ class _VolunteerConfirmationScreenState
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              DateFormat('M월 d일 (E)', 'ko_KR').format(detail.date) + ' 봉사 일정',
+              '${DateFormat('M월 d일 (E)', 'ko_KR').format(detail.date)} 봉사 일정',
               style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),

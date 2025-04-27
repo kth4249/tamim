@@ -43,7 +43,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       color: Colors.blue.shade50,
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.person_add_outlined,
                       size: 40,
                       color: Colors.blue,

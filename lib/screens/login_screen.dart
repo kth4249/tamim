@@ -52,15 +52,15 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   padding: const EdgeInsets.symmetric(vertical: 15),
                 ),
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Image(
                       image: AssetImage("assets/images/google_logo.png"),
                       height: 24,
                     ),
-                    const SizedBox(width: 12),
-                    const Text('구글로 계속하기', style: TextStyle(fontSize: 16)),
+                    SizedBox(width: 12),
+                    Text('구글로 계속하기', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),

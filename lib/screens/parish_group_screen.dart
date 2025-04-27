@@ -84,7 +84,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                   color: AppTheme.primaryColor.withAlpha(51),
                   shape: BoxShape.circle,
                 ),
-                markerDecoration: BoxDecoration(
+                markerDecoration: const BoxDecoration(
                   color: AppTheme.primaryColor,
                   shape: BoxShape.circle,
                 ),
