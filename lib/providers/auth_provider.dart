@@ -1,10 +1,13 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/user_info.dart';
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
+import 'package:crypto/crypto.dart';
 
 class AuthProvider extends ChangeNotifier {
   late StreamSubscription authSubscription;
@@ -68,7 +71,7 @@ class AuthProvider extends ChangeNotifier {
     super.dispose();
   }
 
-  signIn() async {
+  Future<void> signInWithGoogle() async {
     final googleUser = await googleSignIn.signIn();
 
     final googleAuth = await googleUser!.authentication;
@@ -86,6 +89,41 @@ class AuthProvider extends ChangeNotifier {
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
+    );
+    isAuthenticated = true;
+
+    final data = await supabase
+        .from('users')
+        .select()
+        .eq('id', response.user!.id)
+        .eq('status', 'active')
+        .maybeSingle();
+    if (data != null) {
+      final userInfo = UserInfo.fromJson(data);
+      user = userInfo;
+    }
+    notifyListeners();
+  }
+
+  Future<void> signInWithApple() async {
+    final rawNonce = supabase.auth.generateRawNonce();
+    final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
+    final credential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+      nonce: hashedNonce,
+    );
+    final idToken = credential.identityToken;
+    if (idToken == null) {
+      throw const AuthException(
+          'Could not find ID Token from generated credential.');
+    }
+    final response = await supabase.auth.signInWithIdToken(
+      provider: OAuthProvider.apple,
+      idToken: idToken,
+      nonce: rawNonce,
     );
     isAuthenticated = true;
 

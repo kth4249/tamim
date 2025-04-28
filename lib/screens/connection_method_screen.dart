@@ -44,22 +44,18 @@ class ConnectionMethodScreen extends StatelessWidget {
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
             const SizedBox(height: 40),
-            _ConnectionMethodButton(
+            // URL 안내 카드
+            _ConnectionMethodInfoCard(
               icon: Icons.link_rounded,
               title: 'URL로 접속하기',
               subtitle: '전달받은 URL을 클릭하여 접속',
-              onTap: () {
-                // TODO: URL 접속 처리
-              },
             ),
             const SizedBox(height: 16),
-            _ConnectionMethodButton(
+            // QR 안내 카드
+            _ConnectionMethodInfoCard(
               icon: Icons.qr_code_rounded,
               title: 'QR 코드 스캔하기',
-              subtitle: 'QR 코드를 스캔하여 접속',
-              onTap: () {
-                // TODO: QR 코드 스캔 처리
-              },
+              subtitle: '전달받은 QR 코드를 스캔하여 접속',
             ),
             const SizedBox(height: 40),
             Container(
@@ -94,70 +90,72 @@ class ConnectionMethodScreen extends StatelessWidget {
   }
 }
 
-class _ConnectionMethodButton extends StatelessWidget {
+class _ConnectionMethodInfoCard extends StatelessWidget {
   final IconData icon;
   final String title;
   final String subtitle;
-  final VoidCallback onTap;
 
-  const _ConnectionMethodButton({
+  const _ConnectionMethodInfoCard({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(8),
-        child: Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey.shade300),
-            borderRadius: BorderRadius.circular(8),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
+      decoration: BoxDecoration(
+        color: const Color(0xFFF8F5EF),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.transparent),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.03),
+            blurRadius: 2,
+            offset: const Offset(0, 1),
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: Colors.green.shade50,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(icon, color: Colors.green.shade400),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      title,
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-                    Text(
-                      subtitle,
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Colors.grey.shade600,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              Icon(Icons.chevron_right_rounded, color: Colors.grey.shade400),
-            ],
+        ],
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.7),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(icon, color: Colors.green.shade400, size: 20),
           ),
-        ),
+          const SizedBox(width: 18),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.black87,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  subtitle,
+                  style: TextStyle(
+                    fontSize: 13,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
