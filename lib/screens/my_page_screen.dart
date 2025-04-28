@@ -110,6 +110,15 @@ class MyPageScreen extends StatelessWidget {
                       color: colorScheme.secondaryContainer,
                       iconColor: colorScheme.secondary,
                     ),
+                    const SizedBox(height: 12),
+                    _buildMenuCard(
+                      context: context,
+                      label: '봉사 일정 생성',
+                      icon: Icons.calendar_month,
+                      routeName: '/create-volunteer-schedule',
+                      color: colorScheme.secondaryContainer,
+                      iconColor: colorScheme.secondary,
+                    ),
                   ],
                   const SizedBox(height: 32),
                   // 탈퇴 버튼

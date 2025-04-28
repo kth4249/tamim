@@ -27,16 +27,16 @@ class ScheduleDetail {
   });
 }
 
-class VolunteerConfirmationScreen extends StatefulWidget {
-  const VolunteerConfirmationScreen({super.key});
+class CreateVolunteerScheduleScreen extends StatefulWidget {
+  const CreateVolunteerScheduleScreen({super.key});
 
   @override
-  State<VolunteerConfirmationScreen> createState() =>
-      _VolunteerConfirmationScreenState();
+  State<CreateVolunteerScheduleScreen> createState() =>
+      _CreateVolunteerScheduleScreenState();
 }
 
-class _VolunteerConfirmationScreenState
-    extends State<VolunteerConfirmationScreen> {
+class _CreateVolunteerScheduleScreenState
+    extends State<CreateVolunteerScheduleScreen> {
   DateTime _focusedDay = DateTime.utc(2024, 3, 4); // 초기 포커스 날짜
   DateTime _selectedDay = DateTime.utc(2024, 3, 4); // 초기 선택된 날짜
   // 선택 가능한 봉사 날짜 (예시 데이터)

@@ -12,7 +12,7 @@ import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_management_screen.dart';
-import 'package:tamim/screens/volunteer_confirmation_screen.dart';
+import 'package:tamim/screens/create_volunteer_schedule_screen.dart';
 
 class RouterConfigClass {
   late GoRouter router;
@@ -48,7 +48,7 @@ class RouterConfigClass {
         ),
         GoRoute(
           path: '/create-volunteer-schedule',
-          builder: (context, state) => const VolunteerConfirmationScreen(),
+          builder: (context, state) => const CreateVolunteerScheduleScreen(),
         ),
         GoRoute(
           path: '/position-management',
