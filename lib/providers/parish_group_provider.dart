@@ -48,6 +48,7 @@ class ParishGroupProvider extends ChangeNotifier {
         .map((json) => Position.fromJson(json))
         .toList();
     parishGroupMemberInfos = (response['parish_group_members'] as List<dynamic>)
+        .where((json) => json['user']['status'] == 'active')
         .map((json) => ParishGroupMemberInfo.fromJson(json))
         .toList();
     myInfo = parishGroupMemberInfos

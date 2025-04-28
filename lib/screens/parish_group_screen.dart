@@ -6,7 +6,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
-import 'package:tamim/screens/group_management_screen.dart';
+import 'package:tamim/screens/my_page_screen.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
@@ -205,14 +205,14 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         ],
       ),
     );
-    if (_selectedIndex == 1 &&
-        context.watch<ParishGroupProvider>().myInfo?.roleId == 1) {
-      currentScreen = const GroupManagementScreen();
+    if (_selectedIndex == 1) {
+      currentScreen = const MyPageScreen();
     }
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        centerTitle: false,
         title: Text(
           context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
           style: const TextStyle(
@@ -233,27 +233,24 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         ],
       ),
       body: currentScreen,
-      bottomNavigationBar:
-          context.watch<ParishGroupProvider>().myInfo?.roleId == 1
-              ? BottomNavigationBar(
-                  currentIndex: _selectedIndex,
-                  selectedItemColor: AppTheme.primaryColor,
-                  unselectedItemColor: Colors.grey,
-                  type: BottomNavigationBarType.fixed,
-                  onTap: (index) {
-                    setState(() {
-                      _selectedIndex = index;
-                    });
-                  },
-                  items: const [
-                    BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-                    BottomNavigationBarItem(
-                      icon: Icon(Icons.settings),
-                      label: '관리',
-                    ),
-                  ],
-                )
-              : null,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        selectedItemColor: AppTheme.primaryColor,
+        unselectedItemColor: Colors.grey,
+        type: BottomNavigationBarType.fixed,
+        onTap: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+        },
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: '마이페이지',
+          ),
+        ],
+      ),
     );
   }
 }

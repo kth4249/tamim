@@ -93,6 +93,7 @@ class AuthProvider extends ChangeNotifier {
         .from('users')
         .select()
         .eq('id', response.user!.id)
+        .eq('status', 'active')
         .maybeSingle();
     if (data != null) {
       final userInfo = UserInfo.fromJson(data);
@@ -118,6 +119,17 @@ class AuthProvider extends ChangeNotifier {
         .single();
 
     user = UserInfo.fromJson(data);
+    notifyListeners();
+  }
+
+  Future<void> withdraw() async {
+    if (user == null) return;
+
+    await supabase
+        .from('users')
+        .update({'status': 'inactive'}).eq('id', user!.id);
+
+    signOut();
     notifyListeners();
   }
 }
