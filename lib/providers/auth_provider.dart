@@ -140,12 +140,16 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void signOut() {
-    googleSignIn.signOut();
-    supabase.auth.signOut();
-    isAuthenticated = false;
-    user = null;
-    notifyListeners();
+  Future<void> signOut() async {
+    try {
+      await googleSignIn.signOut();
+      await supabase.auth.signOut();
+      isAuthenticated = false;
+      user = null;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 
   Future<void> upsetUser(final json) async {
@@ -169,5 +173,59 @@ class AuthProvider extends ChangeNotifier {
 
     signOut();
     notifyListeners();
+  }
+
+  Future<void> signIn(String email, String password) async {
+    try {
+      final response = await supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
+
+      final data = response.user?.toJson() ?? {};
+      final userInfo = UserInfo.fromJson(data);
+      user = userInfo;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> signUp({
+    required String email,
+    required String password,
+    required String name,
+    required String baptismalName,
+    required String nickName,
+  }) async {
+    try {
+      final response = await supabase.auth.signUp(
+        email: email,
+        password: password,
+        data: {
+          'name': name,
+          'baptismal_name': baptismalName,
+          'nick_name': nickName,
+        },
+      );
+
+      final data = response.user?.toJson() ?? {};
+      final userInfo = UserInfo.fromJson(data);
+      user = userInfo;
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  Future<void> getCurrentUser() async {
+    try {
+      final response = await supabase.auth.getUser();
+      final data = response.user?.toJson() ?? {};
+      user = UserInfo.fromJson(data);
+      notifyListeners();
+    } catch (e) {
+      rethrow;
+    }
   }
 }

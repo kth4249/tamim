@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:provider/provider.dart';
 import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/position.dart';
 import 'package:tamim/models/member_dates.dart';
 import 'package:tamim/models/member_positions.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/volunteer_schedule_provider.dart';
 import '../widgets/common_calendar.dart';
 
 class CreateVolunteerScheduleScreen extends StatefulWidget {
@@ -24,73 +26,25 @@ class _CreateVolunteerScheduleScreenState
   final Map<DateTime, Map<int, UserInfo?>> _assignments = {};
   bool _isScheduleCreated = false;
 
-  // 가데이터: 멤버별 봉사 가능 날짜
-  // to DateTime
-  final Map<String, List<DateTime>> _memberAvailableDates = {
-    '이서영': [
-      DateTime(2025, 5, 11),
-      DateTime(2025, 5, 18),
-      DateTime(2025, 5, 25)
-    ],
-    '신윤희': [DateTime(2025, 5, 25)],
-    '이찬솔': [DateTime(2025, 5, 4), DateTime(2025, 5, 11), DateTime(2025, 5, 18)],
-    '이세리': [DateTime(2025, 5, 11), DateTime(2025, 5, 25)],
-    '황경섭': [DateTime(2025, 5, 11), DateTime(2025, 5, 25)],
-    '박정은': [DateTime(2025, 5, 11), DateTime(2025, 5, 18)],
-    '김서영': [DateTime(2025, 5, 4), DateTime(2025, 5, 18)],
-    '박현우': [
-      DateTime(2025, 5, 4),
-      DateTime(2025, 5, 11),
-      DateTime(2025, 5, 18),
-      DateTime(2025, 5, 25)
-    ],
-    '심홍보': [
-      DateTime(2025, 5, 4),
-      DateTime(2025, 5, 11),
-      DateTime(2025, 5, 18),
-      DateTime(2025, 5, 25)
-    ],
-    '김태훈': [
-      DateTime(2025, 5, 11),
-      DateTime(2025, 5, 18),
-      DateTime(2025, 5, 25)
-    ],
-  };
-
-  // 가데이터: 멤버별 봉사 가능 포지션
-  final Map<String, List<String>> _memberAvailablePositions = {
-    '이서영': ['해설', '독서1', '독서2'],
-    '신윤희': ['해설', '독서2'],
-    '이찬솔': ['독서1', '독서2'],
-    '이세리': ['해설', '독서1', '독서2'],
-    '황경섭': ['해설', '독서1', '독서2'],
-    '박정은': ['해설', '독서1', '독서2'],
-    '김서영': ['독서1', '독서2'],
-    '박현우': ['해설', '독서1', '독서2'],
-    '심홍보': ['해설', '독서1', '독서2'],
-    '김태훈': ['해설', '독서1', '독서2'],
-  };
-
   // 멤버별 봉사 횟수 추적
   final Map<String, int> _memberServiceCount = {};
 
   @override
   void initState() {
     super.initState();
-    _loadPositions();
     _initializeMemberServiceCount();
+    context.read<VolunteerScheduleProvider>().fetchMemberPositions(
+        context.read<ParishGroupProvider>().parishGroup!.id);
   }
 
   void _initializeMemberServiceCount() {
-    for (final member in _memberAvailableDates.keys) {
-      _memberServiceCount[member] = 0;
-    }
-  }
-
-  void _loadPositions() {
-    final provider = context.read<ParishGroupProvider>();
-    if (provider.positions.isEmpty) {
-      provider.loadPositions();
+    final availableMemberIds = context
+        .read<VolunteerScheduleProvider>()
+        .availableDateByMember
+        .map((e) => e.id)
+        .toList();
+    for (final memberId in availableMemberIds) {
+      _memberServiceCount[memberId] = 0;
     }
   }
 
@@ -107,26 +61,55 @@ class _CreateVolunteerScheduleScreenState
     });
   }
 
-  bool _isMemberAvailableForDate(String memberName, DateTime date) {
-    final availableDates = _memberAvailableDates[memberName] ?? [];
+  bool _isMemberAvailableForDate(String memberId, DateTime date) {
+    final availableDates = context
+            .read<VolunteerScheduleProvider>()
+            .availableDateByMember
+            .firstWhere(
+              (e) => e.id == memberId,
+              orElse: () => MemberDates(
+                id: '',
+                name: '',
+                baptismalName: '',
+                memberDates: [],
+              ),
+            )
+            .memberDates
+            .map((e) => e)
+            .toList() ??
+        [];
     return availableDates.indexWhere((e) => isSameDay(e, date)) != -1;
   }
 
-  bool _isMemberAvailableForPosition(String memberName, String positionName) {
-    final availablePositions = _memberAvailablePositions[memberName] ?? [];
-    return availablePositions.contains(positionName);
+  bool _isMemberAvailableForPosition(String memberId, int positionId) {
+    final availablePositions = context
+            .read<VolunteerScheduleProvider>()
+            .memberPositions
+            .firstWhere(
+              (e) => e.id == memberId,
+              orElse: () => MemberPositions(
+                id: '',
+                name: '',
+                baptismalName: '',
+                positions: [],
+              ),
+            )
+            .positions
+            .map((e) => e.id)
+            .toList() ??
+        [];
+    return availablePositions.contains(positionId);
   }
 
   UserInfo? _findBestMemberForPosition(
-      DateTime date, String positionName, List<UserInfo> availableMembers) {
-    // 봉사 횟수가 가장 적은 멤버들 중에서 선택
+      DateTime date, int positionId, List<UserInfo> availableMembers) {
     final sortedMembers = availableMembers
         .where((member) =>
-            _isMemberAvailableForDate(member.name ?? '', date) &&
-            _isMemberAvailableForPosition(member.name ?? '', positionName))
+            _isMemberAvailableForDate(member.id ?? '', date) &&
+            _isMemberAvailableForPosition(member.id ?? '', positionId))
         .toList()
-      ..sort((a, b) => (_memberServiceCount[a.name ?? ''] ?? 0)
-          .compareTo(_memberServiceCount[b.name ?? ''] ?? 0));
+      ..sort((a, b) => (_memberServiceCount[a.id] ?? 0)
+          .compareTo(_memberServiceCount[b.id] ?? 0));
 
     return sortedMembers.isNotEmpty ? sortedMembers.first : null;
   }
@@ -139,33 +122,27 @@ class _CreateVolunteerScheduleScreenState
       return;
     }
 
-    final members = context.read<ParishGroupProvider>().parishGroupMemberInfos;
-    final positions = context.read<ParishGroupProvider>().positions;
-
-    if (members.isEmpty || positions.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('봉사자나 포지션이 없습니다')),
-      );
-      return;
-    }
-
     // 멤버별 봉사 횟수 초기화
     _initializeMemberServiceCount();
 
     // 각 날짜별로 봉사자 배정
     for (final date in _selectedDays) {
       final assignments = <int, UserInfo>{};
-      final availableMembers = members.map((m) => m.user).toList();
+      final availableMembers = List<UserInfo>.from(context
+          .read<ParishGroupProvider>()
+          .parishGroupMemberInfos
+          .map((member) => member.user));
 
       // 각 포지션별로 봉사자 배정
+      final positions = context.read<ParishGroupProvider>().positions;
       for (final position in positions) {
-        final selectedMember = _findBestMemberForPosition(
-            date, position.positionName, availableMembers);
+        final selectedMember =
+            _findBestMemberForPosition(date, position.id, availableMembers);
 
         if (selectedMember != null) {
           assignments[position.id] = selectedMember;
-          _memberServiceCount[selectedMember.name ?? ''] =
-              (_memberServiceCount[selectedMember.name ?? ''] ?? 0) + 1;
+          _memberServiceCount[selectedMember.id ?? ''] =
+              (_memberServiceCount[selectedMember.id ?? ''] ?? 0) + 1;
           availableMembers.remove(selectedMember);
         }
       }
@@ -182,65 +159,117 @@ class _CreateVolunteerScheduleScreenState
     );
   }
 
+  void _showEditBottomSheet(DateTime date, Map<int, UserInfo?> assignments) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: Consumer<ParishGroupProvider>(
+          builder: (context, parishGroupProvider, child) {
+            return EditVolunteerSheet(
+              date: date,
+              positions: parishGroupProvider.positions,
+              assignments: assignments,
+              memberAvailablePositions: context
+                  .read<VolunteerScheduleProvider>()
+                  .memberPositions
+                  .map((e) => e.name)
+                  .toList(),
+              onSave: (updatedAssignments) {
+                setState(() {
+                  _assignments[date] = updatedAssignments;
+                });
+              },
+            );
+          },
+        ),
+      ),
+    );
+  }
+
   Widget _buildScheduleList() {
     if (!_isScheduleCreated) return const SizedBox.shrink();
 
-    final positions = context.watch<ParishGroupProvider>().positions;
+    // 날짜순으로 정렬
+    final sortedDays = List<DateTime>.from(_selectedDays)..sort();
 
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: _selectedDays.length,
-      itemBuilder: (context, index) {
-        final date = _selectedDays[index];
-        final assignments = _assignments[date] ?? {};
+    return Consumer<ParishGroupProvider>(
+      builder: (context, parishGroupProvider, child) {
+        final positions = parishGroupProvider.positions;
 
-        return Card(
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '${date.year}년 ${date.month}월 ${date.day}일',
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
+        return GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 1.2,
+            crossAxisSpacing: 16,
+            mainAxisSpacing: 16,
+          ),
+          padding: const EdgeInsets.all(16),
+          itemCount: sortedDays.length,
+          itemBuilder: (context, index) {
+            final date = sortedDays[index];
+            final assignments = _assignments[date] ?? {};
+
+            return GestureDetector(
+              onTap: () => _showEditBottomSheet(date, assignments),
+              child: Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        '${date.year}년 ${date.month}월 ${date.day}일',
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      ...positions.map((position) {
+                        final assignedMember = assignments[position.id];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 4),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 60,
+                                child: Text(
+                                  position.positionName,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                              const Text(': '),
+                              Expanded(
+                                child: Text(
+                                  assignedMember?.name ?? '미정',
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }).toList(),
+                    ],
                   ),
                 ),
-                const SizedBox(height: 12),
-                ...positions.map((position) {
-                  final assignedMember = assignments[position.id];
-                  return Padding(
-                    padding: const EdgeInsets.only(bottom: 8),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 80,
-                          child: Text(
-                            position.positionName,
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                        const Text(': '),
-                        Expanded(
-                          child: Text(
-                            assignedMember?.name ?? '미정',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
@@ -284,18 +313,22 @@ class _CreateVolunteerScheduleScreenState
                           Wrap(
                             spacing: 8,
                             runSpacing: 8,
-                            children: _selectedDays.map((day) {
-                              return Chip(
-                                label: Text(
-                                  '${day.year}년 ${day.month}월 ${day.day}일',
-                                ),
-                                onDeleted: () {
-                                  setState(() {
-                                    _selectedDays.remove(day);
-                                  });
-                                },
-                              );
-                            }).toList(),
+                            children: () {
+                              final sortedDays =
+                                  List<DateTime>.from(_selectedDays)..sort();
+                              return sortedDays
+                                  .map((day) => Chip(
+                                        label: Text(
+                                          '${day.year}년 ${day.month}월 ${day.day}일',
+                                        ),
+                                        onDeleted: () {
+                                          setState(() {
+                                            _selectedDays.remove(day);
+                                          });
+                                        },
+                                      ))
+                                  .toList();
+                            }(),
                           ),
                         ],
                       ),
@@ -322,6 +355,213 @@ class _CreateVolunteerScheduleScreenState
                   color: Colors.white,
                 ),
               ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EditVolunteerSheet extends StatefulWidget {
+  final DateTime date;
+  final List<Position> positions;
+  final Map<int, UserInfo?> assignments;
+  final List<String> memberAvailablePositions;
+  final Function(Map<int, UserInfo?>) onSave;
+
+  const EditVolunteerSheet({
+    super.key,
+    required this.date,
+    required this.positions,
+    required this.assignments,
+    required this.memberAvailablePositions,
+    required this.onSave,
+  });
+
+  @override
+  State<EditVolunteerSheet> createState() => _EditVolunteerSheetState();
+}
+
+class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
+  late Map<int, UserInfo?> _currentAssignments;
+  final Map<int, TextEditingController> _manualInputControllers = {};
+
+  @override
+  void initState() {
+    super.initState();
+    _currentAssignments = Map.from(widget.assignments);
+    for (final position in widget.positions) {
+      _manualInputControllers[position.id] = TextEditingController();
+    }
+  }
+
+  @override
+  void dispose() {
+    for (final controller in _manualInputControllers.values) {
+      controller.dispose();
+    }
+    super.dispose();
+  }
+
+  List<UserInfo> _getAvailableMembersForPosition(Position position) {
+    return context
+        .read<ParishGroupProvider>()
+        .parishGroupMemberInfos
+        .map((member) => member.user)
+        .where((member) {
+      final availablePositions = widget.memberAvailablePositions;
+      return availablePositions.contains(position.positionName);
+    }).toList();
+  }
+
+  void _handleManualInput(int positionId, String name) {
+    setState(() {
+      if (name.isEmpty) {
+        _currentAssignments[positionId] = null;
+      } else {
+        _currentAssignments[positionId] = UserInfo(
+          id: 'manual_${DateTime.now().millisecondsSinceEpoch}',
+          name: name,
+          baptismalName: '',
+          nickName: '',
+          status: 'manual',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+          agreePushAt: DateTime.now(),
+        );
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${widget.date.year}년 ${widget.date.month}월 ${widget.date.day}일',
+                style: const TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.close),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: const NeverScrollableScrollPhysics(),
+            itemCount: widget.positions.length,
+            itemBuilder: (context, index) {
+              final position = widget.positions[index];
+              final assignedMember = _currentAssignments[position.id];
+              final availableMembers =
+                  _getAvailableMembersForPosition(position);
+              final isManualInput = assignedMember?.status == 'manual';
+
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      position.positionName,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: DropdownButtonFormField<UserInfo>(
+                            value: isManualInput ? null : assignedMember,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                            ),
+                            items: [
+                              const DropdownMenuItem<UserInfo>(
+                                value: null,
+                                child: Text('선택하세요'),
+                              ),
+                              ...availableMembers.map((member) {
+                                return DropdownMenuItem<UserInfo>(
+                                  value: member,
+                                  child: Text(member.name ?? ''),
+                                );
+                              }),
+                            ],
+                            onChanged: (UserInfo? value) {
+                              setState(() {
+                                _currentAssignments[position.id] = value;
+                                _manualInputControllers[position.id]?.clear();
+                              });
+                            },
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        const Text('또는'),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: TextField(
+                            controller: _manualInputControllers[position.id],
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(),
+                              hintText: '직접 입력',
+                              contentPadding: EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 8,
+                              ),
+                            ),
+                            onChanged: (value) {
+                              if (value.isNotEmpty) {
+                                _handleManualInput(position.id, value);
+                              }
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                    if (isManualInput)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4),
+                        child: Text(
+                          '수동 입력: ${assignedMember?.name}',
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.error,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                widget.onSave(_currentAssignments);
+                Navigator.pop(context);
+              },
+              child: const Text('저장'),
             ),
           ),
         ],

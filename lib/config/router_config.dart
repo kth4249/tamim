@@ -56,7 +56,7 @@ class RouterConfigClass {
         ),
         GoRoute(
           path: '/member-management',
-          builder: (context, state) => MemberManagementScreen(),
+          builder: (context, state) => const MemberManagementScreen(),
         ),
         GoRoute(
           path: '/join/:joinKey',

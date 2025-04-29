@@ -9,14 +9,12 @@ import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
 import 'package:tamim/models/position.dart';
-import 'package:tamim/models/user_info.dart';
 import 'package:tamim/models/volunteer_event.dart';
 
 class ParishGroupProvider extends ChangeNotifier {
   Parish? parish;
   ParishGroup? parishGroup;
   List<Position> positions = [];
-  List<UserInfo> groupMembers = [];
   Map<DateTime, List<VolunteerEvent>> groupByVolunteerEvents = {};
   List<ParishGroupMemberInfo> parishGroupMemberInfos = [];
   ParishGroupMemberInfo? myInfo;

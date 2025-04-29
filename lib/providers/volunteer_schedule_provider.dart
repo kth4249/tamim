@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/member_dates.dart';
+import 'package:tamim/models/member_positions.dart';
 
 class VolunteerScheduleProvider extends ChangeNotifier {
   List<MemberDates> availableDateByMember = [];
   String? selectedMemberId;
+  List<MemberPositions> memberPositions = [];
 
   Future<void> fetchAvailableDateByMember(parishGroupId) async {
     final response = await supabase.from('users').select('''
@@ -23,6 +25,30 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     });
     availableDateByMember =
         transformed.map((e) => MemberDates.fromJson(e)).toList();
+
+    notifyListeners();
+  }
+
+  Future<void> fetchMemberPositions(parishGroupId) async {
+    final response = await supabase.from('users').select('''
+            id, name, baptismal_name,
+            parish_group_members!inner(group_id), 
+            positions: member_positions(positions(*))
+            ''').eq("parish_group_members.group_id", parishGroupId);
+
+    final transformed = response.map((e) {
+      final memberPositions =
+          e['positions'].map((e) => e['positions']).toList();
+      return {
+        ...e,
+        'positions': memberPositions,
+      };
+    });
+
+    logger.d(transformed);
+
+    memberPositions =
+        transformed.map((e) => MemberPositions.fromJson(e)).toList();
 
     notifyListeners();
   }
