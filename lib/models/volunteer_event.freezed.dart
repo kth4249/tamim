@@ -18,7 +18,7 @@ mixin _$VolunteerEvent {
   int get id;
   DateTime get volunteerDate;
   Position get position;
-  UserInfo get user;
+  UserInfo? get user;
 
   /// Create a copy of VolunteerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -61,10 +61,11 @@ abstract mixin class $VolunteerEventCopyWith<$Res> {
           VolunteerEvent value, $Res Function(VolunteerEvent) _then) =
       _$VolunteerEventCopyWithImpl;
   @useResult
-  $Res call({int id, DateTime volunteerDate, Position position, UserInfo user});
+  $Res call(
+      {int id, DateTime volunteerDate, Position position, UserInfo? user});
 
   $PositionCopyWith<$Res> get position;
-  $UserInfoCopyWith<$Res> get user;
+  $UserInfoCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -83,7 +84,7 @@ class _$VolunteerEventCopyWithImpl<$Res>
     Object? id = null,
     Object? volunteerDate = null,
     Object? position = null,
-    Object? user = null,
+    Object? user = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -98,10 +99,10 @@ class _$VolunteerEventCopyWithImpl<$Res>
           ? _self.position
           : position // ignore: cast_nullable_to_non_nullable
               as Position,
-      user: null == user
+      user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as UserInfo?,
     ));
   }
 
@@ -119,8 +120,12 @@ class _$VolunteerEventCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get user {
-    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+  $UserInfoCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserInfoCopyWith<$Res>(_self.user!, (value) {
       return _then(_self.copyWith(user: value));
     });
   }
@@ -144,7 +149,7 @@ class _VolunteerEvent implements VolunteerEvent {
   @override
   final Position position;
   @override
-  final UserInfo user;
+  final UserInfo? user;
 
   /// Create a copy of VolunteerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -193,12 +198,13 @@ abstract mixin class _$VolunteerEventCopyWith<$Res>
       __$VolunteerEventCopyWithImpl;
   @override
   @useResult
-  $Res call({int id, DateTime volunteerDate, Position position, UserInfo user});
+  $Res call(
+      {int id, DateTime volunteerDate, Position position, UserInfo? user});
 
   @override
   $PositionCopyWith<$Res> get position;
   @override
-  $UserInfoCopyWith<$Res> get user;
+  $UserInfoCopyWith<$Res>? get user;
 }
 
 /// @nodoc
@@ -217,7 +223,7 @@ class __$VolunteerEventCopyWithImpl<$Res>
     Object? id = null,
     Object? volunteerDate = null,
     Object? position = null,
-    Object? user = null,
+    Object? user = freezed,
   }) {
     return _then(_VolunteerEvent(
       id: null == id
@@ -232,10 +238,10 @@ class __$VolunteerEventCopyWithImpl<$Res>
           ? _self.position
           : position // ignore: cast_nullable_to_non_nullable
               as Position,
-      user: null == user
+      user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as UserInfo?,
     ));
   }
 
@@ -253,8 +259,12 @@ class __$VolunteerEventCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get user {
-    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+  $UserInfoCopyWith<$Res>? get user {
+    if (_self.user == null) {
+      return null;
+    }
+
+    return $UserInfoCopyWith<$Res>(_self.user!, (value) {
       return _then(_self.copyWith(user: value));
     });
   }

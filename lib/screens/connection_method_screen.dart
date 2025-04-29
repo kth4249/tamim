@@ -45,14 +45,14 @@ class ConnectionMethodScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             // URL 안내 카드
-            _ConnectionMethodInfoCard(
+            const _ConnectionMethodInfoCard(
               icon: Icons.link_rounded,
               title: 'URL로 접속하기',
               subtitle: '전달받은 URL을 클릭하여 접속',
             ),
             const SizedBox(height: 16),
             // QR 안내 카드
-            _ConnectionMethodInfoCard(
+            const _ConnectionMethodInfoCard(
               icon: Icons.qr_code_rounded,
               title: 'QR 코드 스캔하기',
               subtitle: '전달받은 QR 코드를 스캔하여 접속',

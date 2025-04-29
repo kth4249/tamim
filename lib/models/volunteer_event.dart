@@ -11,7 +11,7 @@ abstract class VolunteerEvent with _$VolunteerEvent {
     required int id,
     required DateTime volunteerDate,
     required Position position,
-    required UserInfo user,
+    required UserInfo? user,
   }) = _VolunteerEvent;
 
   factory VolunteerEvent.fromJson(Map<String, dynamic> json) =>

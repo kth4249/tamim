@@ -161,16 +161,12 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                             backgroundColor: AppTheme.primaryColor.withAlpha(
                               26,
                             ),
-                            child: const Text(
-                              '김',
-                              style: TextStyle(
-                                color: AppTheme.primaryColor,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            backgroundImage: const AssetImage(
+                              'assets/images/profile.png',
                             ),
                           ),
                           title: Text(
-                            "${selectedDay[index].user.name}",
+                            "${selectedDay[index].user != null ? selectedDay[index].user!.name : "TODO: 대체 봉사자"}",
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(

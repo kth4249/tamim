@@ -8,28 +8,7 @@ import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
 
 class MemberManagementScreen extends StatelessWidget {
-  final List<Member> members = [
-    Member(
-      id: 1,
-      name: '김민수',
-      joinDate: '2022-01-15',
-      profileImage: 'https://via.placeholder.com/50',
-    ),
-    Member(
-      id: 2,
-      name: '이지민',
-      joinDate: '2023-02-03',
-      profileImage: 'https://via.placeholder.com/50',
-    ),
-    Member(
-      id: 3,
-      name: '박준호',
-      joinDate: '2022-04-28',
-      profileImage: 'https://via.placeholder.com/50',
-    ),
-  ];
-
-  MemberManagementScreen({super.key});
+  const MemberManagementScreen({super.key});
 
   void _showMemberActionDialog(
       BuildContext context, ParishGroupMemberInfo member) {
