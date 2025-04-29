@@ -9,9 +9,12 @@ class ConnectionMethodScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+      ),
       body: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -35,23 +38,31 @@ class ConnectionMethodScreen extends StatelessWidget {
             const Text(
               '회원 정보 등록이 완료되었습니다',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w600,
+                color: Colors.black87,
+              ),
             ),
-            const SizedBox(height: 16),
-            const Text(
+            const SizedBox(height: 12),
+            Text(
               '서비스 이용을 위해 아래 방법 중 하나를 선택해주세요',
               textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.grey, fontSize: 16),
+              style: TextStyle(
+                color: Colors.grey.shade600,
+                fontSize: 15,
+                height: 1.4,
+              ),
             ),
             const SizedBox(height: 40),
-            // URL 안내 카드
+            // URL 안내
             const _ConnectionMethodInfoCard(
               icon: Icons.link_rounded,
               title: 'URL로 접속하기',
               subtitle: '전달받은 URL을 클릭하여 접속',
             ),
-            const SizedBox(height: 16),
-            // QR 안내 카드
+            const SizedBox(height: 24),
+            // QR 안내
             const _ConnectionMethodInfoCard(
               icon: Icons.qr_code_rounded,
               title: 'QR 코드 스캔하기',
@@ -59,19 +70,22 @@ class ConnectionMethodScreen extends StatelessWidget {
             ),
             const SizedBox(height: 40),
             Container(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
                 color: Colors.blue.shade50,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: const Text(
+              child: Text(
                 '접속 후 로그인하시면 모든 서비스를 이용하실 수 있습니다.',
                 textAlign: TextAlign.center,
-                style: TextStyle(color: Colors.blue, fontSize: 14),
+                style: TextStyle(
+                  color: Colors.blue.shade700,
+                  fontSize: 14,
+                  height: 1.4,
+                ),
               ),
             ),
-            // 다른 계정으로 로그인 버튼 추가
-            const Expanded(child: SizedBox(height: 40)),
+            const Expanded(child: SizedBox()),
             ElevatedButton(
               onPressed: () {
                 context.read<AuthProvider>().signOut();
@@ -79,10 +93,23 @@ class ConnectionMethodScreen extends StatelessWidget {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
-                foregroundColor: Colors.blue,
+                foregroundColor: Colors.blue.shade700,
+                elevation: 0,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                  side: BorderSide(color: Colors.blue.shade200),
+                ),
               ),
-              child: const Text('다른 계정으로 로그인'),
+              child: const Text(
+                '다른 계정으로 로그인',
+                style: TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -103,34 +130,25 @@ class _ConnectionMethodInfoCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      margin: const EdgeInsets.symmetric(horizontal: 2),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8F5EF),
-        borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: Colors.transparent),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.03),
-            blurRadius: 2,
-            offset: const Offset(0, 1),
-          ),
-        ],
-      ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 36,
-            height: 36,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.7),
-              shape: BoxShape.circle,
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: Colors.green.shade400, size: 20),
+            child: Icon(
+              icon,
+              color: Colors.grey.shade700,
+              size: 20,
+            ),
           ),
-          const SizedBox(width: 18),
+          const SizedBox(width: 16),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,17 +157,19 @@ class _ConnectionMethodInfoCard extends StatelessWidget {
                   title,
                   style: const TextStyle(
                     fontSize: 16,
-                    fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w500,
                     color: Colors.black87,
+                    height: 1.4,
                   ),
                 ),
-                const SizedBox(height: 3),
+                const SizedBox(height: 4),
                 Text(
                   subtitle,
                   style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     color: Colors.grey.shade600,
                     fontWeight: FontWeight.w400,
+                    height: 1.4,
                   ),
                 ),
               ],
