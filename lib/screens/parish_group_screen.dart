@@ -7,6 +7,7 @@ import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/my_page_screen.dart';
+import 'package:tamim/widgets/common_calendar.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
@@ -47,85 +48,18 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         children: [
           Container(
             color: Colors.white,
-            child: TableCalendar(
+            child: CommonCalendar(
               firstDay: _firstDay,
               lastDay: _lastDay,
               focusedDay: _focusedDay,
-              selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-              calendarFormat: CalendarFormat.month,
-              eventLoader: _getEventsForDay,
-              headerStyle: const HeaderStyle(
-                titleCentered: true,
-                formatButtonVisible: false,
-                titleTextStyle: TextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w600,
-                ),
-                leftChevronIcon: Icon(
-                  Icons.chevron_left,
-                  color: Colors.black54,
-                ),
-                rightChevronIcon: Icon(
-                  Icons.chevron_right,
-                  color: Colors.black54,
-                ),
-              ),
-              calendarStyle: CalendarStyle(
-                outsideDaysVisible: true,
-                weekendTextStyle: const TextStyle(color: Colors.red),
-                holidayTextStyle: const TextStyle(color: Colors.red),
-                selectedDecoration: const BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  shape: BoxShape.circle,
-                ),
-                todayDecoration: BoxDecoration(
-                  color: AppTheme.primaryColor.withAlpha(51),
-                  shape: BoxShape.circle,
-                ),
-                markerDecoration: const BoxDecoration(
-                  color: AppTheme.primaryColor,
-                  shape: BoxShape.circle,
-                ),
-              ),
+              selectedDay: _selectedDay,
               onDaySelected: (selectedDay, focusedDay) {
                 setState(() {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
               },
-              calendarBuilders: CalendarBuilders(
-                dowBuilder: (context, day) {
-                  if (day.weekday == DateTime.sunday) {
-                    final text = DateFormat.E().format(day);
-
-                    return Center(
-                      child:
-                          Text(text, style: const TextStyle(color: Colors.red)),
-                    );
-                  }
-                  return null;
-                },
-                markerBuilder: (context, day, events) {
-                  if (events.isNotEmpty) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      scrollDirection: Axis.horizontal,
-                      itemCount: events.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          margin: const EdgeInsets.only(top: 40),
-                          child: const Icon(
-                            size: 20,
-                            Icons.church_outlined,
-                            color: Colors.green,
-                          ),
-                        );
-                      },
-                    );
-                  }
-                  return null;
-                },
-              ),
+              eventLoader: _getEventsForDay,
             ),
           ),
           const SizedBox(height: 16),
@@ -172,24 +106,6 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                           subtitle: Text(
                             selectedDay[index].position.positionName,
                           ),
-                          // trailing: Container(
-                          //   padding: const EdgeInsets.symmetric(
-                          //     horizontal: 12,
-                          //     vertical: 6,
-                          //   ),
-                          //   decoration: BoxDecoration(
-                          //     color: AppTheme.primaryColor.withAlpha(26),
-                          //     borderRadius: BorderRadius.circular(20),
-                          //   ),
-                          //   child: Text(
-                          //     '출석 완료',
-                          //     style: TextStyle(
-                          //       color: AppTheme.primaryColor,
-                          //       fontSize: 12,
-                          //       fontWeight: FontWeight.w600,
-                          //     ),
-                          //   ),
-                          // ),
                         ),
                       );
                     },
