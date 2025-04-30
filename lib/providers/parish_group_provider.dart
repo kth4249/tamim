@@ -52,10 +52,16 @@ class ParishGroupProvider extends ChangeNotifier {
     myInfo = parishGroupMemberInfos
         .firstWhere((info) => info.userId == supabase.auth.currentUser!.id);
 
+    await fetchGroupByVolunteerEvents(parishGroupId);
+
+    notifyListeners();
+  }
+
+  Future<void> fetchGroupByVolunteerEvents(String parishGroupId) async {
     final volunteerResponse = await supabase
         .from('volunteer_schedules')
         .select(
-            '*,position: positions(*),user: users(*),anon: volunteer_schedules_anon!inner(id, name)')
+            '*,position: positions(*),user: users(*),anon: volunteer_schedules_anon(id, name)')
         .eq('group_id', parishGroupId)
         .eq('status', 'completed');
     final volunteerEvents =

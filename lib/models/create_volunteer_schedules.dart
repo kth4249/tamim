@@ -31,7 +31,8 @@ abstract class AvailableMemberByDates with _$AvailableMemberByDates {
 abstract class VolunteerCreateVO with _$VolunteerCreateVO {
   const factory VolunteerCreateVO({
     required int id,
-    required int positionName,
+    required String positionId,
+    required String positionName,
     required VolunteerCreateUserVO? userInfo,
   }) = _VolunteerCreateVO;
 

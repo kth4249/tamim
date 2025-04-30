@@ -3,6 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/member_dates.dart';
 import 'package:tamim/models/member_positions.dart';
+import 'package:tamim/models/user_info.dart';
 
 class VolunteerScheduleProvider extends ChangeNotifier {
   List<MemberDates> availableDateByMember = [];
@@ -92,6 +93,62 @@ class VolunteerScheduleProvider extends ChangeNotifier {
       baptismalName: availableDateByMember[memberIndex].baptismalName,
       memberDates: selectedDays,
     );
+
+    notifyListeners();
+  }
+
+  Future<void> saveVolunteerSchedule(
+    int groupId,
+    Map<DateTime, Map<int, UserInfo?>> assignments,
+  ) async {
+    // final List<Map<String, dynamic>> schedules = [];
+
+    for (final entry in assignments.entries) {
+      final date = entry.key;
+      final positionAssignments = entry.value;
+
+      for (final positionEntry in positionAssignments.entries) {
+        final positionId = positionEntry.key;
+        final user = positionEntry.value;
+
+        if (user != null) {
+          // schedules.add({
+          //   'group_id': groupId,
+          //   'volunteer_date': date.toIso8601String(),
+          //   'position_id': positionId,
+          //   'user_id': user.id == '' ? null : user.id,
+          //   'created_by': supabase.auth.currentUser!.id,
+          //   'updated_by': supabase.auth.currentUser!.id,
+          //   'status': 'completed',
+          // });
+
+          final response = await supabase
+              .from('volunteer_schedules')
+              .upsert({
+                'group_id': groupId,
+                'volunteer_date': date.toIso8601String(),
+                'position_id': positionId,
+                'user_id': user.id == '' ? null : user.id,
+                'created_by': supabase.auth.currentUser!.id,
+                'updated_by': supabase.auth.currentUser!.id,
+                'status': 'completed',
+              })
+              .select()
+              .single();
+
+          if (user.id == '') {
+            await supabase.from('volunteer_schedules_anon').upsert({
+              'id': response['id'],
+              'name': user.name,
+            });
+          }
+        }
+      }
+    }
+
+    // if (schedules.isNotEmpty) {
+    //   final response = await supabase.from('volunteer_schedules').upsert(schedules).select();
+    // }
 
     notifyListeners();
   }

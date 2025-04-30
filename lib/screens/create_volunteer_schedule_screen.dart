@@ -134,7 +134,7 @@ class _CreateVolunteerScheduleScreenState
 
         final existUser = existPosition?.user ??
             UserInfo(
-                id: 'anonymous',
+                id: '',
                 name: existPosition?.anon?.name ?? '',
                 status: 'manual',
                 baptismalName: '',
@@ -348,20 +348,100 @@ class _CreateVolunteerScheduleScreenState
           ),
           Padding(
             padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              onPressed: _isScheduleCreated ? null : _onCreateSchedule,
-              style: ElevatedButton.styleFrom(
-                minimumSize: const Size(double.infinity, 50),
-                backgroundColor: Theme.of(context).primaryColor,
-              ),
-              child: Text(
-                _isScheduleCreated ? '봉사표 생성됨' : '봉사표 생성',
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+            child: Column(
+              children: [
+                if (_isScheduleCreated)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        final confirmed = await showDialog<bool>(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('봉사일정 확정'),
+                            content: const Text(
+                              '봉사일정을 확정하시겠습니까?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, false),
+                                child: const Text('취소'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, true),
+                                child: const Text('확정'),
+                              ),
+                            ],
+                          ),
+                        );
+
+                        if (confirmed == true) {
+                          try {
+                            final parishGroupId = context
+                                .read<ParishGroupProvider>()
+                                .parishGroup!
+                                .id;
+                            await context
+                                .read<VolunteerScheduleProvider>()
+                                .saveVolunteerSchedule(
+                                  parishGroupId,
+                                  _assignments,
+                                );
+                            await context
+                                .read<ParishGroupProvider>()
+                                .fetchGroupByVolunteerEvents(
+                                    parishGroupId.toString());
+
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('봉사일정이 확정되었습니다'),
+                                ),
+                              );
+                              Navigator.pop(context);
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content: Text('오류가 발생했습니다: $e'),
+                                  backgroundColor: Colors.red,
+                                ),
+                              );
+                            }
+                          }
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(double.infinity, 50),
+                        backgroundColor: Colors.green,
+                      ),
+                      child: const Text(
+                        '봉사일정 확정',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ElevatedButton(
+                  onPressed: _isScheduleCreated ? null : _onCreateSchedule,
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size(double.infinity, 50),
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ),
+                  child: Text(
+                    _isScheduleCreated ? '봉사표 생성됨' : '봉사표 생성',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
           ),
         ],
@@ -435,7 +515,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
         _currentAssignments[positionId] = null;
       } else {
         _currentAssignments[positionId] = UserInfo(
-          id: 'manual_${DateTime.now().millisecondsSinceEpoch}',
+          id: '',
           name: name,
           baptismalName: '',
           nickName: '',

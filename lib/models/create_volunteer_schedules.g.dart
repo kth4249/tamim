@@ -43,7 +43,8 @@ Map<String, dynamic> _$AvailableMemberByDatesToJson(
 _VolunteerCreateVO _$VolunteerCreateVOFromJson(Map<String, dynamic> json) =>
     _VolunteerCreateVO(
       id: (json['id'] as num).toInt(),
-      positionName: (json['position_name'] as num).toInt(),
+      positionId: json['position_id'] as String,
+      positionName: json['position_name'] as String,
       userInfo: json['user_info'] == null
           ? null
           : VolunteerCreateUserVO.fromJson(
@@ -53,6 +54,7 @@ _VolunteerCreateVO _$VolunteerCreateVOFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$VolunteerCreateVOToJson(_VolunteerCreateVO instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'position_id': instance.positionId,
       'position_name': instance.positionName,
       'user_info': instance.userInfo,
     };
