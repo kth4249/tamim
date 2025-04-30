@@ -182,9 +182,18 @@ class AuthProvider extends ChangeNotifier {
         password: password,
       );
 
-      final data = response.user?.toJson() ?? {};
-      final userInfo = UserInfo.fromJson(data);
-      user = userInfo;
+      isAuthenticated = true;
+
+      final data = await supabase
+          .from('users')
+          .select()
+          .eq('id', response.user!.id)
+          .eq('status', 'active')
+          .maybeSingle();
+      if (data != null) {
+        final userInfo = UserInfo.fromJson(data);
+        user = userInfo;
+      }
       notifyListeners();
     } catch (e) {
       rethrow;
