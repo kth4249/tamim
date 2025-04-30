@@ -39,7 +39,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         .eq('register_key', registerKey)
         .maybeSingle();
     if (parishRes == null) {
-      context.go('/connection-method');
+      context.go('/');
       return;
     }
     final joinedGroupRes = await supabase

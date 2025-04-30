@@ -139,7 +139,6 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
             icon: const Icon(Icons.logout_outlined, color: Colors.black87),
             onPressed: () {
               context.read<AuthProvider>().signOut();
-              context.go('/login');
             },
           ),
         ],

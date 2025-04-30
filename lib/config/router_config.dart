@@ -102,9 +102,6 @@ class RouterConfigClass {
             (matchedLocation == '/join' || matchedLocation == '/create')) {
           return null;
         }
-        if (joinedGroups.isEmpty && matchedLocation == '/') {
-          return '/connection-method';
-        }
 
         return null;
       },

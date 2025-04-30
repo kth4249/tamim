@@ -29,19 +29,14 @@ class _JoinScreenState extends State<JoinScreen> {
         .eq('status', 'active')
         .maybeSingle();
 
-    if (joinedGroup != null && mounted) {
-      context.go('/');
-      return;
-    }
-
     final parishGroup = await supabase
         .from('parish_groups')
         .select('id')
         .eq('join_key', widget.joinKey)
         .maybeSingle();
 
-    if (parishGroup == null && mounted) {
-      context.go('/connection-method');
+    if ((joinedGroup != null || parishGroup == null) && mounted) {
+      context.go('/');
       return;
     }
 

@@ -1,9 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
+import 'package:tamim/models/parish_group.dart';
+import 'package:tamim/models/parish_group_category.dart';
 import 'package:tamim/providers/auth_provider.dart';
-import 'package:tamim/splash_screen.dart';
 
 class ParishGroupListScreen extends StatefulWidget {
   const ParishGroupListScreen({super.key});
@@ -13,28 +15,367 @@ class ParishGroupListScreen extends StatefulWidget {
 }
 
 class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
+  List<ParishGroup> _groups = [];
+  List<ParishGroupCategory> _categories = [];
+  Map<int, String> _memberStatusMap = {};
+  bool _isLoading = true;
+
   @override
   void initState() {
-    supabase
-        .from('parish_group_members')
-        .select('*')
-        .eq(
-            'user_id',
-            context
-                .read<AuthProvider>()
-                .user!
-                .id) // TODO: 로그인 로그아웃하면서 좀 불안정함.. redirect도 확인
-        .eq('status', 'active')
-        .limit(1)
-        .single()
-        .then((value) {
-      context.go('/parish-groups/${value['group_id']}');
-    });
     super.initState();
+    _loadData();
+  }
+
+  Future<void> _loadData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final categoriesResponse =
+          await supabase.from('parish_group_categories').select('*');
+      _categories = (categoriesResponse as List<dynamic>)
+          .map((json) => ParishGroupCategory.fromJson(json))
+          .toList();
+
+      final groupsResponse = await supabase
+          .from('parish_groups')
+          .select('*')
+          .eq('status', 'active');
+      _groups = (groupsResponse as List<dynamic>)
+          .map((json) => ParishGroup.fromJson(json))
+          .toList();
+
+      final userId = context.read<AuthProvider>().user!.id;
+      final myGroupsResponse = await supabase
+          .from('parish_group_members')
+          .select('group_id, status')
+          .eq('user_id', userId);
+      logger.d('myGroupsResponse: $myGroupsResponse');
+      logger.d('_groups: $_groups');
+
+      _memberStatusMap = {
+        for (var group in _groups)
+          group.id: myGroupsResponse.firstWhere(
+            (json) => json['group_id'] == group.id,
+            orElse: () => {'status': ''},
+          )['status'] as String
+      };
+
+      final myGroup = myGroupsResponse
+          .firstWhereOrNull((json) => json['status'] == 'active');
+      if (myGroup != null) {
+        context.go('/parish-groups/${myGroup['group_id']}');
+      }
+    } catch (e) {
+      logger.e('Error loading data: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _joinGroup(ParishGroup group) async {
+    try {
+      await supabase.from('parish_group_members').insert({
+        'group_id': group.id,
+        'user_id': context.read<AuthProvider>().user!.id,
+        'role_id': 2,
+        'status': 'pending',
+      });
+
+      setState(() {
+        _memberStatusMap[group.id] = 'pending';
+      });
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('가입 신청이 완료되었습니다')),
+        );
+      }
+    } catch (e) {
+      logger.e('Error joining group: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('가입 신청에 실패했습니다')),
+        );
+      }
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return const SplashScreen();
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('모임 목록'),
+        actions: [
+          IconButton(
+            onPressed: () => context.read<AuthProvider>().signOut(),
+            icon: const Icon(Icons.logout),
+          ),
+        ],
+      ),
+      body: RefreshIndicator(
+        onRefresh: _loadData,
+        child: CustomScrollView(
+          slivers: [
+            SliverToBoxAdapter(
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                child: Text(
+                  '참여 가능한 모임',
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ),
+            ),
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final group = _groups[index];
+                  final category =
+                      _categories.firstWhere((c) => c.id == group.categoryId);
+                  final memberStatus = _memberStatusMap[group.id];
+
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                        side: BorderSide(
+                          color: Colors.grey.shade200,
+                        ),
+                      ),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(12),
+                        onTap: memberStatus == 'active'
+                            ? () => context.go('/parish-groups/${group.id}')
+                            : null,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                      vertical: 4,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.1),
+                                      borderRadius: BorderRadius.circular(6),
+                                    ),
+                                    child: Text(
+                                      category.categoryName,
+                                      style: TextStyle(
+                                        color: Theme.of(context).primaryColor,
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                      ),
+                                    ),
+                                  ),
+                                  const Spacer(),
+                                  if (memberStatus == null)
+                                    FilledButton(
+                                      onPressed: () => _joinGroup(group),
+                                      style: FilledButton.styleFrom(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16,
+                                          vertical: 8,
+                                        ),
+                                      ),
+                                      child: const Text('가입하기'),
+                                    )
+                                  else if (memberStatus == 'pending')
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 6,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Colors.grey.shade100,
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Text(
+                                        '가입신청중',
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                              const SizedBox(height: 12),
+                              Text(
+                                group.groupName,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleMedium
+                                    ?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                group.description,
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyMedium
+                                    ?.copyWith(
+                                      color: Colors.grey.shade700,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+                childCount: _groups.length,
+              ),
+            ),
+            SliverFillRemaining(
+              hasScrollBody: false,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+                    child: _ConnectionMethodInfoCard(
+                      icon: Icons.link_rounded,
+                      title: '빠른 가입 방법이 있나요?',
+                      subtitle:
+                          '모임 관리자가 전달한 URL이나 QR 코드를 통해 즉시 가입할 수 있습니다. 가입 신청을 기다리지 않고도 바로 모임에 참여할 수 있어요.',
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ConnectionMethodInfoCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+
+  const _ConnectionMethodInfoCard({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor.withOpacity(0.05),
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: Theme.of(context).primaryColor.withOpacity(0.1),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: Theme.of(context).primaryColor,
+                  size: 24,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Theme.of(context).primaryColor,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Text(
+            subtitle,
+            style: TextStyle(
+              fontSize: 15,
+              color: Colors.grey.shade700,
+              fontWeight: FontWeight.w400,
+              height: 1.5,
+            ),
+          ),
+          const SizedBox(height: 12),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(
+                color: Colors.grey.shade200,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.info_outline,
+                  size: 20,
+                  color: Theme.of(context).primaryColor,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    '모임 관리자가 전달한 URL이나 QR 코드를 통해 즉시 가입할 수 있습니다.',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: Colors.grey.shade700,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

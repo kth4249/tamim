@@ -49,6 +49,8 @@ class ParishGroupProvider extends ChangeNotifier {
         .where((json) => json['user']['status'] == 'active')
         .map((json) => ParishGroupMemberInfo.fromJson(json))
         .toList();
+
+    logger.d('parishGroupMemberInfos: $parishGroupMemberInfos');
     myInfo = parishGroupMemberInfos
         .firstWhere((info) => info.userId == supabase.auth.currentUser!.id);
 
