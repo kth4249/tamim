@@ -3,7 +3,7 @@ import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/member_dates.dart';
 import 'package:tamim/models/member_positions.dart';
-import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/volunteer_create.dart';
 
 class VolunteerScheduleProvider extends ChangeNotifier {
   List<MemberDates> availableDateByMember = [];
@@ -99,7 +99,7 @@ class VolunteerScheduleProvider extends ChangeNotifier {
 
   Future<void> saveVolunteerSchedule(
     int groupId,
-    Map<DateTime, Map<int, UserInfo?>> assignments,
+    Map<DateTime, Map<int, VolunteerCreateVO?>> assignments,
   ) async {
     // final List<Map<String, dynamic>> schedules = [];
 
@@ -109,37 +109,43 @@ class VolunteerScheduleProvider extends ChangeNotifier {
 
       for (final positionEntry in positionAssignments.entries) {
         final positionId = positionEntry.key;
-        final user = positionEntry.value;
+        final volunteer = positionEntry.value;
 
-        if (user != null) {
-          // schedules.add({
-          //   'group_id': groupId,
-          //   'volunteer_date': date.toIso8601String(),
-          //   'position_id': positionId,
-          //   'user_id': user.id == '' ? null : user.id,
-          //   'created_by': supabase.auth.currentUser!.id,
-          //   'updated_by': supabase.auth.currentUser!.id,
-          //   'status': 'completed',
-          // });
+        if (volunteer != null) {
+          final id = volunteer.id;
+          final userId = volunteer.userId;
+
+          if (volunteer.name == '') {
+            if (id != null) {
+              await supabase.from('volunteer_schedules').delete().eq('id', id);
+            }
+            continue;
+          }
+
+          final addData = {
+            'group_id': groupId,
+            'volunteer_date': date.toIso8601String(),
+            'position_id': positionId,
+            'user_id': userId,
+            'created_by': supabase.auth.currentUser!.id,
+            'updated_by': supabase.auth.currentUser!.id,
+            'status': 'completed',
+          };
+
+          if (id != null) {
+            addData['id'] = id;
+          }
 
           final response = await supabase
               .from('volunteer_schedules')
-              .upsert({
-                'group_id': groupId,
-                'volunteer_date': date.toIso8601String(),
-                'position_id': positionId,
-                'user_id': user.id == '' ? null : user.id,
-                'created_by': supabase.auth.currentUser!.id,
-                'updated_by': supabase.auth.currentUser!.id,
-                'status': 'completed',
-              })
+              .upsert(addData)
               .select()
               .single();
 
-          if (user.id == '') {
+          if (userId == null) {
             await supabase.from('volunteer_schedules_anon').upsert({
               'id': response['id'],
-              'name': user.name,
+              'name': volunteer.name,
             });
           }
         }
