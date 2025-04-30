@@ -19,6 +19,7 @@ mixin _$VolunteerEvent {
   DateTime get volunteerDate;
   Position get position;
   UserInfo? get user;
+  VolunteerScheduleAnon? get anon;
 
   /// Create a copy of VolunteerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -41,17 +42,18 @@ mixin _$VolunteerEvent {
                 other.volunteerDate == volunteerDate) &&
             (identical(other.position, position) ||
                 other.position == position) &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.anon, anon) || other.anon == anon));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, volunteerDate, position, user);
+      Object.hash(runtimeType, id, volunteerDate, position, user, anon);
 
   @override
   String toString() {
-    return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user)';
+    return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user, anon: $anon)';
   }
 }
 
@@ -62,10 +64,15 @@ abstract mixin class $VolunteerEventCopyWith<$Res> {
       _$VolunteerEventCopyWithImpl;
   @useResult
   $Res call(
-      {int id, DateTime volunteerDate, Position position, UserInfo? user});
+      {int id,
+      DateTime volunteerDate,
+      Position position,
+      UserInfo? user,
+      VolunteerScheduleAnon? anon});
 
   $PositionCopyWith<$Res> get position;
   $UserInfoCopyWith<$Res>? get user;
+  $VolunteerScheduleAnonCopyWith<$Res>? get anon;
 }
 
 /// @nodoc
@@ -85,6 +92,7 @@ class _$VolunteerEventCopyWithImpl<$Res>
     Object? volunteerDate = null,
     Object? position = null,
     Object? user = freezed,
+    Object? anon = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -103,6 +111,10 @@ class _$VolunteerEventCopyWithImpl<$Res>
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserInfo?,
+      anon: freezed == anon
+          ? _self.anon
+          : anon // ignore: cast_nullable_to_non_nullable
+              as VolunteerScheduleAnon?,
     ));
   }
 
@@ -129,6 +141,20 @@ class _$VolunteerEventCopyWithImpl<$Res>
       return _then(_self.copyWith(user: value));
     });
   }
+
+  /// Create a copy of VolunteerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $VolunteerScheduleAnonCopyWith<$Res>? get anon {
+    if (_self.anon == null) {
+      return null;
+    }
+
+    return $VolunteerScheduleAnonCopyWith<$Res>(_self.anon!, (value) {
+      return _then(_self.copyWith(anon: value));
+    });
+  }
 }
 
 /// @nodoc
@@ -138,7 +164,8 @@ class _VolunteerEvent implements VolunteerEvent {
       {required this.id,
       required this.volunteerDate,
       required this.position,
-      required this.user});
+      required this.user,
+      required this.anon});
   factory _VolunteerEvent.fromJson(Map<String, dynamic> json) =>
       _$VolunteerEventFromJson(json);
 
@@ -150,6 +177,8 @@ class _VolunteerEvent implements VolunteerEvent {
   final Position position;
   @override
   final UserInfo? user;
+  @override
+  final VolunteerScheduleAnon? anon;
 
   /// Create a copy of VolunteerEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -176,17 +205,18 @@ class _VolunteerEvent implements VolunteerEvent {
                 other.volunteerDate == volunteerDate) &&
             (identical(other.position, position) ||
                 other.position == position) &&
-            (identical(other.user, user) || other.user == user));
+            (identical(other.user, user) || other.user == user) &&
+            (identical(other.anon, anon) || other.anon == anon));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
-      Object.hash(runtimeType, id, volunteerDate, position, user);
+      Object.hash(runtimeType, id, volunteerDate, position, user, anon);
 
   @override
   String toString() {
-    return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user)';
+    return 'VolunteerEvent(id: $id, volunteerDate: $volunteerDate, position: $position, user: $user, anon: $anon)';
   }
 }
 
@@ -199,12 +229,18 @@ abstract mixin class _$VolunteerEventCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int id, DateTime volunteerDate, Position position, UserInfo? user});
+      {int id,
+      DateTime volunteerDate,
+      Position position,
+      UserInfo? user,
+      VolunteerScheduleAnon? anon});
 
   @override
   $PositionCopyWith<$Res> get position;
   @override
   $UserInfoCopyWith<$Res>? get user;
+  @override
+  $VolunteerScheduleAnonCopyWith<$Res>? get anon;
 }
 
 /// @nodoc
@@ -224,6 +260,7 @@ class __$VolunteerEventCopyWithImpl<$Res>
     Object? volunteerDate = null,
     Object? position = null,
     Object? user = freezed,
+    Object? anon = freezed,
   }) {
     return _then(_VolunteerEvent(
       id: null == id
@@ -242,6 +279,10 @@ class __$VolunteerEventCopyWithImpl<$Res>
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
               as UserInfo?,
+      anon: freezed == anon
+          ? _self.anon
+          : anon // ignore: cast_nullable_to_non_nullable
+              as VolunteerScheduleAnon?,
     ));
   }
 
@@ -266,6 +307,20 @@ class __$VolunteerEventCopyWithImpl<$Res>
 
     return $UserInfoCopyWith<$Res>(_self.user!, (value) {
       return _then(_self.copyWith(user: value));
+    });
+  }
+
+  /// Create a copy of VolunteerEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $VolunteerScheduleAnonCopyWith<$Res>? get anon {
+    if (_self.anon == null) {
+      return null;
+    }
+
+    return $VolunteerScheduleAnonCopyWith<$Res>(_self.anon!, (value) {
+      return _then(_self.copyWith(anon: value));
     });
   }
 }

@@ -3,9 +3,27 @@ import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/volunteer_schedule_provider.dart';
 
-class MyPageScreen extends StatelessWidget {
+class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
+
+  @override
+  State<MyPageScreen> createState() => _MyPageScreenState();
+}
+
+class _MyPageScreenState extends State<MyPageScreen> {
+  @override
+  void initState() {
+    final parishGroupId = context.read<ParishGroupProvider>().parishGroup!.id;
+    context
+        .read<VolunteerScheduleProvider>()
+        .fetchAvailableDateByMember(parishGroupId);
+    context
+        .read<VolunteerScheduleProvider>()
+        .fetchMemberPositions(parishGroupId);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

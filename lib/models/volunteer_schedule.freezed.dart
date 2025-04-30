@@ -278,4 +278,164 @@ class __$VolunteerScheduleCopyWithImpl<$Res>
   }
 }
 
+/// @nodoc
+mixin _$VolunteerScheduleAnon {
+  int get id;
+  String get name;
+
+  /// Create a copy of VolunteerScheduleAnon
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $VolunteerScheduleAnonCopyWith<VolunteerScheduleAnon> get copyWith =>
+      _$VolunteerScheduleAnonCopyWithImpl<VolunteerScheduleAnon>(
+          this as VolunteerScheduleAnon, _$identity);
+
+  /// Serializes this VolunteerScheduleAnon to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is VolunteerScheduleAnon &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  @override
+  String toString() {
+    return 'VolunteerScheduleAnon(id: $id, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $VolunteerScheduleAnonCopyWith<$Res> {
+  factory $VolunteerScheduleAnonCopyWith(VolunteerScheduleAnon value,
+          $Res Function(VolunteerScheduleAnon) _then) =
+      _$VolunteerScheduleAnonCopyWithImpl;
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class _$VolunteerScheduleAnonCopyWithImpl<$Res>
+    implements $VolunteerScheduleAnonCopyWith<$Res> {
+  _$VolunteerScheduleAnonCopyWithImpl(this._self, this._then);
+
+  final VolunteerScheduleAnon _self;
+  final $Res Function(VolunteerScheduleAnon) _then;
+
+  /// Create a copy of VolunteerScheduleAnon
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _VolunteerScheduleAnon implements VolunteerScheduleAnon {
+  const _VolunteerScheduleAnon({required this.id, required this.name});
+  factory _VolunteerScheduleAnon.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerScheduleAnonFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+
+  /// Create a copy of VolunteerScheduleAnon
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$VolunteerScheduleAnonCopyWith<_VolunteerScheduleAnon> get copyWith =>
+      __$VolunteerScheduleAnonCopyWithImpl<_VolunteerScheduleAnon>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$VolunteerScheduleAnonToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _VolunteerScheduleAnon &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  @override
+  String toString() {
+    return 'VolunteerScheduleAnon(id: $id, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$VolunteerScheduleAnonCopyWith<$Res>
+    implements $VolunteerScheduleAnonCopyWith<$Res> {
+  factory _$VolunteerScheduleAnonCopyWith(_VolunteerScheduleAnon value,
+          $Res Function(_VolunteerScheduleAnon) _then) =
+      __$VolunteerScheduleAnonCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class __$VolunteerScheduleAnonCopyWithImpl<$Res>
+    implements _$VolunteerScheduleAnonCopyWith<$Res> {
+  __$VolunteerScheduleAnonCopyWithImpl(this._self, this._then);
+
+  final _VolunteerScheduleAnon _self;
+  final $Res Function(_VolunteerScheduleAnon) _then;
+
+  /// Create a copy of VolunteerScheduleAnon
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_VolunteerScheduleAnon(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
 // dart format on

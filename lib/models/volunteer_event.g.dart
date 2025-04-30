@@ -14,6 +14,10 @@ _VolunteerEvent _$VolunteerEventFromJson(Map<String, dynamic> json) =>
       user: json['user'] == null
           ? null
           : UserInfo.fromJson(json['user'] as Map<String, dynamic>),
+      anon: json['anon'] == null
+          ? null
+          : VolunteerScheduleAnon.fromJson(
+              json['anon'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$VolunteerEventToJson(_VolunteerEvent instance) =>
@@ -22,4 +26,5 @@ Map<String, dynamic> _$VolunteerEventToJson(_VolunteerEvent instance) =>
       'volunteer_date': instance.volunteerDate.toIso8601String(),
       'position': instance.position,
       'user': instance.user,
+      'anon': instance.anon,
     };

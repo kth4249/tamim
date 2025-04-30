@@ -20,13 +20,6 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
   // DateTime _focusedDay = DateTime(2024, 3, 1); // 현재 달력이 보여주는 월
 
   @override
-  void initState() {
-    super.initState();
-    context.read<VolunteerScheduleProvider>().fetchAvailableDateByMember(
-        context.read<ParishGroupProvider>().parishGroup!.id);
-  }
-
-  @override
   Widget build(BuildContext context) {
     final availableDateByMember =
         context.watch<VolunteerScheduleProvider>().availableDateByMember;

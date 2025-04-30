@@ -27,3 +27,17 @@ Map<String, dynamic> _$VolunteerScheduleToJson(_VolunteerSchedule instance) =>
       'created_at': instance.createdAt.toIso8601String(),
       'updated_at': instance.updatedAt.toIso8601String(),
     };
+
+_VolunteerScheduleAnon _$VolunteerScheduleAnonFromJson(
+        Map<String, dynamic> json) =>
+    _VolunteerScheduleAnon(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$VolunteerScheduleAnonToJson(
+        _VolunteerScheduleAnon instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
+    };

@@ -297,6 +297,7 @@ class MemberManagementScreen extends StatelessWidget {
     final members = context.watch<ParishGroupProvider>().parishGroupMemberInfos;
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('모임원 관리'),
       ),
       body: SafeArea(

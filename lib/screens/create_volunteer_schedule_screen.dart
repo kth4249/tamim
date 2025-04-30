@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
+import 'package:tamim/main.dart';
 import 'package:tamim/models/user_info.dart';
 import 'package:tamim/models/position.dart';
-import 'package:tamim/models/member_dates.dart';
 import 'package:tamim/models/member_positions.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/volunteer_schedule_provider.dart';
@@ -33,8 +33,6 @@ class _CreateVolunteerScheduleScreenState
   void initState() {
     super.initState();
     _initializeMemberServiceCount();
-    context.read<VolunteerScheduleProvider>().fetchMemberPositions(
-        context.read<ParishGroupProvider>().parishGroup!.id);
   }
 
   void _initializeMemberServiceCount() {
@@ -63,46 +61,28 @@ class _CreateVolunteerScheduleScreenState
 
   bool _isMemberAvailableForDate(String memberId, DateTime date) {
     final availableDates = context
-            .read<VolunteerScheduleProvider>()
-            .availableDateByMember
-            .firstWhere(
-              (e) => e.id == memberId,
-              orElse: () => MemberDates(
-                id: '',
-                name: '',
-                baptismalName: '',
-                memberDates: [],
-              ),
-            )
-            .memberDates
-            .map((e) => e)
-            .toList() ??
-        [];
+        .read<VolunteerScheduleProvider>()
+        .availableDateByMember
+        .firstWhere((e) => e.id == memberId)
+        .memberDates
+        .toList();
     return availableDates.indexWhere((e) => isSameDay(e, date)) != -1;
   }
 
   bool _isMemberAvailableForPosition(String memberId, int positionId) {
     final availablePositions = context
-            .read<VolunteerScheduleProvider>()
-            .memberPositions
-            .firstWhere(
-              (e) => e.id == memberId,
-              orElse: () => MemberPositions(
-                id: '',
-                name: '',
-                baptismalName: '',
-                positions: [],
-              ),
-            )
-            .positions
-            .map((e) => e.id)
-            .toList() ??
-        [];
+        .read<VolunteerScheduleProvider>()
+        .memberPositions
+        .firstWhere((e) => e.id == memberId)
+        .positions
+        .map((e) => e.id)
+        .toList();
     return availablePositions.contains(positionId);
   }
 
   UserInfo? _findBestMemberForPosition(
       DateTime date, int positionId, List<UserInfo> availableMembers) {
+    logger.d('availableMembers: $availableMembers');
     final sortedMembers = availableMembers
         .where((member) =>
             _isMemberAvailableForDate(member.id ?? '', date) &&
@@ -176,11 +156,8 @@ class _CreateVolunteerScheduleScreenState
               date: date,
               positions: parishGroupProvider.positions,
               assignments: assignments,
-              memberAvailablePositions: context
-                  .read<VolunteerScheduleProvider>()
-                  .memberPositions
-                  .map((e) => e.name)
-                  .toList(),
+              memberAvailablePositions:
+                  context.read<VolunteerScheduleProvider>().memberPositions,
               onSave: (updatedAssignments) {
                 setState(() {
                   _assignments[date] = updatedAssignments;
@@ -279,6 +256,7 @@ class _CreateVolunteerScheduleScreenState
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('봉사표 생성'),
       ),
       body: Column(
@@ -367,7 +345,7 @@ class EditVolunteerSheet extends StatefulWidget {
   final DateTime date;
   final List<Position> positions;
   final Map<int, UserInfo?> assignments;
-  final List<String> memberAvailablePositions;
+  final List<MemberPositions> memberAvailablePositions;
   final Function(Map<int, UserInfo?>) onSave;
 
   const EditVolunteerSheet({
@@ -410,8 +388,12 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
         .parishGroupMemberInfos
         .map((member) => member.user)
         .where((member) {
-      final availablePositions = widget.memberAvailablePositions;
-      return availablePositions.contains(position.positionName);
+      final availablePositions = widget.memberAvailablePositions
+          .firstWhere((e) => e.id == member.id)
+          .positions
+          .map((e) => e.id)
+          .toList();
+      return availablePositions.contains(position.id);
     }).toList();
   }
 

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
@@ -100,7 +98,9 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                             ),
                           ),
                           title: Text(
-                            "${selectedDay[index].user != null ? selectedDay[index].user!.name : "TODO: 대체 봉사자"}",
+                            selectedDay[index].user != null
+                                ? selectedDay[index].user!.name
+                                : selectedDay[index].anon!.name,
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(

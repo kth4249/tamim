@@ -54,7 +54,8 @@ class ParishGroupProvider extends ChangeNotifier {
 
     final volunteerResponse = await supabase
         .from('volunteer_schedules')
-        .select('*,position: positions(*),user: users(*)')
+        .select(
+            '*,position: positions(*),user: users(*),anon: volunteer_schedules_anon!inner(id, name)')
         .eq('group_id', parishGroupId)
         .eq('status', 'completed');
     final volunteerEvents =

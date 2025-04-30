@@ -18,3 +18,14 @@ abstract class VolunteerSchedule with _$VolunteerSchedule {
   factory VolunteerSchedule.fromJson(Map<String, dynamic> json) =>
       _$VolunteerScheduleFromJson(json);
 }
+
+@freezed
+abstract class VolunteerScheduleAnon with _$VolunteerScheduleAnon {
+  const factory VolunteerScheduleAnon({
+    required int id,
+    required String name,
+  }) = _VolunteerScheduleAnon;
+
+  factory VolunteerScheduleAnon.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerScheduleAnonFromJson(json);
+}
