@@ -40,18 +40,33 @@ Map<String, dynamic> _$AvailableMemberByDatesToJson(
       'available_members': instance.availableMembers,
     };
 
-_CreateVolunteerSchedule _$CreateVolunteerScheduleFromJson(
-        Map<String, dynamic> json) =>
-    _CreateVolunteerSchedule(
+_VolunteerCreateVO _$VolunteerCreateVOFromJson(Map<String, dynamic> json) =>
+    _VolunteerCreateVO(
       id: (json['id'] as num).toInt(),
       positionName: (json['position_name'] as num).toInt(),
-      userInfo: UserInfo.fromJson(json['user_info'] as Map<String, dynamic>),
+      userInfo: json['user_info'] == null
+          ? null
+          : VolunteerCreateUserVO.fromJson(
+              json['user_info'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$CreateVolunteerScheduleToJson(
-        _CreateVolunteerSchedule instance) =>
+Map<String, dynamic> _$VolunteerCreateVOToJson(_VolunteerCreateVO instance) =>
     <String, dynamic>{
       'id': instance.id,
       'position_name': instance.positionName,
       'user_info': instance.userInfo,
+    };
+
+_VolunteerCreateUserVO _$VolunteerCreateUserVOFromJson(
+        Map<String, dynamic> json) =>
+    _VolunteerCreateUserVO(
+      id: (json['id'] as num).toInt(),
+      name: json['name'] as String,
+    );
+
+Map<String, dynamic> _$VolunteerCreateUserVOToJson(
+        _VolunteerCreateUserVO instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'name': instance.name,
     };

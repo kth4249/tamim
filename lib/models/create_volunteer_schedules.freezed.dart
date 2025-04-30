@@ -382,27 +382,27 @@ class __$AvailableMemberByDatesCopyWithImpl<$Res>
 }
 
 /// @nodoc
-mixin _$CreateVolunteerSchedule {
+mixin _$VolunteerCreateVO {
   int get id;
   int get positionName;
-  UserInfo get userInfo;
+  VolunteerCreateUserVO? get userInfo;
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  $CreateVolunteerScheduleCopyWith<CreateVolunteerSchedule> get copyWith =>
-      _$CreateVolunteerScheduleCopyWithImpl<CreateVolunteerSchedule>(
-          this as CreateVolunteerSchedule, _$identity);
+  $VolunteerCreateVOCopyWith<VolunteerCreateVO> get copyWith =>
+      _$VolunteerCreateVOCopyWithImpl<VolunteerCreateVO>(
+          this as VolunteerCreateVO, _$identity);
 
-  /// Serializes this CreateVolunteerSchedule to a JSON map.
+  /// Serializes this VolunteerCreateVO to a JSON map.
   Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is CreateVolunteerSchedule &&
+            other is VolunteerCreateVO &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.positionName, positionName) ||
                 other.positionName == positionName) &&
@@ -416,37 +416,37 @@ mixin _$CreateVolunteerSchedule {
 
   @override
   String toString() {
-    return 'CreateVolunteerSchedule(id: $id, positionName: $positionName, userInfo: $userInfo)';
+    return 'VolunteerCreateVO(id: $id, positionName: $positionName, userInfo: $userInfo)';
   }
 }
 
 /// @nodoc
-abstract mixin class $CreateVolunteerScheduleCopyWith<$Res> {
-  factory $CreateVolunteerScheduleCopyWith(CreateVolunteerSchedule value,
-          $Res Function(CreateVolunteerSchedule) _then) =
-      _$CreateVolunteerScheduleCopyWithImpl;
+abstract mixin class $VolunteerCreateVOCopyWith<$Res> {
+  factory $VolunteerCreateVOCopyWith(
+          VolunteerCreateVO value, $Res Function(VolunteerCreateVO) _then) =
+      _$VolunteerCreateVOCopyWithImpl;
   @useResult
-  $Res call({int id, int positionName, UserInfo userInfo});
+  $Res call({int id, int positionName, VolunteerCreateUserVO? userInfo});
 
-  $UserInfoCopyWith<$Res> get userInfo;
+  $VolunteerCreateUserVOCopyWith<$Res>? get userInfo;
 }
 
 /// @nodoc
-class _$CreateVolunteerScheduleCopyWithImpl<$Res>
-    implements $CreateVolunteerScheduleCopyWith<$Res> {
-  _$CreateVolunteerScheduleCopyWithImpl(this._self, this._then);
+class _$VolunteerCreateVOCopyWithImpl<$Res>
+    implements $VolunteerCreateVOCopyWith<$Res> {
+  _$VolunteerCreateVOCopyWithImpl(this._self, this._then);
 
-  final CreateVolunteerSchedule _self;
-  final $Res Function(CreateVolunteerSchedule) _then;
+  final VolunteerCreateVO _self;
+  final $Res Function(VolunteerCreateVO) _then;
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
     Object? id = null,
     Object? positionName = null,
-    Object? userInfo = null,
+    Object? userInfo = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -457,19 +457,23 @@ class _$CreateVolunteerScheduleCopyWithImpl<$Res>
           ? _self.positionName
           : positionName // ignore: cast_nullable_to_non_nullable
               as int,
-      userInfo: null == userInfo
+      userInfo: freezed == userInfo
           ? _self.userInfo
           : userInfo // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as VolunteerCreateUserVO?,
     ));
   }
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get userInfo {
-    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+  $VolunteerCreateUserVOCopyWith<$Res>? get userInfo {
+    if (_self.userInfo == null) {
+      return null;
+    }
+
+    return $VolunteerCreateUserVOCopyWith<$Res>(_self.userInfo!, (value) {
       return _then(_self.copyWith(userInfo: value));
     });
   }
@@ -477,31 +481,30 @@ class _$CreateVolunteerScheduleCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _CreateVolunteerSchedule implements CreateVolunteerSchedule {
-  const _CreateVolunteerSchedule(
+class _VolunteerCreateVO implements VolunteerCreateVO {
+  const _VolunteerCreateVO(
       {required this.id, required this.positionName, required this.userInfo});
-  factory _CreateVolunteerSchedule.fromJson(Map<String, dynamic> json) =>
-      _$CreateVolunteerScheduleFromJson(json);
+  factory _VolunteerCreateVO.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerCreateVOFromJson(json);
 
   @override
   final int id;
   @override
   final int positionName;
   @override
-  final UserInfo userInfo;
+  final VolunteerCreateUserVO? userInfo;
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$CreateVolunteerScheduleCopyWith<_CreateVolunteerSchedule> get copyWith =>
-      __$CreateVolunteerScheduleCopyWithImpl<_CreateVolunteerSchedule>(
-          this, _$identity);
+  _$VolunteerCreateVOCopyWith<_VolunteerCreateVO> get copyWith =>
+      __$VolunteerCreateVOCopyWithImpl<_VolunteerCreateVO>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$CreateVolunteerScheduleToJson(
+    return _$VolunteerCreateVOToJson(
       this,
     );
   }
@@ -510,7 +513,7 @@ class _CreateVolunteerSchedule implements CreateVolunteerSchedule {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _CreateVolunteerSchedule &&
+            other is _VolunteerCreateVO &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.positionName, positionName) ||
                 other.positionName == positionName) &&
@@ -524,42 +527,42 @@ class _CreateVolunteerSchedule implements CreateVolunteerSchedule {
 
   @override
   String toString() {
-    return 'CreateVolunteerSchedule(id: $id, positionName: $positionName, userInfo: $userInfo)';
+    return 'VolunteerCreateVO(id: $id, positionName: $positionName, userInfo: $userInfo)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$CreateVolunteerScheduleCopyWith<$Res>
-    implements $CreateVolunteerScheduleCopyWith<$Res> {
-  factory _$CreateVolunteerScheduleCopyWith(_CreateVolunteerSchedule value,
-          $Res Function(_CreateVolunteerSchedule) _then) =
-      __$CreateVolunteerScheduleCopyWithImpl;
+abstract mixin class _$VolunteerCreateVOCopyWith<$Res>
+    implements $VolunteerCreateVOCopyWith<$Res> {
+  factory _$VolunteerCreateVOCopyWith(
+          _VolunteerCreateVO value, $Res Function(_VolunteerCreateVO) _then) =
+      __$VolunteerCreateVOCopyWithImpl;
   @override
   @useResult
-  $Res call({int id, int positionName, UserInfo userInfo});
+  $Res call({int id, int positionName, VolunteerCreateUserVO? userInfo});
 
   @override
-  $UserInfoCopyWith<$Res> get userInfo;
+  $VolunteerCreateUserVOCopyWith<$Res>? get userInfo;
 }
 
 /// @nodoc
-class __$CreateVolunteerScheduleCopyWithImpl<$Res>
-    implements _$CreateVolunteerScheduleCopyWith<$Res> {
-  __$CreateVolunteerScheduleCopyWithImpl(this._self, this._then);
+class __$VolunteerCreateVOCopyWithImpl<$Res>
+    implements _$VolunteerCreateVOCopyWith<$Res> {
+  __$VolunteerCreateVOCopyWithImpl(this._self, this._then);
 
-  final _CreateVolunteerSchedule _self;
-  final $Res Function(_CreateVolunteerSchedule) _then;
+  final _VolunteerCreateVO _self;
+  final $Res Function(_VolunteerCreateVO) _then;
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = null,
     Object? positionName = null,
-    Object? userInfo = null,
+    Object? userInfo = freezed,
   }) {
-    return _then(_CreateVolunteerSchedule(
+    return _then(_VolunteerCreateVO(
       id: null == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
@@ -568,21 +571,185 @@ class __$CreateVolunteerScheduleCopyWithImpl<$Res>
           ? _self.positionName
           : positionName // ignore: cast_nullable_to_non_nullable
               as int,
-      userInfo: null == userInfo
+      userInfo: freezed == userInfo
           ? _self.userInfo
           : userInfo // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as VolunteerCreateUserVO?,
     ));
   }
 
-  /// Create a copy of CreateVolunteerSchedule
+  /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get userInfo {
-    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+  $VolunteerCreateUserVOCopyWith<$Res>? get userInfo {
+    if (_self.userInfo == null) {
+      return null;
+    }
+
+    return $VolunteerCreateUserVOCopyWith<$Res>(_self.userInfo!, (value) {
       return _then(_self.copyWith(userInfo: value));
     });
+  }
+}
+
+/// @nodoc
+mixin _$VolunteerCreateUserVO {
+  int get id;
+  String get name;
+
+  /// Create a copy of VolunteerCreateUserVO
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $VolunteerCreateUserVOCopyWith<VolunteerCreateUserVO> get copyWith =>
+      _$VolunteerCreateUserVOCopyWithImpl<VolunteerCreateUserVO>(
+          this as VolunteerCreateUserVO, _$identity);
+
+  /// Serializes this VolunteerCreateUserVO to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is VolunteerCreateUserVO &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  @override
+  String toString() {
+    return 'VolunteerCreateUserVO(id: $id, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $VolunteerCreateUserVOCopyWith<$Res> {
+  factory $VolunteerCreateUserVOCopyWith(VolunteerCreateUserVO value,
+          $Res Function(VolunteerCreateUserVO) _then) =
+      _$VolunteerCreateUserVOCopyWithImpl;
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class _$VolunteerCreateUserVOCopyWithImpl<$Res>
+    implements $VolunteerCreateUserVOCopyWith<$Res> {
+  _$VolunteerCreateUserVOCopyWithImpl(this._self, this._then);
+
+  final VolunteerCreateUserVO _self;
+  final $Res Function(VolunteerCreateUserVO) _then;
+
+  /// Create a copy of VolunteerCreateUserVO
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_self.copyWith(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _VolunteerCreateUserVO implements VolunteerCreateUserVO {
+  const _VolunteerCreateUserVO({required this.id, required this.name});
+  factory _VolunteerCreateUserVO.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerCreateUserVOFromJson(json);
+
+  @override
+  final int id;
+  @override
+  final String name;
+
+  /// Create a copy of VolunteerCreateUserVO
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$VolunteerCreateUserVOCopyWith<_VolunteerCreateUserVO> get copyWith =>
+      __$VolunteerCreateUserVOCopyWithImpl<_VolunteerCreateUserVO>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$VolunteerCreateUserVOToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _VolunteerCreateUserVO &&
+            (identical(other.id, id) || other.id == id) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, id, name);
+
+  @override
+  String toString() {
+    return 'VolunteerCreateUserVO(id: $id, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$VolunteerCreateUserVOCopyWith<$Res>
+    implements $VolunteerCreateUserVOCopyWith<$Res> {
+  factory _$VolunteerCreateUserVOCopyWith(_VolunteerCreateUserVO value,
+          $Res Function(_VolunteerCreateUserVO) _then) =
+      __$VolunteerCreateUserVOCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int id, String name});
+}
+
+/// @nodoc
+class __$VolunteerCreateUserVOCopyWithImpl<$Res>
+    implements _$VolunteerCreateUserVOCopyWith<$Res> {
+  __$VolunteerCreateUserVOCopyWithImpl(this._self, this._then);
+
+  final _VolunteerCreateUserVO _self;
+  final $Res Function(_VolunteerCreateUserVO) _then;
+
+  /// Create a copy of VolunteerCreateUserVO
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? id = null,
+    Object? name = null,
+  }) {
+    return _then(_VolunteerCreateUserVO(
+      id: null == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
   }
 }
 

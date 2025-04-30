@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:provider/provider.dart';
@@ -5,6 +6,7 @@ import 'package:tamim/main.dart';
 import 'package:tamim/models/user_info.dart';
 import 'package:tamim/models/position.dart';
 import 'package:tamim/models/member_positions.dart';
+import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/volunteer_schedule_provider.dart';
 import '../widgets/common_calendar.dart';
@@ -23,6 +25,7 @@ class _CreateVolunteerScheduleScreenState
   final DateTime _lastDay = DateTime.now().add(const Duration(days: 365));
   DateTime _focusedDay = DateTime.now();
   final List<DateTime> _selectedDays = [];
+  // TODO: Map<DateTime, VolunteerCreateVO>로 변경
   final Map<DateTime, Map<int, UserInfo?>> _assignments = {};
   bool _isScheduleCreated = false;
 
@@ -33,6 +36,11 @@ class _CreateVolunteerScheduleScreenState
   void initState() {
     super.initState();
     _initializeMemberServiceCount();
+  }
+
+  List<VolunteerEvent> _getEventsForDay(DateTime day) {
+    return context.read<ParishGroupProvider>().groupByVolunteerEvents[day] ??
+        [];
   }
 
   void _initializeMemberServiceCount() {
@@ -82,11 +90,10 @@ class _CreateVolunteerScheduleScreenState
 
   UserInfo? _findBestMemberForPosition(
       DateTime date, int positionId, List<UserInfo> availableMembers) {
-    logger.d('availableMembers: $availableMembers');
     final sortedMembers = availableMembers
         .where((member) =>
-            _isMemberAvailableForDate(member.id ?? '', date) &&
-            _isMemberAvailableForPosition(member.id ?? '', positionId))
+            _isMemberAvailableForDate(member.id, date) &&
+            _isMemberAvailableForPosition(member.id, positionId))
         .toList()
       ..sort((a, b) => (_memberServiceCount[a.id] ?? 0)
           .compareTo(_memberServiceCount[b.id] ?? 0));
@@ -113,16 +120,37 @@ class _CreateVolunteerScheduleScreenState
           .parishGroupMemberInfos
           .map((member) => member.user));
 
+      // 기존 봉사 이벤트 확인
+      final existingEvents =
+          context.read<ParishGroupProvider>().groupByVolunteerEvents[date] ??
+              [];
+
       // 각 포지션별로 봉사자 배정
       final positions = context.read<ParishGroupProvider>().positions;
       for (final position in positions) {
-        final selectedMember =
-            _findBestMemberForPosition(date, position.id, availableMembers);
+        // 이미 배정된 포지션은 건너뛰기
+        final existPosition = existingEvents
+            .firstWhereOrNull((event) => event.position.id == position.id);
+
+        final existUser = existPosition?.user ??
+            UserInfo(
+                id: 'anonymous',
+                name: existPosition?.anon?.name ?? '',
+                status: 'manual',
+                baptismalName: '',
+                nickName: '',
+                createdAt: DateTime.now(),
+                updatedAt: DateTime.now(),
+                agreePushAt: DateTime.now());
+
+        final selectedMember = existPosition == null
+            ? _findBestMemberForPosition(date, position.id, availableMembers)
+            : existUser;
 
         if (selectedMember != null) {
           assignments[position.id] = selectedMember;
-          _memberServiceCount[selectedMember.id ?? ''] =
-              (_memberServiceCount[selectedMember.id ?? ''] ?? 0) + 1;
+          _memberServiceCount[selectedMember.id] =
+              (_memberServiceCount[selectedMember.id] ?? 0) + 1;
           availableMembers.remove(selectedMember);
         }
       }
@@ -272,6 +300,7 @@ class _CreateVolunteerScheduleScreenState
                     selectedDays: _selectedDays,
                     onDaySelected: _onDaySelected,
                     isMultiSelect: true,
+                    eventLoader: _getEventsForDay,
                   ),
                   const SizedBox(height: 16),
                   if (_selectedDays.isNotEmpty && !_isScheduleCreated)
@@ -370,7 +399,10 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
     super.initState();
     _currentAssignments = Map.from(widget.assignments);
     for (final position in widget.positions) {
-      _manualInputControllers[position.id] = TextEditingController();
+      String? text = _currentAssignments[position.id]?.status == 'manual'
+          ? _currentAssignments[position.id]?.name
+          : null;
+      _manualInputControllers[position.id] = TextEditingController(text: text);
     }
   }
 
@@ -484,7 +516,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                               ...availableMembers.map((member) {
                                 return DropdownMenuItem<UserInfo>(
                                   value: member,
-                                  child: Text(member.name ?? ''),
+                                  child: Text(member.name),
                                 );
                               }),
                             ],

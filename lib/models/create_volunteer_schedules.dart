@@ -28,13 +28,24 @@ abstract class AvailableMemberByDates with _$AvailableMemberByDates {
 }
 
 @freezed
-abstract class CreateVolunteerSchedule with _$CreateVolunteerSchedule {
-  const factory CreateVolunteerSchedule({
+abstract class VolunteerCreateVO with _$VolunteerCreateVO {
+  const factory VolunteerCreateVO({
     required int id,
     required int positionName,
-    required UserInfo userInfo,
-  }) = _CreateVolunteerSchedule;
+    required VolunteerCreateUserVO? userInfo,
+  }) = _VolunteerCreateVO;
 
-  factory CreateVolunteerSchedule.fromJson(Map<String, dynamic> json) =>
-      _$CreateVolunteerScheduleFromJson(json);
+  factory VolunteerCreateVO.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerCreateVOFromJson(json);
+}
+
+@freezed
+abstract class VolunteerCreateUserVO with _$VolunteerCreateUserVO {
+  const factory VolunteerCreateUserVO({
+    required int id,
+    required String name,
+  }) = _VolunteerCreateUserVO;
+
+  factory VolunteerCreateUserVO.fromJson(Map<String, dynamic> json) =>
+      _$VolunteerCreateUserVOFromJson(json);
 }
