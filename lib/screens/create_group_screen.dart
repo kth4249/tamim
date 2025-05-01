@@ -272,7 +272,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                     final response = await _createGroup();
                     _showSuccessDialog(response);
                     setState(() => _isLoading = false);
-                    context.go('/parish-groups/${response['id']}');
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,

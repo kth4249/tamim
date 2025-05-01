@@ -90,7 +90,6 @@ class AuthProvider extends ChangeNotifier {
       idToken: idToken,
       accessToken: accessToken,
     );
-    isAuthenticated = true;
 
     final data = await supabase
         .from('users')
@@ -102,6 +101,7 @@ class AuthProvider extends ChangeNotifier {
       final userInfo = UserInfo.fromJson(data);
       user = userInfo;
     }
+    isAuthenticated = true;
     notifyListeners();
   }
 
@@ -111,7 +111,6 @@ class AuthProvider extends ChangeNotifier {
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: [
         AppleIDAuthorizationScopes.email,
-        AppleIDAuthorizationScopes.fullName,
       ],
       nonce: hashedNonce,
     );

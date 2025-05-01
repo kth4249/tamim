@@ -5,6 +5,7 @@ import 'package:tamim/models/parish_group_member_info.dart';
 import 'package:tamim/models/position.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/volunteer_schedule_provider.dart';
 import '../theme/app_theme.dart';
 
 class PositionManagementScreen extends StatefulWidget {
@@ -64,6 +65,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
           {'group_id': groupId, 'user_id': userId, 'position_id': positionId});
       setState(() => _assigned.remove(key));
     }
+    context.read<VolunteerScheduleProvider>().fetchMemberPositions(groupId);
   }
 
   void _showPositionDialog({Position? position}) {
@@ -324,91 +326,107 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
               ),
               const SizedBox(height: 8),
 
-              ...positions.map(
-                (position) => _buildPositionCard(
-                  position.positionName,
-                  position.description ?? '',
-                  onEdit: () => _showPositionDialog(position: position),
-                  onDelete: () => _showDeleteConfirmDialog(position),
+              if (positions.isEmpty)
+                Container(
+                  padding: const EdgeInsets.all(24),
+                  margin: const EdgeInsets.only(bottom: 12),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      Icon(
+                        Icons.work_outline,
+                        size: 48,
+                        color: Colors.grey[400],
+                      ),
+                      const SizedBox(height: 16),
+                      const Text(
+                        '포지션이 없습니다',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        '봉사자들을 관리하기 위해서는 먼저 포지션을 생성해야 합니다.\n오른쪽 하단의 + 버튼을 눌러 포지션을 추가해보세요!',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.grey[600],
+                          height: 1.5,
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              else
+                ...positions.map(
+                  (position) => _buildPositionCard(
+                    position.positionName,
+                    position.description ?? '',
+                    onEdit: () => _showPositionDialog(position: position),
+                    onDelete: () => _showDeleteConfirmDialog(position),
+                  ),
                 ),
-              ),
               const SizedBox(height: 24),
 
               // 봉사자 관리 섹션
-              const Text(
-                '봉사자 관리',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 16),
-
-              // 봉사자 목록 테이블
-              Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
-                      blurRadius: 10,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+              if (positions.isNotEmpty) ...[
+                const Text(
+                  '봉사자 관리',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                child: Column(
-                  children: [
-                    // 테이블 헤더
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Row(
-                        children: [
-                          const Expanded(
-                            flex: 2,
-                            child: Text(
-                              '이름',
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.black87,
-                              ),
-                            ),
-                          ),
-                          ...positions.map(
-                            (position) => Expanded(
-                              child: Center(
-                                child: Text(
-                                  position.positionName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.black87,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
+                const SizedBox(height: 16),
+
+                // 봉사자 목록 테이블
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(8),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
                       ),
-                    ),
-                    const Divider(height: 1),
-                    // 봉사자 목록
-                    ...members.map(
-                      (member) => Padding(
+                    ],
+                  ),
+                  child: Column(
+                    children: [
+                      // 테이블 헤더
+                      Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               flex: 2,
                               child: Text(
-                                member.user.name ?? '',
-                                style: const TextStyle(color: Colors.black87),
+                                '이름',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87,
+                                ),
                               ),
                             ),
                             ...positions.map(
-                              (e) => Expanded(
+                              (position) => Expanded(
                                 child: Center(
-                                  child: _buildCheckbox(
-                                    MemberPositionKey(
-                                      groupId: member.groupId,
-                                      userId: member.userId,
-                                      positionId: e.id,
+                                  child: Text(
+                                    position.positionName,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.black87,
                                     ),
                                   ),
                                 ),
@@ -417,11 +435,42 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                           ],
                         ),
                       ),
-                    ),
-                  ],
+                      const Divider(height: 1),
+                      // 봉사자 목록
+                      ...members.map(
+                        (member) => Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                flex: 2,
+                                child: Text(
+                                  member.user.name ?? '',
+                                  style: const TextStyle(color: Colors.black87),
+                                ),
+                              ),
+                              ...positions.map(
+                                (e) => Expanded(
+                                  child: Center(
+                                    child: _buildCheckbox(
+                                      MemberPositionKey(
+                                        groupId: member.groupId,
+                                        userId: member.userId,
+                                        positionId: e.id,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
+              ],
             ],
           ),
         ),
