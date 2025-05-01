@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
@@ -92,15 +94,27 @@ class RouterConfigClass {
         }
         if (isProfilingIn) return state.uri.queryParameters['from'] ?? '/';
 
-        // 모임 가입이 안되어있을 경우 리다이렉트 처리
+        // 해당 모임에 가입이 안되어있을 경우 리다이렉트 처리
         final joinedGroups = await supabase
             .from('parish_group_members')
             .select('*')
             .eq('user_id', user.id)
             .eq('status', 'active');
-        if (joinedGroups.isEmpty &&
-            (matchedLocation == '/join' || matchedLocation == '/create')) {
-          return null;
+
+        final currentPath = state.uri.path;
+        final pathParams = state.pathParameters;
+        if (currentPath.startsWith("/parish-groups")) {
+          final groupId = pathParams['id'];
+          final result = joinedGroups
+              .any((e) => e['group_id'].toString() == groupId.toString());
+          if (!result) {
+            return "/";
+          }
+        }
+
+        // 추후 삭제: 모임 가입되어 있는 경우 해당 모임으로 리다이렉트
+        if (currentPath == "/" && joinedGroups.isNotEmpty) {
+          return "/parish-groups/${joinedGroups[0]['group_id']}";
         }
 
         return null;

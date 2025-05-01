@@ -38,17 +38,13 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         .select('*')
         .eq('register_key', registerKey)
         .maybeSingle();
-    if (parishRes == null) {
-      context.go('/');
-      return;
-    }
     final joinedGroupRes = await supabase
         .from('parish_group_members')
         .select('*')
         .eq('user_id', supabase.auth.currentUser!.id)
         .eq('status', 'active')
         .maybeSingle();
-    if (joinedGroupRes != null) {
+    if (parishRes == null || joinedGroupRes != null) {
       context.go('/');
       return;
     }

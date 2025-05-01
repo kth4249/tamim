@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -61,12 +60,6 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
             orElse: () => {'status': ''},
           )['status'] as String
       };
-
-      final myGroup = myGroupsResponse
-          .firstWhereOrNull((json) => json['status'] == 'active');
-      if (myGroup != null) {
-        context.go('/parish-groups/${myGroup['group_id']}');
-      }
     } catch (e) {
       logger.e('Error loading data: $e');
     } finally {
@@ -193,7 +186,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
                                     ),
                                   ),
                                   const Spacer(),
-                                  if (memberStatus == null)
+                                  if (memberStatus == '')
                                     FilledButton(
                                       onPressed: () => _joinGroup(group),
                                       style: FilledButton.styleFrom(
@@ -255,13 +248,13 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
                 childCount: _groups.length,
               ),
             ),
-            SliverFillRemaining(
+            const SliverFillRemaining(
               hasScrollBody: false,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 24, 16, 32),
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 32),
                     child: _ConnectionMethodInfoCard(
                       icon: Icons.link_rounded,
                       title: '빠른 가입 방법이 있나요?',
@@ -344,36 +337,6 @@ class _ConnectionMethodInfoCard extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 12),
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(
-                color: Colors.grey.shade200,
-              ),
-            ),
-            child: Row(
-              children: [
-                Icon(
-                  Icons.info_outline,
-                  size: 20,
-                  color: Theme.of(context).primaryColor,
-                ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    '모임 관리자가 전달한 URL이나 QR 코드를 통해 즉시 가입할 수 있습니다.',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey.shade700,
-                      height: 1.4,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

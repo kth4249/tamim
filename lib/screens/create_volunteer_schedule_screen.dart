@@ -125,7 +125,7 @@ class _CreateVolunteerScheduleScreenState
                           padding: const EdgeInsets.only(bottom: 8),
                           child: Row(
                             children: [
-                              Container(
+                              SizedBox(
                                 width: 60,
                                 child: Text(
                                   position.positionName,
@@ -386,7 +386,7 @@ class _CreateVolunteerScheduleScreenState
                         style: ElevatedButton.styleFrom(
                           minimumSize: const Size(double.infinity, 50),
                           backgroundColor: viewModel.isScheduleCreated
-                              ? colorScheme.surfaceVariant
+                              ? colorScheme.surfaceContainerHighest
                               : colorScheme.primary,
                           foregroundColor: viewModel.isScheduleCreated
                               ? colorScheme.onSurfaceVariant

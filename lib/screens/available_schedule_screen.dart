@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // 날짜 포맷팅을 위해 추가
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/volunteer_schedule_provider.dart';
 
 class AvailableScheduleScreen extends StatefulWidget {
