@@ -34,7 +34,8 @@
               "client_id": "149188286600-2f57i7gs1e3u97fp592t6fi5c08tp7jq.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.hun.tamim"
+                "bundle_id": "com.hun.tamim",
+                "app_store_id": "6744606805"
               }
             }
           ]

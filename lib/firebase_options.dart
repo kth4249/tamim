@@ -17,10 +17,7 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return web;
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
@@ -63,9 +60,19 @@ class DefaultFirebaseOptions {
     messagingSenderId: '149188286600',
     projectId: 'tamim-456104',
     storageBucket: 'tamim-456104.firebasestorage.app',
-    androidClientId: '149188286600-6p9odqq2lp2l8uhgo1altq8ngr9vrlgh.apps.googleusercontent.com',
+    androidClientId: '149188286600-6oodnf6l8aaflkr1h16obi6j99u746fu.apps.googleusercontent.com',
     iosClientId: '149188286600-2f57i7gs1e3u97fp592t6fi5c08tp7jq.apps.googleusercontent.com',
     iosBundleId: 'com.hun.tamim',
+  );
+
+  static const FirebaseOptions web = FirebaseOptions(
+    apiKey: 'AIzaSyCF_lKMj-yZzc56HhG5PE1u6gkD4NdfQgg',
+    appId: '1:149188286600:web:24b1638f90c9357684273d',
+    messagingSenderId: '149188286600',
+    projectId: 'tamim-456104',
+    authDomain: 'tamim-456104.firebaseapp.com',
+    storageBucket: 'tamim-456104.firebasestorage.app',
+    measurementId: 'G-B4CY1Q2N0Y',
   );
 
 }

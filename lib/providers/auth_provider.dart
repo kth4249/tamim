@@ -141,8 +141,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> signOut() async {
     try {
-      await googleSignIn.signOut();
       await supabase.auth.signOut();
+      if (googleSignIn.currentUser != null) {
+        await googleSignIn.signOut();
+      }
       isAuthenticated = false;
       user = null;
       notifyListeners();
