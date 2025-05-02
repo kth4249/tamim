@@ -29,6 +29,7 @@ class EditVolunteerSheet extends StatefulWidget {
 class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
   late Map<int, VolunteerCreateVO?> _currentAssignments;
   final Map<int, TextEditingController> _manualInputControllers = {};
+  final formKey = GlobalKey<FormState>();
 
   @override
   void initState() {
@@ -80,182 +81,199 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(
-          top: Radius.circular(20),
-        ),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.calendar_today,
-                    size: 20,
-                    color: colorScheme.primary,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    '${widget.date.month}월 ${widget.date.day}일',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
-              ),
-              IconButton(
-                icon: const Icon(Icons.close),
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
+    return Form(
+      key: formKey,
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: const BorderRadius.vertical(
+            top: Radius.circular(20),
           ),
-          const SizedBox(height: 16),
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: widget.positions.length,
-            itemBuilder: (context, index) {
-              final position = widget.positions[index];
-              final assignedMember = _currentAssignments[position.id];
-              final availableMembers =
-                  _getAvailableMembersForPosition(position);
-              final isManualInput =
-                  assignedMember != null && assignedMember.userId == null;
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
                   children: [
+                    Icon(
+                      Icons.calendar_today,
+                      size: 20,
+                      color: colorScheme.primary,
+                    ),
+                    const SizedBox(width: 8),
                     Text(
-                      position.positionName,
+                      '${widget.date.month}월 ${widget.date.day}일',
                       style: const TextStyle(
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: DropdownButtonFormField<String>(
-                            value:
-                                isManualInput ? null : assignedMember?.userId,
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                            ),
-                            items: [
-                              const DropdownMenuItem<String>(
-                                value: null,
-                                child: Text('선택하세요'),
-                              ),
-                              ...availableMembers.map((member) {
-                                return DropdownMenuItem<String>(
-                                  value: member.id,
-                                  child: Text(member.name),
-                                );
-                              }),
-                            ],
-                            onChanged: (String? value) {
-                              final current = _currentAssignments[position.id];
-                              setState(() {
-                                _currentAssignments[position.id] = value == null
-                                    ? VolunteerCreateVO(
-                                        id: current?.id,
-                                        userId: null,
-                                        name: '',
-                                      )
-                                    : VolunteerCreateVO(
-                                        id: current?.id,
-                                        userId: value,
-                                        name: availableMembers
-                                            .firstWhere((e) => e.id == value)
-                                            .name,
-                                      );
-                                _manualInputControllers[position.id]?.clear();
-                              });
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Text('또는'),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: TextField(
-                            controller: _manualInputControllers[position.id],
-                            decoration: InputDecoration(
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              hintText: '직접 입력',
-                              contentPadding: const EdgeInsets.symmetric(
-                                horizontal: 12,
-                                vertical: 8,
-                              ),
-                            ),
-                            onChanged: (value) {
-                              _handleManualInput(position.id, value);
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (isManualInput)
-                      Padding(
-                        padding: const EdgeInsets.only(top: 4),
-                        child: Text(
-                          '수동 입력: ${assignedMember.name}',
-                          style: TextStyle(
-                            color: colorScheme.error,
-                            fontSize: 12,
-                          ),
-                        ),
-                      ),
                   ],
                 ),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          SizedBox(
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                widget.onSave(_currentAssignments);
-                Navigator.pop(context);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: colorScheme.primary,
-                foregroundColor: colorScheme.onPrimary,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+                IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () => Navigator.pop(context),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 16),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Expanded(
+              child: ListView.builder(
+                itemCount: widget.positions.length,
+                itemBuilder: (context, index) {
+                  final position = widget.positions[index];
+                  final assignedMember = _currentAssignments[position.id];
+                  final availableMembers =
+                      _getAvailableMembersForPosition(position);
+                  final isManualInput =
+                      assignedMember != null && assignedMember.userId == null;
+
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          position.positionName,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: DropdownButtonFormField<String>(
+                                value: isManualInput
+                                    ? null
+                                    : assignedMember?.userId,
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                ),
+                                items: [
+                                  const DropdownMenuItem<String>(
+                                    value: null,
+                                    child: Text('선택하세요'),
+                                  ),
+                                  ...availableMembers.map((member) {
+                                    return DropdownMenuItem<String>(
+                                      value: member.id,
+                                      child: Text(member.name),
+                                    );
+                                  }),
+                                ],
+                                onChanged: (String? value) {
+                                  final current =
+                                      _currentAssignments[position.id];
+                                  setState(() {
+                                    _currentAssignments[position.id] =
+                                        value == null
+                                            ? VolunteerCreateVO(
+                                                id: current?.id,
+                                                userId: null,
+                                                name: '',
+                                              )
+                                            : VolunteerCreateVO(
+                                                id: current?.id,
+                                                userId: value,
+                                                name: availableMembers
+                                                    .firstWhere(
+                                                        (e) => e.id == value)
+                                                    .name,
+                                              );
+                                    _manualInputControllers[position.id]
+                                        ?.clear();
+                                  });
+                                },
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            const Text('또는'),
+                            const SizedBox(width: 8),
+                            Expanded(
+                              child: TextFormField(
+                                controller:
+                                    _manualInputControllers[position.id],
+                                validator: (value) {
+                                  if (value != null && value.length >= 10) {
+                                    return '10글자 미만이어야 합니다';
+                                  }
+                                  return null;
+                                },
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  hintText: '직접 입력(10글자 이내)',
+                                  contentPadding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 8,
+                                  ),
+                                ),
+                                onChanged: (value) {
+                                  _handleManualInput(position.id, value);
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        if (isManualInput)
+                          Padding(
+                            padding: const EdgeInsets.only(top: 4),
+                            child: Text(
+                              '수동 입력: ${assignedMember.name}',
+                              style: TextStyle(
+                                color: colorScheme.error,
+                                fontSize: 12,
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                  );
+                },
               ),
-              child: const Text(
-                '저장',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+            ),
+            const SizedBox(height: 16),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (formKey.currentState!.validate()) {
+                    widget.onSave(_currentAssignments);
+                    Navigator.pop(context);
+                  }
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: colorScheme.primary,
+                  foregroundColor: colorScheme.onPrimary,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                ),
+                child: const Text(
+                  '저장',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

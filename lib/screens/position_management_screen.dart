@@ -73,6 +73,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
         TextEditingController(text: position?.positionName);
     final TextEditingController descController =
         TextEditingController(text: position?.description);
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
@@ -82,123 +83,141 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
         ),
         child: Container(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    position == null
-                        ? Icons.add_circle_outline
-                        : Icons.edit_outlined,
-                    color: AppTheme.primaryColor,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    position == null ? '새 포지션 추가' : '포지션 수정',
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Icon(
+                      position == null
+                          ? Icons.add_circle_outline
+                          : Icons.edit_outlined,
+                      color: AppTheme.primaryColor,
+                      size: 24,
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: '포지션 이름',
-                  hintText: '포지션 이름을 입력하세요',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: const Icon(Icons.work_outline),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: descController,
-                decoration: InputDecoration(
-                  labelText: '설명',
-                  hintText: '포지션에 대한 설명을 입력하세요',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  prefixIcon: const Icon(Icons.description_outlined),
-                ),
-                maxLines: 3,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: () => Navigator.pop(context),
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                    ),
-                    child: const Text(
-                      '취소',
-                      style: TextStyle(
-                        color: Colors.grey,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  ElevatedButton(
-                    onPressed: () async {
-                      if (nameController.text.isEmpty) return;
-
-                      if (position == null) {
-                        await supabase.from('positions').insert({
-                          'position_name': nameController.text,
-                          'description': descController.text,
-                          'group_id': context
-                              .read<ParishGroupProvider>()
-                              .parishGroup!
-                              .id,
-                          'created_by': context.read<AuthProvider>().user?.id,
-                          "updated_by": context.read<AuthProvider>().user?.id,
-                          "updated_at": DateTime.now().toIso8601String(),
-                        });
-                      } else {
-                        await supabase.from('positions').update({
-                          'position_name': nameController.text,
-                          'description': descController.text,
-                          "updated_by": context.read<AuthProvider>().user?.id,
-                          "updated_at": DateTime.now().toIso8601String(),
-                        }).eq('id', position.id);
-                      }
-                      _loadData();
-
-                      if (mounted) {
-                        Navigator.pop(context);
-                        context.read<ParishGroupProvider>().loadPositions();
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppTheme.primaryColor,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                    child: Text(
-                      position == null ? '추가' : '수정',
+                    const SizedBox(width: 8),
+                    Text(
+                      position == null ? '새 포지션 추가' : '포지션 수정',
                       style: const TextStyle(
-                        fontSize: 16,
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                TextFormField(
+                  controller: nameController,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return '포지션 이름을 입력해주세요';
+                    }
+                    if (value.length >= 10) {
+                      return '포지션 이름은 10글자 미만이어야 합니다';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: '포지션 이름',
+                    hintText: '포지션 이름 입력 (10글자 미만)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    prefixIcon: const Icon(Icons.work_outline),
                   ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 16),
+                TextFormField(
+                  controller: descController,
+                  validator: (value) {
+                    if (value != null && value.length >= 30) {
+                      return '설명은 30글자 미만이어야 합니다';
+                    }
+                    return null;
+                  },
+                  decoration: InputDecoration(
+                    labelText: '설명',
+                    hintText: '포지션에 대한 설명을 입력하세요 (30글자 미만)',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    prefixIcon: const Icon(Icons.description_outlined),
+                  ),
+                  maxLines: 3,
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                      ),
+                      child: const Text(
+                        '취소',
+                        style: TextStyle(
+                          color: Colors.grey,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () async {
+                        if (!formKey.currentState!.validate()) return;
+
+                        if (position == null) {
+                          await supabase.from('positions').insert({
+                            'position_name': nameController.text,
+                            'description': descController.text,
+                            'group_id': context
+                                .read<ParishGroupProvider>()
+                                .parishGroup!
+                                .id,
+                            'created_by': context.read<AuthProvider>().user?.id,
+                            "updated_by": context.read<AuthProvider>().user?.id,
+                            "updated_at": DateTime.now().toIso8601String(),
+                          });
+                        } else {
+                          await supabase.from('positions').update({
+                            'position_name': nameController.text,
+                            'description': descController.text,
+                            "updated_by": context.read<AuthProvider>().user?.id,
+                            "updated_at": DateTime.now().toIso8601String(),
+                          }).eq('id', position.id);
+                        }
+                        _loadData();
+
+                        if (context.mounted) {
+                          Navigator.pop(context);
+                          context.read<ParishGroupProvider>().loadPositions();
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppTheme.primaryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: Text(
+                        position == null ? '추가' : '수정',
+                        style: const TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

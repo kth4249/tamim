@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
+import 'package:tamim/screens/my_page_screen.dart';
+import 'package:tamim/screens/parish_group_screen.dart';
 
 class MemberManagementScreen extends StatelessWidget {
   const MemberManagementScreen({super.key});
@@ -39,7 +42,7 @@ class MemberManagementScreen extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          member.user.name ?? '',
+                          member.user.name,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -61,7 +64,7 @@ class MemberManagementScreen extends StatelessWidget {
               if (!isCurrentUser && !isGroupLeader) ...[
                 ListTile(
                   leading: const Icon(Icons.leaderboard_outlined),
-                  title: const Text('모임장 권한 부여'),
+                  title: const Text('모임장 위임'),
                   onTap: () async {
                     Navigator.pop(context);
                     _showTransferLeadershipDialog(context, member);
@@ -110,7 +113,7 @@ class MemberManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               const Text(
-                '모임장 권한 부여',
+                '모임장 위임',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
@@ -118,7 +121,7 @@ class MemberManagementScreen extends StatelessWidget {
               ),
               const SizedBox(height: 8),
               Text(
-                '${member.user.name}님에게 모임장 권한을 부여하시겠습니까?',
+                '${member.user.name}님에게 모임장을 위임하시겠습니까?',
                 textAlign: TextAlign.center,
                 style: const TextStyle(
                   fontSize: 16,
@@ -157,15 +160,16 @@ class MemberManagementScreen extends StatelessWidget {
                           .eq('user_id', member.userId);
 
                       // 기존 모임장 권한 해제
-                      // await supabase
-                      //     .from('parish_group_members')
-                      //     .update({'role_id': 2})
-                      //     .eq('group_id', groupId)
-                      //     .eq('user_id', supabase.auth.currentUser!.id);
+                      await supabase
+                          .from('parish_group_members')
+                          .update({'role_id': 2})
+                          .eq('group_id', groupId)
+                          .eq('user_id', supabase.auth.currentUser!.id);
 
                       if (context.mounted) {
                         Navigator.pop(context);
-                        context
+                        Navigator.pop(context);
+                        await context
                             .read<ParishGroupProvider>()
                             .fetchData(groupId.toString());
                       }
@@ -379,7 +383,7 @@ class MemberManagementScreen extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text(
-                                  member.user.name ?? '',
+                                  member.user.name,
                                   style: const TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.w500,
@@ -387,7 +391,7 @@ class MemberManagementScreen extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '가입일: ${member.createdAt}',
+                                  '가입일: ${member.createdAt.toLocal().toString().substring(0, 10)}',
                                   style: TextStyle(
                                     fontSize: 14,
                                     color: Colors.grey.shade600,
