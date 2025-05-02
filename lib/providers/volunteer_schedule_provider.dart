@@ -50,8 +50,6 @@ class VolunteerScheduleProvider extends ChangeNotifier {
       };
     });
 
-    logger.d(transformed);
-
     memberPositions =
         transformed.map((e) => MemberPositions.fromJson(e)).toList();
 

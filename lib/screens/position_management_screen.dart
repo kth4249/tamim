@@ -445,7 +445,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  member.user.name ?? '',
+                                  member.user.name,
                                   style: const TextStyle(color: Colors.black87),
                                 ),
                               ),
@@ -469,8 +469,9 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                     ],
                   ),
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 70),
               ],
+              const SizedBox(height: 24),
             ],
           ),
         ),

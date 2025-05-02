@@ -72,7 +72,7 @@ class _CreateVolunteerScheduleScreenState
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            childAspectRatio: 1.2,
+            childAspectRatio: 1.0,
             crossAxisSpacing: 16,
             mainAxisSpacing: 16,
           ),
@@ -85,6 +85,9 @@ class _CreateVolunteerScheduleScreenState
             return GestureDetector(
               onTap: () => _showEditBottomSheet(date, assignments),
               child: Container(
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.3,
+                ),
                 decoration: BoxDecoration(
                   color: colorScheme.surface,
                   borderRadius: BorderRadius.circular(16),
@@ -99,6 +102,7 @@ class _CreateVolunteerScheduleScreenState
                 child: Padding(
                   padding: const EdgeInsets.all(16),
                   child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
@@ -119,40 +123,80 @@ class _CreateVolunteerScheduleScreenState
                         ],
                       ),
                       const SizedBox(height: 12),
-                      ...positions.map((position) {
-                        final assignedMember = assignments[position.id];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 8),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                width: 60,
-                                child: Text(
-                                  position.positionName,
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: colorScheme.onSurfaceVariant,
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            SingleChildScrollView(
+                              controller: ScrollController(),
+                              child: Column(
+                                children: positions.map((position) {
+                                  final assignedMember =
+                                      assignments[position.id];
+                                  return Padding(
+                                    padding: const EdgeInsets.only(bottom: 8),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(
+                                          width: 80,
+                                          child: Text(
+                                            position.positionName,
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                              color:
+                                                  colorScheme.onSurfaceVariant,
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(width: 4),
+                                        Expanded(
+                                          child: Text(
+                                            assignedMember?.name ?? '미정',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.w500,
+                                              fontSize: 12,
+                                              color:
+                                                  assignedMember?.name != null
+                                                      ? colorScheme.onSurface
+                                                      : colorScheme.error,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  );
+                                }).toList(),
+                              ),
+                            ),
+                            if (positions.length > 4)
+                              Positioned(
+                                bottom: 0,
+                                left: 0,
+                                right: 0,
+                                child: Container(
+                                  height: 20,
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      begin: Alignment.topCenter,
+                                      end: Alignment.bottomCenter,
+                                      colors: [
+                                        colorScheme.surface.withOpacity(0),
+                                        colorScheme.surface,
+                                      ],
+                                    ),
+                                  ),
+                                  child: Center(
+                                    child: Icon(
+                                      Icons.keyboard_arrow_down,
+                                      size: 20,
+                                      color: colorScheme.primary,
+                                    ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 4),
-                              Expanded(
-                                child: Text(
-                                  assignedMember?.name ?? '미정',
-                                  style: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 12,
-                                    color: assignedMember?.name != null
-                                        ? colorScheme.onSurface
-                                        : colorScheme.error,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                          ],
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -304,8 +348,7 @@ class _CreateVolunteerScheduleScreenState
                             if (viewModel.selectedDays.isNotEmpty &&
                                 !viewModel.isScheduleCreated)
                               Container(
-                                margin:
-                                    const EdgeInsets.symmetric(horizontal: 16),
+                                margin: const EdgeInsets.all(16),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
                                   color: colorScheme.surface,
@@ -399,7 +442,6 @@ class _CreateVolunteerScheduleScreenState
                                   ],
                                 ),
                               ),
-                            const SizedBox(height: 24),
                             _buildScheduleList(),
                           ],
                         ),
