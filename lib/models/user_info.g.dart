@@ -9,9 +9,10 @@ part of 'user_info.dart';
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
       id: json['id'] as String,
       name: json['name'] as String,
+      email: json['email'] as String?,
       baptismalName: json['baptismal_name'] as String?,
       nickName: json['nick_name'] as String?,
-      status: json['status'] as String,
+      status: json['status'] as String?,
       createdAt: json['created_at'] == null
           ? null
           : DateTime.parse(json['created_at'] as String),
@@ -26,6 +27,7 @@ _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
 Map<String, dynamic> _$UserInfoToJson(_UserInfo instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
+      'email': instance.email,
       'baptismal_name': instance.baptismalName,
       'nick_name': instance.nickName,
       'status': instance.status,

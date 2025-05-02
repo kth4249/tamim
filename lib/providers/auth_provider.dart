@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -22,6 +23,7 @@ class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
 
   UserInfo? user;
+  OAuthProvider? oauthProvider;
 
   AuthProvider() {
     authSubscription = supabase.auth.onAuthStateChange.listen((data) async {
@@ -93,15 +95,18 @@ class AuthProvider extends ChangeNotifier {
 
     final data = await supabase
         .from('users')
+        .upsert({
+          'id': response.user!.id,
+          'name': googleUser.displayName,
+          'email': googleUser.email,
+        })
         .select()
-        .eq('id', response.user!.id)
-        .eq('status', 'active')
-        .maybeSingle();
-    if (data != null) {
-      final userInfo = UserInfo.fromJson(data);
-      user = userInfo;
-    }
+        .single();
+
+    final userInfo = UserInfo.fromJson(data);
     isAuthenticated = true;
+    user = userInfo;
+    oauthProvider = OAuthProvider.google;
     notifyListeners();
   }
 
@@ -110,6 +115,7 @@ class AuthProvider extends ChangeNotifier {
     final hashedNonce = sha256.convert(utf8.encode(rawNonce)).toString();
     final credential = await SignInWithApple.getAppleIDCredential(
       scopes: [
+        AppleIDAuthorizationScopes.fullName,
         AppleIDAuthorizationScopes.email,
       ],
       nonce: hashedNonce,
@@ -124,29 +130,42 @@ class AuthProvider extends ChangeNotifier {
       idToken: idToken,
       nonce: rawNonce,
     );
-    isAuthenticated = true;
 
-    final data = await supabase
+    var data = await supabase
         .from('users')
         .select()
         .eq('id', response.user!.id)
-        .eq('status', 'active')
         .maybeSingle();
-    if (data != null) {
-      final userInfo = UserInfo.fromJson(data);
-      user = userInfo;
+
+    if (data == null) {
+      final insertData = await supabase
+          .from('users')
+          .insert({
+            'id': response.user!.id,
+            'name': '${credential.familyName}${credential.givenName}',
+            'email': credential.email,
+          })
+          .select()
+          .single();
+      data = insertData;
     }
+
+    final userInfo = UserInfo.fromJson(data);
+    isAuthenticated = true;
+    user = userInfo;
+    oauthProvider = OAuthProvider.apple;
     notifyListeners();
   }
 
   Future<void> signOut() async {
     try {
       await supabase.auth.signOut();
-      if (googleSignIn.currentUser != null) {
-        await googleSignIn.signOut();
+      if (oauthProvider == OAuthProvider.google) {
+        await googleSignIn.disconnect();
       }
       isAuthenticated = false;
       user = null;
+      oauthProvider = null;
       notifyListeners();
     } catch (e) {
       rethrow;

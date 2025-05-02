@@ -84,10 +84,10 @@ class RouterConfigClass {
         if (isLoggingIn) return state.uri.queryParameters['from'] ?? '/';
 
         // 로그인 후 리다이렉트 처리
-        final user = context.read<AuthProvider>().user;
+        final user = context.read<AuthProvider>().user!;
         final isProfilingIn = matchedLocation == '/register';
 
-        if (user == null) {
+        if (user.status == null) {
           return isProfilingIn ? null : '/register$savedLocation';
         }
         if (isProfilingIn) return state.uri.queryParameters['from'] ?? '/';

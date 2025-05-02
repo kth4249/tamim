@@ -12,12 +12,12 @@ class RegisterForm extends StatefulWidget {
 
 class _RegisterFormState extends State<RegisterForm> {
   final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
+  final _nicknameController = TextEditingController();
   final _baptismalNameController = TextEditingController();
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _nicknameController.dispose();
     _baptismalNameController.dispose();
     super.dispose();
   }
@@ -81,9 +81,9 @@ class _RegisterFormState extends State<RegisterForm> {
                 const SizedBox(height: 48),
                 TextFormField(
                   autofocus: true,
-                  controller: _nameController,
+                  controller: _nicknameController,
                   decoration: InputDecoration(
-                    labelText: '이름',
+                    labelText: '닉네임',
                     labelStyle: const TextStyle(color: Colors.black54),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
@@ -97,7 +97,7 @@ class _RegisterFormState extends State<RegisterForm> {
                       borderRadius: BorderRadius.circular(12),
                       borderSide: const BorderSide(color: Colors.blue),
                     ),
-                    hintText: '실명을 입력해주세요',
+                    hintText: '닉네임을 입력해주세요',
                     hintStyle: TextStyle(color: Colors.grey.shade400),
                     contentPadding: const EdgeInsets.symmetric(
                       horizontal: 16,
@@ -106,7 +106,7 @@ class _RegisterFormState extends State<RegisterForm> {
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return '이름을 입력해주세요';
+                      return '닉네임을 입력해주세요';
                     }
                     return null;
                   },
@@ -172,7 +172,7 @@ class _RegisterFormState extends State<RegisterForm> {
               }
               await context.read<AuthProvider>().upsetUser({
                 'id': supabase.auth.currentUser!.id,
-                'name': _nameController.text,
+                'nickname': _nicknameController.text,
                 'baptismal_name': _baptismalNameController.text,
                 'status': 'active',
               });
