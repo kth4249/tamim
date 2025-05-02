@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberPositions {
   String get id;
   String get name;
-  String get baptismalName;
+  String? get baptismalName;
   List<Position> get positions;
 
   /// Create a copy of MemberPositions
@@ -61,7 +61,10 @@ abstract mixin class $MemberPositionsCopyWith<$Res> {
       _$MemberPositionsCopyWithImpl;
   @useResult
   $Res call(
-      {String id, String name, String baptismalName, List<Position> positions});
+      {String id,
+      String name,
+      String? baptismalName,
+      List<Position> positions});
 }
 
 /// @nodoc
@@ -79,7 +82,7 @@ class _$MemberPositionsCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = null,
+    Object? baptismalName = freezed,
     Object? positions = null,
   }) {
     return _then(_self.copyWith(
@@ -91,10 +94,10 @@ class _$MemberPositionsCopyWithImpl<$Res>
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: null == baptismalName
+      baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       positions: null == positions
           ? _self.positions
           : positions // ignore: cast_nullable_to_non_nullable
@@ -120,7 +123,7 @@ class _MemberPositions implements MemberPositions {
   @override
   final String name;
   @override
-  final String baptismalName;
+  final String? baptismalName;
   final List<Position> _positions;
   @override
   List<Position> get positions {
@@ -177,7 +180,10 @@ abstract mixin class _$MemberPositionsCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id, String name, String baptismalName, List<Position> positions});
+      {String id,
+      String name,
+      String? baptismalName,
+      List<Position> positions});
 }
 
 /// @nodoc
@@ -195,7 +201,7 @@ class __$MemberPositionsCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = null,
+    Object? baptismalName = freezed,
     Object? positions = null,
   }) {
     return _then(_MemberPositions(
@@ -207,10 +213,10 @@ class __$MemberPositionsCopyWithImpl<$Res>
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: null == baptismalName
+      baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       positions: null == positions
           ? _self._positions
           : positions // ignore: cast_nullable_to_non_nullable

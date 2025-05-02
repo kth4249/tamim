@@ -9,7 +9,7 @@ part of 'member_dates.dart';
 _MemberDates _$MemberDatesFromJson(Map<String, dynamic> json) => _MemberDates(
       id: json['id'] as String,
       name: json['name'] as String,
-      baptismalName: json['baptismal_name'] as String,
+      baptismalName: json['baptismal_name'] as String?,
       memberDates: (json['member_dates'] as List<dynamic>)
           .map((e) => DateTime.parse(e as String))
           .toList(),

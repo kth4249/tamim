@@ -8,7 +8,7 @@ abstract class MemberDates with _$MemberDates {
   const factory MemberDates({
     required String id,
     required String name,
-    required String baptismalName,
+    required String? baptismalName,
     required List<DateTime> memberDates,
   }) = _MemberDates;
 

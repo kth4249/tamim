@@ -9,7 +9,7 @@ abstract class MemberPositions with _$MemberPositions {
   const factory MemberPositions({
     required String id,
     required String name,
-    required String baptismalName,
+    required String? baptismalName,
     required List<Position> positions,
   }) = _MemberPositions;
 

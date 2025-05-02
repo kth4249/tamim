@@ -10,7 +10,7 @@ _MemberPositions _$MemberPositionsFromJson(Map<String, dynamic> json) =>
     _MemberPositions(
       id: json['id'] as String,
       name: json['name'] as String,
-      baptismalName: json['baptismal_name'] as String,
+      baptismalName: json['baptismal_name'] as String?,
       positions: (json['positions'] as List<dynamic>)
           .map((e) => Position.fromJson(e as Map<String, dynamic>))
           .toList(),

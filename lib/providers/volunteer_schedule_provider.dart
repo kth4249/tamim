@@ -11,11 +11,15 @@ class VolunteerScheduleProvider extends ChangeNotifier {
   List<MemberPositions> memberPositions = [];
 
   Future<void> fetchAvailableDateByMember(parishGroupId) async {
-    final response = await supabase.from('users').select('''
+    final response = await supabase
+        .from('users')
+        .select('''
             id, name, baptismal_name,
             parish_group_members!inner(group_id), 
             member_dates(available_date)
-            ''').eq("parish_group_members.group_id", parishGroupId);
+            ''')
+        .eq("parish_group_members.group_id", parishGroupId)
+        .eq('status', 'active');
     final transformed = response.map((e) {
       final memberDates =
           e['member_dates'].map((e) => e['available_date']).toList();

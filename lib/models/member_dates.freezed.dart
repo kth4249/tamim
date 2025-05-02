@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberDates {
   String get id;
   String get name;
-  String get baptismalName;
+  String? get baptismalName;
   List<DateTime> get memberDates;
 
   /// Create a copy of MemberDates
@@ -63,7 +63,7 @@ abstract mixin class $MemberDatesCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String baptismalName,
+      String? baptismalName,
       List<DateTime> memberDates});
 }
 
@@ -81,7 +81,7 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = null,
+    Object? baptismalName = freezed,
     Object? memberDates = null,
   }) {
     return _then(_self.copyWith(
@@ -93,10 +93,10 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: null == baptismalName
+      baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       memberDates: null == memberDates
           ? _self.memberDates
           : memberDates // ignore: cast_nullable_to_non_nullable
@@ -122,7 +122,7 @@ class _MemberDates implements MemberDates {
   @override
   final String name;
   @override
-  final String baptismalName;
+  final String? baptismalName;
   final List<DateTime> _memberDates;
   @override
   List<DateTime> get memberDates {
@@ -181,7 +181,7 @@ abstract mixin class _$MemberDatesCopyWith<$Res>
   $Res call(
       {String id,
       String name,
-      String baptismalName,
+      String? baptismalName,
       List<DateTime> memberDates});
 }
 
@@ -199,7 +199,7 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = null,
+    Object? baptismalName = freezed,
     Object? memberDates = null,
   }) {
     return _then(_MemberDates(
@@ -211,10 +211,10 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: null == baptismalName
+      baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       memberDates: null == memberDates
           ? _self._memberDates
           : memberDates // ignore: cast_nullable_to_non_nullable
