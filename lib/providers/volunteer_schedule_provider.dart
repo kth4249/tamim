@@ -15,10 +15,11 @@ class VolunteerScheduleProvider extends ChangeNotifier {
         .from('users')
         .select('''
             id, name, baptismal_name,
-            parish_group_members!inner(group_id), 
+            parish_group_members!inner(group_id, status), 
             member_dates(available_date)
             ''')
         .eq("parish_group_members.group_id", parishGroupId)
+        .eq('parish_group_members.status', 'active')
         .eq('status', 'active');
     final transformed = response.map((e) {
       final memberDates =

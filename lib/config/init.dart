@@ -1,10 +1,12 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tamim/firebase_options.dart';
 import 'package:tamim/main.dart';
 
 init() async {
+  await dotenv.load(fileName: '.env');
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Supabase.initialize(
     url: 'https://oxpqwzbuzfxpsqdbplpa.supabase.co',

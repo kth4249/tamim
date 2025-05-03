@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/user_info.dart';
@@ -23,7 +26,6 @@ class AuthProvider extends ChangeNotifier {
   bool isAuthenticated = false;
 
   UserInfo? user;
-  OAuthProvider? oauthProvider;
 
   AuthProvider() {
     authSubscription = supabase.auth.onAuthStateChange.listen((data) async {
@@ -106,7 +108,6 @@ class AuthProvider extends ChangeNotifier {
     final userInfo = UserInfo.fromJson(data);
     isAuthenticated = true;
     user = userInfo;
-    oauthProvider = OAuthProvider.google;
     notifyListeners();
   }
 
@@ -153,19 +154,17 @@ class AuthProvider extends ChangeNotifier {
     final userInfo = UserInfo.fromJson(data);
     isAuthenticated = true;
     user = userInfo;
-    oauthProvider = OAuthProvider.apple;
     notifyListeners();
   }
 
   Future<void> signOut() async {
     try {
-      await supabase.auth.signOut();
-      if (oauthProvider == OAuthProvider.google) {
+      if (supabase.auth.currentUser!.appMetadata['provider'] == 'google') {
         await googleSignIn.disconnect();
       }
+      await supabase.auth.signOut();
       isAuthenticated = false;
       user = null;
-      oauthProvider = null;
       notifyListeners();
     } catch (e) {
       rethrow;
@@ -186,6 +185,10 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> withdraw() async {
     if (user == null) return;
+
+    if (supabase.auth.currentUser!.appMetadata['provider'] == 'apple') {
+      await revokeSignInWithApple();
+    }
 
     await supabase
         .from('users')
@@ -255,6 +258,137 @@ class AuthProvider extends ChangeNotifier {
       notifyListeners();
     } catch (e) {
       rethrow;
+    }
+  }
+
+  // 나는 함수 반환형이 이렇게 되어있음. 필요한 방향으로 알아서 바꿔 사용하면 될 것 같다
+  Future<void> revokeSignInWithApple() async {
+    try {
+      final appleCredential = await SignInWithApple.getAppleIDCredential(
+        scopes: [
+          AppleIDAuthorizationScopes.email,
+          AppleIDAuthorizationScopes.fullName,
+        ],
+      );
+      final String authCode = appleCredential.authorizationCode;
+
+      final String privateKey = [
+        dotenv.env['APPLE_PRIVATE_KEY_LINE1'],
+        dotenv.env['APPLE_PRIVATE_KEY_LINE2'],
+        dotenv.env['APPLE_PRIVATE_KEY_LINE3'],
+        dotenv.env['APPLE_PRIVATE_KEY_LINE4'],
+        dotenv.env['APPLE_PRIVATE_KEY_LINE5'],
+        dotenv.env['APPLE_PRIVATE_KEY_LINE6'],
+      ].join('\n');
+
+      const String teamId = 'ASP62C28F2';
+      const String clientId = 'com.hun.tamim';
+      const String keyId = 'J45C96KQM3';
+
+      final String clientSecret = createJwt(
+        teamId: teamId,
+        clientId: clientId,
+        keyId: keyId,
+        privateKey: privateKey,
+      );
+
+      final accessToken = (await requestAppleTokens(
+        authCode,
+        clientSecret,
+        clientId,
+      ))['access_token'] as String;
+      const String tokenTypeHint = 'access_token';
+
+      await revokeAppleToken(
+        clientId: clientId,
+        clientSecret: clientSecret,
+        token: accessToken,
+        tokenTypeHint: tokenTypeHint,
+      );
+
+      return;
+    } on Exception catch (e) {
+      rethrow;
+    }
+  }
+
+  // JWT 생성 함수
+  String createJwt({
+    required String teamId,
+    required String clientId,
+    required String keyId,
+    required String privateKey,
+  }) {
+    final jwt = JWT(
+      {
+        'iss': teamId,
+        'iat': DateTime.now().millisecondsSinceEpoch ~/ 1000,
+        'exp': (DateTime.now().millisecondsSinceEpoch ~/ 1000) + 3600,
+        'aud': 'https://appleid.apple.com',
+        'sub': clientId,
+      },
+      header: {
+        'kid': keyId,
+        'alg': 'ES256',
+      },
+    );
+
+    final key = ECPrivateKey(privateKey);
+    return jwt.sign(key, algorithm: JWTAlgorithm.ES256);
+  }
+
+// 사용자 토큰 취소 함수
+  Future<void> revokeAppleToken({
+    required String clientId,
+    required String clientSecret,
+    required String token,
+    required String tokenTypeHint,
+  }) async {
+    final url = Uri.parse('https://appleid.apple.com/auth/revoke');
+    final response = await http.post(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'token': token,
+        'token_type_hint': tokenTypeHint,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // 토큰이 성공적으로 취소됨
+      return;
+    } else {
+      throw Exception('토큰 취소 중 오류 발생 : ${response.statusCode}');
+    }
+  }
+
+  Future<Map<String, dynamic>> requestAppleTokens(
+    String authorizationCode,
+    String clientSecret,
+    String clientId,
+  ) async {
+    final response = await http.post(
+      Uri.parse('https://appleid.apple.com/auth/token'),
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'client_id': clientId,
+        'client_secret': clientSecret,
+        'code': authorizationCode,
+        'grant_type': 'authorization_code',
+        // 'redirect_uri': 'YOUR_REDIRECT_URI', // 필요시 설정
+      },
+    );
+
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('토큰 요청 실패: ${response.body}');
     }
   }
 }

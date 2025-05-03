@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
-import 'package:tamim/screens/my_page_screen.dart';
+import 'package:tamim/screens/group_my_page_screen.dart';
 import 'package:tamim/widgets/common_calendar.dart';
 import '../theme/app_theme.dart';
 
@@ -117,7 +117,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
       ),
     );
     if (_selectedIndex == 1) {
-      currentScreen = const MyPageScreen();
+      currentScreen = const GroupMypageScreen();
     }
 
     return Scaffold(

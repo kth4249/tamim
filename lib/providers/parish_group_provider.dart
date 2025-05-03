@@ -19,6 +19,15 @@ class ParishGroupProvider extends ChangeNotifier {
   List<ParishGroupMemberInfo> parishGroupMemberInfos = [];
   ParishGroupMemberInfo? myInfo;
 
+  void reset() {
+    parish = null;
+    parishGroup = null;
+    positions = [];
+    groupByVolunteerEvents = {};
+    parishGroupMemberInfos = [];
+    myInfo = null;
+  }
+
   Future<void> fetchData(String parishGroupId) async {
     final response = await supabase
         .from('parish_groups')
@@ -27,11 +36,12 @@ class ParishGroupProvider extends ChangeNotifier {
         *, 
         positions!positions_group_id_fkey(*),
         volunteer_schedules(*),
-        parish_group_members(*, user: users!parish_group_members_user_id_fkey(*))
+        parish_group_members(*, user: users!inner(*))
         ''',
         )
         .eq('id', parishGroupId)
         .eq('parish_group_members.status', 'active')
+        .eq('parish_group_members.user.status', 'active')
         .single();
     logger.d('response: $response');
 
@@ -46,7 +56,7 @@ class ParishGroupProvider extends ChangeNotifier {
         .map((json) => Position.fromJson(json))
         .toList();
     parishGroupMemberInfos = (response['parish_group_members'] as List<dynamic>)
-        .where((json) => json['user']['status'] == 'active')
+        // .where((json) => json['user']['status'] == 'active')
         .map((json) => ParishGroupMemberInfo.fromJson(json))
         .toList();
 
@@ -94,5 +104,15 @@ class ParishGroupProvider extends ChangeNotifier {
         .toList();
 
     notifyListeners();
+  }
+
+  Future<void> leaveGroup() async {
+    await supabase
+        .from('parish_group_members')
+        .update({'status': 'inactive'})
+        .eq('user_id', myInfo!.user.id)
+        .eq('group_id', parishGroup!.id);
+
+    reset();
   }
 }

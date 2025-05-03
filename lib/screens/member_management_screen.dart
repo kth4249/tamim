@@ -7,7 +7,7 @@ import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
-import 'package:tamim/screens/my_page_screen.dart';
+import 'package:tamim/screens/group_my_page_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 
 class MemberManagementScreen extends StatelessWidget {
