@@ -39,6 +39,9 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     final selectedDay = context
         .read<ParishGroupProvider>()
         .groupByVolunteerEvents[_selectedDay];
+    selectedDay?.sort((a, b) =>
+        a.position.id.compareTo(b.position.id)); // TODO: sort by sortNo
+
     Widget currentScreen = SingleChildScrollView(
       scrollDirection: Axis.vertical,
       child: Column(

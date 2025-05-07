@@ -88,21 +88,14 @@ class CommonCalendar extends StatelessWidget {
           },
           markerBuilder: (context, day, events) {
             if (events.isNotEmpty) {
-              // return ListView.builder(
-              //   shrinkWrap: true,
-              //   scrollDirection: Axis.horizontal,
-              //   itemCount: events.length,
-              //   itemBuilder: (context, index) {
               return Container(
-                margin: const EdgeInsets.only(top: 40),
+                margin: const EdgeInsets.only(top: 30),
                 child: const Icon(
-                  size: 20,
+                  size: 16,
                   Icons.church_outlined,
                   color: Colors.green,
                 ),
               );
-              //   },
-              // );
             }
             return null;
           },
