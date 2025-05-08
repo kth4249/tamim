@@ -14,6 +14,7 @@ abstract class Position with _$Position {
     required String createdAt,
     required String updatedBy,
     required String updatedAt,
+    int? order,
   }) = _Position;
 
   factory Position.fromJson(Map<String, dynamic> json) =>

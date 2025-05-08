@@ -177,7 +177,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        centerTitle: false,
+        centerTitle: true,
         title: Text(
           context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
           style: const TextStyle(

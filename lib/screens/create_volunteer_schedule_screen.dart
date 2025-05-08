@@ -267,7 +267,7 @@ class _CreateVolunteerScheduleScreenState
                           ),
                           const SizedBox(height: 8),
                           Text(
-                            '봉사일정을 생성하기 위해서는 먼저 포지션을 생성해야 합니다.\봉사 관리 화면에서 포지션을 추가해주세요.',
+                            '봉사일정을 생성하기 위해서는 먼저 포지션을 생성해야 합니다.\n봉사 관리 화면에서 포지션을 추가해주세요.',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontSize: 14,

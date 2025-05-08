@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/models/parish_group_member_info.dart';
-import 'package:tamim/screens/group_my_page_screen.dart';
-import 'package:tamim/screens/parish_group_screen.dart';
 
 class MemberManagementScreen extends StatelessWidget {
   const MemberManagementScreen({super.key});
@@ -298,121 +295,168 @@ class MemberManagementScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final members = context.watch<ParishGroupProvider>().parishGroupMemberInfos;
+    final provider = context.watch<ParishGroupProvider>();
+    final pendingMembers = provider.parishGroupMemberInfos
+        .where((m) => m.status == 'pending')
+        .toList();
+    final members = provider.parishGroupMemberInfos
+        .where((m) => m.status == 'active')
+        .toList();
+    final groupId = provider.parishGroup?.id;
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('모임원 관리'),
       ),
       body: SafeArea(
-        child: Padding(
+        child: ListView(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Column(
-                  children: [
-                    QrImageView(
-                      data:
-                          'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}',
-                      version: QrVersions.auto,
-                      size: 200.0,
-                    ),
-                    const SizedBox(height: 16),
-                    ElevatedButton(
-                      onPressed: () {
-                        final url = Uri.parse(
-                            'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}');
-                        Clipboard.setData(ClipboardData(text: url.toString()));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('링크가 복사되었습니다.')),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF1A73E8),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 12,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
+          children: [
+            Center(
+              child: Column(
+                children: [
+                  QrImageView(
+                    data:
+                        'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}',
+                    version: QrVersions.auto,
+                    size: 200.0,
+                  ),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: () {
+                      final url = Uri.parse(
+                          'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}');
+                      Clipboard.setData(ClipboardData(text: url.toString()));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('링크가 복사되었습니다.')),
+                      );
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1A73E8),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 12,
                       ),
-                      child: const Text(
-                        '링크로 초대하기',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                        ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                  ],
-                ),
+                    child: const Text(
+                      '링크로 초대하기',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
               ),
+            ),
+            if (pendingMembers.isNotEmpty) ...[
               const SizedBox(height: 30),
               const Text(
-                '모임원 목록',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                '가입 신청자',
+                style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xFF1A73E8)),
               ),
               const SizedBox(height: 16),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: members.length,
-                  itemBuilder: (context, index) {
-                    final member = members[index];
-                    return Container(
-                      padding: const EdgeInsets.symmetric(vertical: 12),
-                      decoration: BoxDecoration(
-                        border: Border(
-                          bottom: BorderSide(color: Colors.grey.shade200),
-                        ),
+              ...pendingMembers.map((member) => Card(
+                    margin: const EdgeInsets.symmetric(vertical: 6),
+                    child: ListTile(
+                      leading: const CircleAvatar(
+                        backgroundImage:
+                            AssetImage('assets/images/profile.png'),
                       ),
-                      child: Row(
+                      title: Text(member.user.name),
+                      subtitle: Text(
+                          '가입 신청일: ${member.createdAt.toLocal().toString().substring(0, 10)}'),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          const CircleAvatar(
-                            radius: 25,
-                            // backgroundImage: NetworkImage(member.profileImage),
-                            backgroundImage: AssetImage(
-                              'assets/images/profile.png',
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  member.user.name,
-                                  style: const TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '가입일: ${member.createdAt.toLocal().toString().substring(0, 10)}',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                              ],
-                            ),
+                          IconButton(
+                            icon: const Icon(Icons.check_circle,
+                                color: Colors.green),
+                            tooltip: '수락',
+                            onPressed: () async {
+                              await provider.acceptMember(
+                                  groupId, member.userId);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('가입이 승인되었습니다.')),
+                              );
+                            },
                           ),
                           IconButton(
-                            onPressed: () =>
-                                _showMemberActionDialog(context, member),
-                            icon: const Icon(Icons.more_vert),
+                            icon: const Icon(Icons.cancel, color: Colors.red),
+                            tooltip: '거절',
+                            onPressed: () async {
+                              await provider.rejectMember(
+                                  groupId, member.userId);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('가입이 거절되었습니다.')),
+                              );
+                            },
                           ),
                         ],
                       ),
-                    );
-                  },
-                ),
-              ),
+                    ),
+                  )),
             ],
-          ),
+            const SizedBox(height: 30),
+            const Text(
+              '모임원 목록',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+            ),
+            const SizedBox(height: 16),
+            ...members.map((member) => Container(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  decoration: BoxDecoration(
+                    border: Border(
+                      bottom: BorderSide(color: Colors.grey.shade200),
+                    ),
+                  ),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 25,
+                        backgroundImage: AssetImage(
+                          'assets/images/profile.png',
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              member.user.name,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Text(
+                              '가입일: ${member.createdAt.toLocal().toString().substring(0, 10)}',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey.shade600,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      IconButton(
+                        onPressed: () =>
+                            _showMemberActionDialog(context, member),
+                        icon: const Icon(Icons.more_vert),
+                      ),
+                    ],
+                  ),
+                )),
+          ],
         ),
       ),
     );

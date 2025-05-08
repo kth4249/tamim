@@ -111,9 +111,9 @@ class RouterConfigClass {
         }
 
         // 추후 삭제: 모임 가입되어 있는 경우 해당 모임으로 리다이렉트
-        if (currentPath == "/" && joinedGroups.isNotEmpty) {
-          return "/parish-groups/${joinedGroups[0]['group_id']}";
-        }
+        // if (currentPath == "/" && joinedGroups.isNotEmpty) {
+        //   return "/parish-groups/${joinedGroups[0]['group_id']}";
+        // }
 
         return null;
       },

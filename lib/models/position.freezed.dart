@@ -23,6 +23,7 @@ mixin _$Position {
   String get createdAt;
   String get updatedBy;
   String get updatedAt;
+  int? get order;
 
   /// Create a copy of Position
   /// with the given fields replaced by the non-null parameter values.
@@ -52,17 +53,18 @@ mixin _$Position {
             (identical(other.updatedBy, updatedBy) ||
                 other.updatedBy == updatedBy) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.order, order) || other.order == order));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, groupId, positionName,
-      description, createdBy, createdAt, updatedBy, updatedAt);
+      description, createdBy, createdAt, updatedBy, updatedAt, order);
 
   @override
   String toString() {
-    return 'Position(id: $id, groupId: $groupId, positionName: $positionName, description: $description, createdBy: $createdBy, createdAt: $createdAt, updatedBy: $updatedBy, updatedAt: $updatedAt)';
+    return 'Position(id: $id, groupId: $groupId, positionName: $positionName, description: $description, createdBy: $createdBy, createdAt: $createdAt, updatedBy: $updatedBy, updatedAt: $updatedAt, order: $order)';
   }
 }
 
@@ -79,7 +81,8 @@ abstract mixin class $PositionCopyWith<$Res> {
       String createdBy,
       String createdAt,
       String updatedBy,
-      String updatedAt});
+      String updatedAt,
+      int? order});
 }
 
 /// @nodoc
@@ -102,6 +105,7 @@ class _$PositionCopyWithImpl<$Res> implements $PositionCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedBy = null,
     Object? updatedAt = null,
+    Object? order = freezed,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -136,6 +140,10 @@ class _$PositionCopyWithImpl<$Res> implements $PositionCopyWith<$Res> {
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
+      order: freezed == order
+          ? _self.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }
@@ -151,7 +159,8 @@ class _Position implements Position {
       required this.createdBy,
       required this.createdAt,
       required this.updatedBy,
-      required this.updatedAt});
+      required this.updatedAt,
+      this.order});
   factory _Position.fromJson(Map<String, dynamic> json) =>
       _$PositionFromJson(json);
 
@@ -171,6 +180,8 @@ class _Position implements Position {
   final String updatedBy;
   @override
   final String updatedAt;
+  @override
+  final int? order;
 
   /// Create a copy of Position
   /// with the given fields replaced by the non-null parameter values.
@@ -205,17 +216,18 @@ class _Position implements Position {
             (identical(other.updatedBy, updatedBy) ||
                 other.updatedBy == updatedBy) &&
             (identical(other.updatedAt, updatedAt) ||
-                other.updatedAt == updatedAt));
+                other.updatedAt == updatedAt) &&
+            (identical(other.order, order) || other.order == order));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, groupId, positionName,
-      description, createdBy, createdAt, updatedBy, updatedAt);
+      description, createdBy, createdAt, updatedBy, updatedAt, order);
 
   @override
   String toString() {
-    return 'Position(id: $id, groupId: $groupId, positionName: $positionName, description: $description, createdBy: $createdBy, createdAt: $createdAt, updatedBy: $updatedBy, updatedAt: $updatedAt)';
+    return 'Position(id: $id, groupId: $groupId, positionName: $positionName, description: $description, createdBy: $createdBy, createdAt: $createdAt, updatedBy: $updatedBy, updatedAt: $updatedAt, order: $order)';
   }
 }
 
@@ -234,7 +246,8 @@ abstract mixin class _$PositionCopyWith<$Res>
       String createdBy,
       String createdAt,
       String updatedBy,
-      String updatedAt});
+      String updatedAt,
+      int? order});
 }
 
 /// @nodoc
@@ -257,6 +270,7 @@ class __$PositionCopyWithImpl<$Res> implements _$PositionCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedBy = null,
     Object? updatedAt = null,
+    Object? order = freezed,
   }) {
     return _then(_Position(
       id: null == id
@@ -291,6 +305,10 @@ class __$PositionCopyWithImpl<$Res> implements _$PositionCopyWith<$Res> {
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
+      order: freezed == order
+          ? _self.order
+          : order // ignore: cast_nullable_to_non_nullable
+              as int?,
     ));
   }
 }

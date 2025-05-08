@@ -15,16 +15,27 @@ class ParishGroupListScreen extends StatefulWidget {
   State<ParishGroupListScreen> createState() => _ParishGroupListScreenState();
 }
 
-class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
+class _ParishGroupListScreenState extends State<ParishGroupListScreen>
+    with SingleTickerProviderStateMixin {
   List<ParishGroup> _groups = [];
+  List<ParishGroup> _myGroups = [];
   List<ParishGroupCategory> _categories = [];
   Map<int, String> _memberStatusMap = {};
   bool _isLoading = true;
   int _selectedIndex = 0;
+  late TabController _tabController;
+
   @override
   void initState() {
     super.initState();
+    _tabController = TabController(length: 2, vsync: this);
     _loadData();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadData() async {
@@ -62,6 +73,9 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
             orElse: () => {'status': 'inactive'},
           )['status'] as String
       };
+      // 내가 가입한 모임만 필터링
+      _myGroups =
+          _groups.where((g) => _memberStatusMap[g.id] == 'active').toList();
     } catch (e) {
       logger.e('Error loading data: $e');
     } finally {
@@ -99,35 +113,15 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
-
-    Widget currentScreen = RefreshIndicator(
+  Widget buildGroupList(List<ParishGroup> groups) {
+    return RefreshIndicator(
       onRefresh: _loadData,
       child: CustomScrollView(
         slivers: [
-          SliverToBoxAdapter(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-              child: Text(
-                '참여 가능한 모임',
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ),
-          ),
           SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                final group = _groups[index];
+                final group = groups[index];
                 final category =
                     _categories.firstWhere((c) => c.id == group.categoryId);
                 final memberStatus = _memberStatusMap[group.id];
@@ -148,7 +142,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
                     child: InkWell(
                       borderRadius: BorderRadius.circular(12),
                       onTap: memberStatus == 'active'
-                          ? () => context.go('/parish-groups/${group.id}')
+                          ? () => context.push('/parish-groups/${group.id}')
                           : null,
                       child: Padding(
                         padding: const EdgeInsets.all(16),
@@ -237,7 +231,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
                   ),
                 );
               },
-              childCount: _groups.length,
+              childCount: groups.length,
             ),
           ),
           const SliverFillRemaining(
@@ -259,6 +253,41 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
+
+    Widget currentScreen = Column(
+      children: [
+        TabBar(
+          controller: _tabController,
+          labelColor: AppTheme.primaryColor,
+          unselectedLabelColor: Colors.grey,
+          indicatorColor: AppTheme.primaryColor,
+          tabs: const [
+            Tab(text: '내가 가입한 모임'),
+            Tab(text: '전체 모임'),
+          ],
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              buildGroupList(_myGroups),
+              buildGroupList(_groups),
+            ],
+          ),
+        ),
+      ],
     );
 
     if (_selectedIndex == 1) {

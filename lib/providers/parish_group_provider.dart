@@ -31,16 +31,14 @@ class ParishGroupProvider extends ChangeNotifier {
   Future<void> fetchData(String parishGroupId) async {
     final response = await supabase
         .from('parish_groups')
-        .select(
-          '''
+        .select('''
         *, 
         positions!positions_group_id_fkey(*),
         volunteer_schedules(*),
         parish_group_members(*, user: users!inner(*))
-        ''',
-        )
+        ''')
         .eq('id', parishGroupId)
-        .eq('parish_group_members.status', 'active')
+        // .eq('parish_group_members.status', 'active') // <- 주석처리: 모든 상태 포함
         .eq('parish_group_members.user.status', 'active')
         .single();
     logger.d('response: $response');
@@ -61,8 +59,8 @@ class ParishGroupProvider extends ChangeNotifier {
         .toList();
 
     logger.d('parishGroupMemberInfos: $parishGroupMemberInfos');
-    myInfo = parishGroupMemberInfos
-        .firstWhere((info) => info.userId == supabase.auth.currentUser!.id);
+    myInfo = parishGroupMemberInfos.firstWhereOrNull(
+        (info) => info.userId == supabase.auth.currentUser!.id);
 
     await fetchGroupByVolunteerEvents(parishGroupId);
 
@@ -114,5 +112,27 @@ class ParishGroupProvider extends ChangeNotifier {
         .eq('group_id', parishGroup!.id);
 
     reset();
+  }
+
+  Future<void> acceptMember(int? groupId, String userId) async {
+    if (groupId == null) return;
+    await supabase
+        .from('parish_group_members')
+        .update({'status': 'active'})
+        .eq('group_id', groupId)
+        .eq('user_id', userId);
+    await fetchData(groupId.toString());
+    notifyListeners();
+  }
+
+  Future<void> rejectMember(int? groupId, String userId) async {
+    if (groupId == null) return;
+    await supabase
+        .from('parish_group_members')
+        .update({'status': 'inactive'})
+        .eq('group_id', groupId)
+        .eq('user_id', userId);
+    await fetchData(groupId.toString());
+    notifyListeners();
   }
 }
