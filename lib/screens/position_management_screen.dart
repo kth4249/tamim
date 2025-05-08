@@ -327,8 +327,11 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
   @override
   Widget build(BuildContext context) {
     List<Position> positions = context.watch<ParishGroupProvider>().positions;
-    List<ParishGroupMemberInfo> members =
-        context.watch<ParishGroupProvider>().parishGroupMemberInfos;
+    List<ParishGroupMemberInfo> members = context
+        .watch<ParishGroupProvider>()
+        .parishGroupMemberInfos
+        .where((e) => e.status == 'active')
+        .toList();
 
     return Scaffold(
       backgroundColor: Colors.grey[50],
