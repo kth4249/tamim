@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/providers/calendar_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/group_my_page_screen.dart';
 import 'package:tamim/widgets/common_calendar.dart';
@@ -36,11 +37,13 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final selectedDay = context
+    final volunteers = context
         .read<ParishGroupProvider>()
         .groupByVolunteerEvents[_selectedDay];
-    selectedDay?.sort((a, b) =>
+    volunteers?.sort((a, b) =>
         a.position.id.compareTo(b.position.id)); // TODO: sort by sortNo
+    final liturgicalEvents =
+        context.watch<CalendarProvider>().liturgicalEvents[_selectedDay];
 
     Widget currentScreen = SingleChildScrollView(
       scrollDirection: Axis.vertical,
@@ -63,7 +66,55 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
             ),
           ),
           const SizedBox(height: 16),
-          if (selectedDay != null)
+          if (liturgicalEvents != null)
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '이 날의 전례',
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: liturgicalEvents.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withAlpha(13),
+                              blurRadius: 10,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: ListTile(
+                          leading: const Icon(Icons.church_outlined,
+                              color: AppTheme.primaryColor),
+                          title: Text(
+                            liturgicalEvents[index].summary,
+                            style: const TextStyle(fontWeight: FontWeight.w600),
+                          ),
+                          subtitle: Text(
+                            liturgicalEvents[index]
+                                    .description
+                                    ?.replaceAll('\\n', '\n') ??
+                                '',
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
+          const SizedBox(height: 16),
+          if (volunteers != null)
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Column(
@@ -76,7 +127,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                   const SizedBox(height: 12),
                   ListView.builder(
                     shrinkWrap: true,
-                    itemCount: selectedDay.length,
+                    itemCount: volunteers.length,
                     itemBuilder: (context, index) {
                       return Container(
                         decoration: BoxDecoration(
@@ -100,13 +151,13 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                             ),
                           ),
                           title: Text(
-                            selectedDay[index].user != null
-                                ? selectedDay[index].user!.name
-                                : selectedDay[index].anon!.name,
+                            volunteers[index].user != null
+                                ? volunteers[index].user!.name
+                                : volunteers[index].anon!.name,
                             style: const TextStyle(fontWeight: FontWeight.w600),
                           ),
                           subtitle: Text(
-                            selectedDay[index].position.positionName,
+                            volunteers[index].position.positionName,
                           ),
                         ),
                       );

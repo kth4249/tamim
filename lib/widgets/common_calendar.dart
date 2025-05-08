@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import '../theme/app_theme.dart';
 
-class CommonCalendar extends StatelessWidget {
+class CommonCalendar extends StatefulWidget {
   final DateTime firstDay;
   final DateTime lastDay;
   final DateTime focusedDay;
@@ -30,18 +30,29 @@ class CommonCalendar extends StatelessWidget {
         );
 
   @override
+  State<CommonCalendar> createState() => _CommonCalendarState();
+}
+
+class _CommonCalendarState extends State<CommonCalendar> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
       child: TableCalendar(
-        firstDay: firstDay,
-        lastDay: lastDay,
-        focusedDay: focusedDay,
-        selectedDayPredicate: (day) => isMultiSelect
-            ? selectedDays!.any((selectedDay) => isSameDay(selectedDay, day))
-            : isSameDay(selectedDay, day),
+        firstDay: widget.firstDay,
+        lastDay: widget.lastDay,
+        focusedDay: widget.focusedDay,
+        selectedDayPredicate: (day) => widget.isMultiSelect
+            ? widget.selectedDays!
+                .any((selectedDay) => isSameDay(selectedDay, day))
+            : isSameDay(widget.selectedDay, day),
         calendarFormat: CalendarFormat.month,
-        eventLoader: eventLoader,
+        eventLoader: widget.eventLoader,
         headerStyle: const HeaderStyle(
           titleCentered: true,
           formatButtonVisible: false,
@@ -75,7 +86,7 @@ class CommonCalendar extends StatelessWidget {
             shape: BoxShape.circle,
           ),
         ),
-        onDaySelected: onDaySelected,
+        onDaySelected: widget.onDaySelected,
         calendarBuilders: CalendarBuilders(
           dowBuilder: (context, day) {
             if (day.weekday == DateTime.sunday) {
