@@ -1,6 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tamim/models/parish.dart';
-import 'package:tamim/models/parish_group_member.dart';
 
 part 'parish_group_info.freezed.dart';
 part 'parish_group_info.g.dart';

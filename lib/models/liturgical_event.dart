@@ -1,5 +1,4 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:icalendar_parser/icalendar_parser.dart';
 
 part 'liturgical_event.freezed.dart';
 part 'liturgical_event.g.dart';

@@ -307,7 +307,7 @@ class AuthProvider extends ChangeNotifier {
       );
 
       return;
-    } on Exception catch (e) {
+    } on Exception {
       rethrow;
     }
   }
