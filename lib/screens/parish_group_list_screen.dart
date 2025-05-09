@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/parish_group_category.dart';
+import 'package:tamim/models/parish_group_info.dart';
+import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/my_page_screen.dart';
 import 'package:tamim/theme/app_theme.dart';
@@ -17,8 +18,8 @@ class ParishGroupListScreen extends StatefulWidget {
 
 class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     with SingleTickerProviderStateMixin {
-  List<ParishGroup> _groups = [];
-  List<ParishGroup> _myGroups = [];
+  List<ParishGroupInfo> _groups = [];
+  List<ParishGroupInfo> _myGroups = [];
   List<ParishGroupCategory> _categories = [];
   Map<int, String> _memberStatusMap = {};
   bool _isLoading = true;
@@ -52,10 +53,10 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
 
       final groupsResponse = await supabase
           .from('parish_groups')
-          .select('*')
+          .select('*, parish:parishs(*)')
           .eq('status', 'active');
       _groups = (groupsResponse as List<dynamic>)
-          .map((json) => ParishGroup.fromJson(json))
+          .map((json) => ParishGroupInfo.fromJson(json))
           .toList();
 
       final userId = context.read<AuthProvider>().user!.id;
@@ -63,8 +64,6 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
           .from('parish_group_members')
           .select('group_id, status')
           .eq('user_id', userId);
-      logger.d('myGroupsResponse: $myGroupsResponse');
-      logger.d('_groups: $_groups');
 
       _memberStatusMap = {
         for (var group in _groups)
@@ -85,12 +84,12 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     }
   }
 
-  Future<void> _joinGroup(ParishGroup group) async {
+  Future<void> _joinGroup(ParishGroupInfo group) async {
     try {
       await supabase.from('parish_group_members').upsert({
         'group_id': group.id,
         'user_id': context.read<AuthProvider>().user!.id,
-        'role_id': 2,
+        'role_id': roleIdMap[GroupRole.member],
         'status': 'pending',
       });
 
@@ -113,7 +112,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     }
   }
 
-  Widget buildGroupList(List<ParishGroup> groups) {
+  Widget buildGroupList(List<ParishGroupInfo> groups) {
     return RefreshIndicator(
       onRefresh: _loadData,
       child: CustomScrollView(
@@ -151,6 +150,33 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
                           children: [
                             Row(
                               children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade100,
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(Icons.church,
+                                          size: 14,
+                                          color: Colors.grey.shade600),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        group.parish.parishName,
+                                        style: TextStyle(
+                                          color: Colors.grey.shade700,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(
                                     horizontal: 8,
@@ -204,7 +230,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
                                   ),
                               ],
                             ),
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 8),
                             Text(
                               group.groupName,
                               style: Theme.of(context)

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
+import 'package:tamim/models/role.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   final String registerKey;
@@ -309,7 +310,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     await supabase.from('parish_group_members').insert({
       'group_id': groupResponse['id'],
       'user_id': supabase.auth.currentUser!.id,
-      'role_id': 1,
+      'role_id': roleIdMap[GroupRole.leader],
       'status': 'active',
     });
 

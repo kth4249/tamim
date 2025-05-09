@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
+import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/splash_screen.dart';
 
@@ -43,7 +44,7 @@ class _JoinScreenState extends State<JoinScreen> {
     await supabase.from('parish_group_members').upsert({
       'group_id': parishGroup!['id'],
       'user_id': context.read<AuthProvider>().user!.id,
-      "role_id": 2,
+      "role_id": roleIdMap[GroupRole.member],
       "status": "active",
     });
     context.go('/');

@@ -16,9 +16,10 @@ class VolunteerScheduleProvider extends ChangeNotifier {
         .select('''
             id, name, baptismal_name,
             parish_group_members!inner(group_id, status), 
-            member_dates(available_date)
+            member_dates(available_date, group_id)
             ''')
         .eq("parish_group_members.group_id", parishGroupId)
+        .eq('member_dates.group_id', parishGroupId)
         .eq('parish_group_members.status', 'active')
         .eq('status', 'active');
     final transformed = response.map((e) {
@@ -62,7 +63,7 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> changeDate(DateTime date) async {
+  Future<void> changeDate(int groupId, DateTime date) async {
     final id = selectedMemberId;
     if (id == null) {
       return;
@@ -78,13 +79,13 @@ class VolunteerScheduleProvider extends ChangeNotifier {
       await supabase
           .from('member_dates')
           .delete()
-          .eq('group_id', 4)
+          .eq('group_id', groupId)
           .eq('user_id', id)
           .eq('available_date', date.toIso8601String());
     } else {
       selectedDays.add(date);
       await supabase.from('member_dates').insert({
-        'group_id': 4,
+        'group_id': groupId,
         'user_id': id,
         'available_date': date.toIso8601String(),
       });

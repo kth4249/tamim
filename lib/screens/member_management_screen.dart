@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
@@ -152,14 +153,14 @@ class MemberManagementScreen extends StatelessWidget {
                       // 새로운 모임장 권한 부여
                       await supabase
                           .from('parish_group_members')
-                          .update({'role_id': 1})
+                          .update({'role_id': roleIdMap[GroupRole.leader]})
                           .eq('group_id', groupId)
                           .eq('user_id', member.userId);
 
                       // 기존 모임장 권한 해제
                       await supabase
                           .from('parish_group_members')
-                          .update({'role_id': 2})
+                          .update({'role_id': roleIdMap[GroupRole.member]})
                           .eq('group_id', groupId)
                           .eq('user_id', supabase.auth.currentUser!.id);
 

@@ -113,6 +113,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
       final availableMembers = List<UserInfo>.from(context
           .read<ParishGroupProvider>()
           .parishGroupMemberInfos
+          .where((e) => e.status == 'active')
           .map((member) => member.user));
 
       final existingEvents =

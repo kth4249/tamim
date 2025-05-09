@@ -55,6 +55,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
     return context
         .read<ParishGroupProvider>()
         .parishGroupMemberInfos
+        .where((e) => e.status == 'active')
         .map((member) => member.user)
         .where((member) {
       final availablePositions = widget.memberAvailablePositions
