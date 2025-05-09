@@ -81,7 +81,21 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
-                    width: double.infinity,
+                    child: TextButton.icon(
+                      onPressed: () {
+                        context.read<AuthProvider>().signOut();
+                      },
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.logout),
+                      label: const Text('로그아웃'),
+                    ),
+                  ),
+                  SizedBox(
                     child: TextButton.icon(
                       onPressed: () {
                         showDialog(
@@ -113,7 +127,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      icon: const Icon(Icons.logout),
+                      icon: const Icon(Icons.delete),
                       label: const Text('탈퇴하기'),
                     ),
                   ),

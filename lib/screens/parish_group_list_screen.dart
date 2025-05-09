@@ -323,12 +323,6 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     return Scaffold(
       appBar: AppBar(
         title: const Text('모임 목록'),
-        actions: [
-          IconButton(
-            onPressed: () => context.read<AuthProvider>().signOut(),
-            icon: const Icon(Icons.logout),
-          ),
-        ],
       ),
       body: currentScreen,
       bottomNavigationBar: BottomNavigationBar(
@@ -348,6 +342,105 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
             label: '마이페이지',
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final TextEditingController codeController = TextEditingController();
+          final result = await showDialog<String>(
+            context: context,
+            builder: (context) {
+              return Dialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Theme.of(context)
+                                  .primaryColor
+                                  .withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            padding: const EdgeInsets.all(8),
+                            child: Icon(Icons.vpn_key,
+                                color: Theme.of(context).primaryColor),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            '단체 생성 코드 입력',
+                            style: TextStyle(
+                                fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 20),
+                      Text(
+                        '관리자로부터 전달받은 본당 단체 생성 코드를 입력하면 해당 본당에 소속된 단체로 생성됩니다.\n\n입력하지 않고 바로 생성할 경우 무본당 단체로 생성됩니다.',
+                        style: TextStyle(
+                            fontSize: 14, color: Colors.grey[700], height: 1.5),
+                      ),
+                      const SizedBox(height: 20),
+                      TextField(
+                        controller: codeController,
+                        decoration: InputDecoration(
+                          hintText: '단체 생성 코드 (선택)',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        autofocus: true,
+                      ),
+                      const SizedBox(height: 24),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            child: const Text('취소',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.grey)),
+                          ),
+                          const SizedBox(width: 8),
+                          ElevatedButton(
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pop(codeController.text.trim());
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Theme.of(context).primaryColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 12),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                            ),
+                            child: const Text('다음',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.white)),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          );
+          if (!context.mounted) return;
+          if (result != null && result != "") {
+            context.go('/create/${Uri.encodeComponent(result)}');
+          } else if (result == "") {
+            context.go('/create/38fb20d0-fcd7-49c5-b140-7225adca0132');
+          }
+        },
+        child: const Icon(Icons.add),
       ),
     );
   }

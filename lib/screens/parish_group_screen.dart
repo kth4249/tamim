@@ -187,14 +187,6 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         ),
         // backgroundColor: Colors.white,
         elevation: 0,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.logout_outlined, color: Colors.black87),
-            onPressed: () {
-              context.read<AuthProvider>().signOut();
-            },
-          ),
-        ],
       ),
       body: currentScreen,
       bottomNavigationBar: BottomNavigationBar(

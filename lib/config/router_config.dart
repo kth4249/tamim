@@ -22,6 +22,10 @@ class RouterConfigClass {
       initialLocation: '/',
       routes: [
         GoRoute(
+          path: '/deeplink',
+          builder: (context, state) => const ParishGroupListScreen(),
+        ),
+        GoRoute(
           path: '/',
           builder: (context, state) => const ParishGroupListScreen(),
         ),

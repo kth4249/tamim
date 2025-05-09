@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
@@ -16,38 +17,43 @@ class JoinScreen extends StatefulWidget {
 }
 
 class _JoinScreenState extends State<JoinScreen> {
+  late AuthProvider authProvider;
+
   @override
   void initState() {
+    authProvider = context.read<AuthProvider>();
     join();
     super.initState();
   }
 
   void join() async {
-    final joinedGroup = await supabase
-        .from('parish_group_members')
-        .select('*')
-        .eq('user_id', context.read<AuthProvider>().user!.id)
-        .eq('status', 'active')
-        .maybeSingle();
+    try {
+      final parishGroup = await supabase
+          .from('parish_groups')
+          .select('id')
+          .eq('join_key', widget.joinKey)
+          .single();
 
-    final parishGroup = await supabase
-        .from('parish_groups')
-        .select('id')
-        .eq('join_key', widget.joinKey)
-        .maybeSingle();
-
-    if ((joinedGroup != null || parishGroup == null) && mounted) {
-      context.go('/');
-      return;
+      await supabase.from('parish_group_members').upsert({
+        'group_id': parishGroup['id'],
+        'user_id': authProvider.user!.id,
+        "role_id": roleIdMap[GroupRole.member],
+        "status": "active",
+        "updated_at": DateTime.now().toIso8601String(),
+      });
+      if (mounted) {
+        context.go('/');
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text("존재하지 않는 모임입니다."),
+          ),
+        );
+        context.go('/');
+      }
     }
-
-    await supabase.from('parish_group_members').upsert({
-      'group_id': parishGroup!['id'],
-      'user_id': context.read<AuthProvider>().user!.id,
-      "role_id": roleIdMap[GroupRole.member],
-      "status": "active",
-    });
-    context.go('/');
   }
 
   @override
