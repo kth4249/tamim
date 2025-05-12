@@ -45,10 +45,8 @@ class RouterConfigClass {
           builder: (context, state) => const ConnectionMethodScreen(),
         ),
         GoRoute(
-          path: '/create/:registerKey',
-          builder: (context, state) => CreateGroupScreen(
-            registerKey: state.pathParameters['registerKey']!,
-          ),
+          path: '/create-group',
+          builder: (context, state) => const CreateGroupScreen(),
         ),
         GoRoute(
           path: '/create-volunteer-schedule',

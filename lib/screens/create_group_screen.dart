@@ -3,12 +3,12 @@ import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
+import 'package:tamim/models/parish_group.dart';
+import 'package:tamim/models/parish_group_category.dart';
 import 'package:tamim/models/role.dart';
 
 class CreateGroupScreen extends StatefulWidget {
-  final String registerKey;
-
-  const CreateGroupScreen({super.key, required this.registerKey});
+  const CreateGroupScreen({super.key});
 
   @override
   State<CreateGroupScreen> createState() => _CreateGroupScreenState();
@@ -19,42 +19,18 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   final TextEditingController _meetingNameController = TextEditingController();
   final TextEditingController _meetingDescriptionController =
       TextEditingController();
+  late Future<List<Parish>> _parishListFuture;
+  late Future<List<ParishGroupCategory>> _categoriesFuture;
+
   int? selectedCategory;
-  late Parish _parish;
-
-  var _isLoading = true;
-
-  final categories = supabase.from('parish_group_categories').select('*');
+  Parish? _parish;
+  var _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    init();
-  }
-
-  Future<void> init() async {
-    try {
-      final registerKey = widget.registerKey;
-      final parishRes = await supabase
-          .from('parishs')
-          .select('*')
-          .eq('register_key', registerKey)
-          .single();
-
-      setState(() {
-        _parish = Parish.fromJson(parishRes);
-        _isLoading = false;
-      });
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("모임 생성 코드가 올바르지 않습니다."),
-          ),
-        );
-        context.go('/');
-      }
-    }
+    _parishListFuture = _fetchParishList();
+    _categoriesFuture = _fetchCategories();
   }
 
   @override
@@ -64,12 +40,22 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     super.dispose();
   }
 
-  void _showSuccessDialog(Map<String, dynamic> response) {
+  Future<List<ParishGroupCategory>> _fetchCategories() async {
+    final data = await supabase.from('parish_group_categories').select();
+    return (data as List).map((e) => ParishGroupCategory.fromJson(e)).toList();
+  }
+
+  Future<List<Parish>> _fetchParishList() async {
+    final data = await supabase.from('parishs').select();
+    return (data as List).map((e) => Parish.fromJson(e)).toList();
+  }
+
+  void _showSuccessDialog(ParishGroup response) {
     showDialog(
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        var joinUrl = 'https://kth4249.github.io/join/${response['join_key']}';
+        var joinUrl = 'https://kth4249.github.io/join/${response.joinKey}';
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
@@ -121,7 +107,10 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () => context.go('/'),
+                    onPressed: () => {
+                      context.pop(),
+                      context.replace('/parish-groups/${response.id}'),
+                    },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -142,229 +131,234 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return _isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : Scaffold(
-            appBar: AppBar(
-              leading: IconButton(
-                onPressed: () => context.go('/'),
-                icon: const Icon(Icons.arrow_back),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          onPressed: () => context.pop(),
+          icon: const Icon(Icons.arrow_back),
+        ),
+        title: const Text('단체 생성'),
+        centerTitle: true,
+      ),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                '본당 선택',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
-              title: const Text('단체 생성'),
-              centerTitle: true,
-            ),
-            body: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+              const SizedBox(height: 12),
+              FutureBuilder<List<Parish>>(
+                future: _parishListFuture,
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const CircularProgressIndicator();
+                  }
+                  final parishList = snapshot.data!;
+                  return Autocomplete<Parish>(
+                    optionsBuilder: (TextEditingValue textEditingValue) {
+                      if (textEditingValue.text == '') {
+                        return parishList;
+                      }
+                      return parishList.where((Parish parish) {
+                        return parish.parishName
+                            .contains(textEditingValue.text);
+                      });
+                    },
+                    displayStringForOption: (Parish parish) =>
+                        parish.parishName,
+                    onSelected: (Parish parish) {
+                      setState(() {
+                        _parish = parish;
+                      });
+                    },
+                    fieldViewBuilder:
+                        (context, controller, focusNode, onEditingComplete) {
+                      return TextFormField(
+                        controller: controller,
+                        focusNode: focusNode,
+                        decoration: InputDecoration(
+                          hintText: '본당명을 입력하거나 선택하세요.',
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                        ),
+                        validator: (value) {
+                          if (_parish == null) {
+                            return '본당을 선택해주세요.';
+                          }
+                          return null;
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '카테고리 선택',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: FutureBuilder(
+                  future: _categoriesFuture,
+                  builder: (context, snapshot) {
+                    if (snapshot.data == null) {
+                      return const SizedBox.shrink();
+                    }
+                    return Row(
+                      children: snapshot.data!.map((item) {
+                        final int category = item.id;
+                        final isSelected = selectedCategory == category;
+                        return Padding(
+                          padding: const EdgeInsets.only(right: 8),
+                          child: ChoiceChip(
+                            label: Text(item.categoryName),
+                            selected: isSelected,
+                            onSelected: (selected) {
+                              if (selected) {
+                                setState(() => selectedCategory = category);
+                              }
+                            },
+                            backgroundColor: Colors.white,
+                            selectedColor: Colors.blue,
+                            labelStyle: TextStyle(
+                              color: isSelected ? Colors.white : Colors.black,
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '단체명 입력',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _meetingNameController,
+                decoration: InputDecoration(
+                  hintText: '단체명을 입력해주세요.',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return '단체명을 입력해주세요.';
+                  }
+                  if (value.length > 10) {
+                    return '단체명은 10자 이하로 입력해주세요.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              const Tooltip(
+                message: '단체 이미지 변경 기능은 준비 중 입니다.',
+                triggerMode: TooltipTriggerMode.tap,
+                child: Row(
                   children: [
-                    Container(
-                      width: double.infinity,
-                      margin: const EdgeInsets.only(bottom: 24),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 18, horizontal: 16),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor.withOpacity(0.07),
-                        borderRadius: BorderRadius.circular(12),
-                        border: Border.all(
-                          color:
-                              Theme.of(context).primaryColor.withOpacity(0.15),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            _parish.parishName == '무본당'
-                                ? Icons.info_outline
-                                : Icons.church,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Text(
-                              _parish.parishName == '무본당'
-                                  ? '무본당 단체로 생성됩니다'
-                                  : '본당: ${_parish.parishName}',
-                              style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w600,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                            ),
-                          ),
-                        ],
+                    Text(
+                      '단체 이미지',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
-                    const Text(
-                      '카테고리 선택',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: FutureBuilder(
-                        future: categories,
-                        builder: (context, snapshot) {
-                          if (snapshot.data == null) {
-                            return const SizedBox.shrink();
-                          }
-                          return Row(
-                            children: snapshot.data!.map((item) {
-                              final int category = item['id']!;
-                              final isSelected = selectedCategory == category;
-                              return Padding(
-                                padding: const EdgeInsets.only(right: 8),
-                                child: ChoiceChip(
-                                  label: Text(item['category_name']!),
-                                  selected: isSelected,
-                                  onSelected: (selected) {
-                                    if (selected) {
-                                      setState(
-                                          () => selectedCategory = category);
-                                    }
-                                  },
-                                  backgroundColor: Colors.white,
-                                  selectedColor: Colors.blue,
-                                  labelStyle: TextStyle(
-                                    color: isSelected
-                                        ? Colors.white
-                                        : Colors.black,
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        },
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      '단체명 입력',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      controller: _meetingNameController,
-                      decoration: InputDecoration(
-                        hintText: '단체명을 입력해주세요.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return '단체명을 입력해주세요.';
-                        }
-                        if (value.length > 10) {
-                          return '단체명은 10자 이하로 입력해주세요.';
-                        }
-                        return null;
-                      },
-                    ),
-                    const SizedBox(height: 24),
-                    const Tooltip(
-                      message: '단체 이미지 변경 기능은 준비 중 입니다.',
-                      triggerMode: TooltipTriggerMode.tap,
-                      child: Row(
-                        children: [
-                          Text(
-                            '단체 이미지',
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          Icon(Icons.info_outline),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Container(
-                      width: double.infinity,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.grey),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Center(
-                        child: Image.asset(
-                            'assets/images/parish_group_default.png'),
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    const Text(
-                      '단체 설명 (선택사항)',
-                      style:
-                          TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 12),
-                    TextFormField(
-                      validator: (value) {
-                        if (value != null && value.length > 50) {
-                          return '단체 설명은 50자 이하로 입력해주세요.';
-                        }
-                        return null;
-                      },
-                      controller: _meetingDescriptionController,
-                      decoration: InputDecoration(
-                        hintText: '단체에 대한 설명을 작성해주세요.',
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                      ),
-                      maxLines: 4,
-                    ),
-                    const SizedBox(height: 32),
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_isLoading) return;
-                          setState(() => _isLoading = true);
-                          if (!_formKey.currentState!.validate() ||
-                              selectedCategory == null) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('필수 입력 값을 입력해주세요.'),
-                                showCloseIcon: true,
-                                duration: Duration(seconds: 2),
-                              ),
-                            );
-                            setState(() => _isLoading = false);
-                            return;
-                          }
-                          final response = await _createGroup();
-                          _showSuccessDialog(response);
-                          setState(() => _isLoading = false);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.blue,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                        ),
-                        child: _isLoading
-                            ? const CircularProgressIndicator()
-                            : const Text(
-                                '모임 생성하기',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16),
-                              ),
-                      ),
-                    ),
+                    Icon(Icons.info_outline),
                   ],
                 ),
               ),
-            ),
-          );
+              const SizedBox(height: 12),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Center(
+                  child: Image.asset('assets/images/parish_group_default.png'),
+                ),
+              ),
+              const SizedBox(height: 24),
+              const Text(
+                '단체 설명 (선택사항)',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
+                validator: (value) {
+                  if (value != null && value.length > 50) {
+                    return '단체 설명은 50자 이하로 입력해주세요.';
+                  }
+                  return null;
+                },
+                controller: _meetingDescriptionController,
+                decoration: InputDecoration(
+                  hintText: '단체에 대한 설명을 작성해주세요.',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                maxLines: 4,
+              ),
+              const SizedBox(height: 32),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () async {
+                    if (_isLoading) return;
+                    setState(() => _isLoading = true);
+                    if (!_formKey.currentState!.validate() ||
+                        selectedCategory == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('필수 입력 값을 입력해주세요.'),
+                          showCloseIcon: true,
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                      setState(() => _isLoading = false);
+                      return;
+                    }
+                    final response = await _createGroup();
+                    _showSuccessDialog(response);
+                    setState(() => _isLoading = false);
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                  child: _isLoading
+                      ? const CircularProgressIndicator()
+                      : const Text(
+                          '모임 생성하기',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 
-  Future<Map<String, dynamic>> _createGroup() async {
+  Future<ParishGroup> _createGroup() async {
     final groupResponse = await supabase
         .from('parish_groups')
         .insert({
-          'parish_id': _parish.id,
+          'parish_id': _parish!.id,
           'category_id': selectedCategory,
           'group_name': _meetingNameController.text,
           'description': _meetingDescriptionController.text,
@@ -374,6 +368,7 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
         })
         .select()
         .single();
+    final parishGroup = ParishGroup.fromJson(groupResponse);
     await supabase.from('parish_group_members').insert({
       'group_id': groupResponse['id'],
       'user_id': supabase.auth.currentUser!.id,
@@ -381,6 +376,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       'status': 'active',
     });
 
-    return groupResponse;
+    return parishGroup;
   }
 }

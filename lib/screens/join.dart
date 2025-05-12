@@ -42,7 +42,9 @@ class _JoinScreenState extends State<JoinScreen> {
         "updated_at": DateTime.now().toIso8601String(),
       });
       if (mounted) {
-        context.go('/');
+        context.push('/parish-groups/${parishGroup['id']}').then((value) {
+          mounted ? context.go('/') : null;
+        });
       }
     } catch (e) {
       if (mounted) {

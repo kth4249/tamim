@@ -154,7 +154,7 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                             context: context,
                             builder: (context) => AlertDialog(
                               title: const Text('안내'),
-                              content: const Text('모임장을 위임 후 탈퇴가 가능합니다.'),
+                              content: const Text('모임장을 위임 후 단체 나가기가 가능합니다.'),
                               actions: [
                                 TextButton(
                                   onPressed: () => Navigator.pop(context),
@@ -168,8 +168,8 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(
-                            title: const Text('탈퇴 확인'),
-                            content: const Text('정말로 탈퇴하시겠습니까?'),
+                            title: const Text('단체 탈퇴 확인'),
+                            content: const Text('정말로 단체를 탈퇴하시겠습니까?'),
                             actions: [
                               TextButton(
                                 onPressed: () => Navigator.pop(context),
@@ -177,12 +177,14 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                               ),
                               FilledButton(
                                 onPressed: () async {
-                                  await authProvider.withdraw();
+                                  await context
+                                      .read<ParishGroupProvider>()
+                                      .leaveGroup();
                                   if (context.mounted) {
-                                    Navigator.pop(context);
+                                    context.go('/');
                                   }
                                 },
-                                child: const Text('탈퇴하기'),
+                                child: const Text('단체 나가기'),
                               ),
                             ],
                           ),
