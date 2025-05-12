@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/providers/main_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/volunteer_schedule_provider.dart';
 
@@ -180,6 +181,9 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                                   await context
                                       .read<ParishGroupProvider>()
                                       .leaveGroup();
+                                  await context
+                                      .read<MainProvider>()
+                                      .loadData(authProvider.user!.id);
                                   if (context.mounted) {
                                     context.go('/');
                                   }
@@ -197,7 +201,7 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                         ),
                       ),
                       icon: const Icon(Icons.delete),
-                      label: const Text('탈퇴하기'),
+                      label: const Text('단체 나가기'),
                     ),
                   ),
                 ],

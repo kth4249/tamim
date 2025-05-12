@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/models/volunteer_event.dart';
-import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/providers/calendar_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/screens/group_my_page_screen.dart';

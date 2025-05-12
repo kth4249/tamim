@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:icalendar_parser/icalendar_parser.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tamim/main.dart';
 import 'package:tamim/models/liturgical_event.dart';
 
 class CalendarProvider extends ChangeNotifier {
@@ -13,11 +14,8 @@ class CalendarProvider extends ChangeNotifier {
     return key.day * 1000000 + key.month * 10000 + key.year;
   }
 
-  CalendarProvider() {
-    fetchIcsEvents();
-  }
-
   Future<void> fetchIcsEvents() async {
+    logger.d('fetchIcsEvents');
     final url = Uri.parse('https://calendar.google.com/calendar/ical/'
         'a9khtvfmob6nvo7jcr6379ld40%40group.calendar.google.com/'
         'public/basic.ics');

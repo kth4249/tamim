@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/models/parish_group_category.dart';
 import 'package:tamim/models/parish_group_info.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/providers/calendar_provider.dart';
+import 'package:tamim/providers/main_provider.dart';
 import 'package:tamim/screens/my_page_screen.dart';
 import 'package:tamim/theme/app_theme.dart';
 
@@ -18,11 +19,6 @@ class ParishGroupListScreen extends StatefulWidget {
 
 class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     with SingleTickerProviderStateMixin {
-  List<ParishGroupInfo> _groups = [];
-  List<ParishGroupInfo> _myGroups = [];
-  List<ParishGroupCategory> _categories = [];
-  Map<int, String> _memberStatusMap = {};
-  bool _isLoading = true;
   int _selectedIndex = 0;
   late TabController _tabController;
 
@@ -30,58 +26,16 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadData();
+    context
+        .read<MainProvider>()
+        .loadData(context.read<AuthProvider>().user!.id);
+    context.read<CalendarProvider>().fetchIcsEvents();
   }
 
   @override
   void dispose() {
     _tabController.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      final categoriesResponse =
-          await supabase.from('parish_group_categories').select('*');
-      _categories = (categoriesResponse as List<dynamic>)
-          .map((json) => ParishGroupCategory.fromJson(json))
-          .toList();
-
-      final groupsResponse = await supabase
-          .from('parish_groups')
-          .select('*, parish:parishs(*)')
-          .eq('status', 'active');
-      _groups = (groupsResponse as List<dynamic>)
-          .map((json) => ParishGroupInfo.fromJson(json))
-          .toList();
-
-      final userId = context.read<AuthProvider>().user!.id;
-      final myGroupsResponse = await supabase
-          .from('parish_group_members')
-          .select('group_id, status')
-          .eq('user_id', userId);
-
-      _memberStatusMap = {
-        for (var group in _groups)
-          group.id: myGroupsResponse.firstWhere(
-            (json) => json['group_id'] == group.id,
-            orElse: () => {'status': 'inactive'},
-          )['status'] as String
-      };
-      // 내가 가입한 모임만 필터링
-      _myGroups =
-          _groups.where((g) => _memberStatusMap[g.id] == 'active').toList();
-    } catch (e) {
-      logger.e('Error loading data: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   Future<void> _joinGroup(ParishGroupInfo group) async {
@@ -93,9 +47,9 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
         'status': 'pending',
       });
 
-      setState(() {
-        _memberStatusMap[group.id] = 'pending';
-      });
+      if (mounted) {
+        context.read<MainProvider>().setMemberStatus(group.id, 'pending');
+      }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -113,8 +67,15 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
   }
 
   Widget buildGroupList(List<ParishGroupInfo> groups) {
+    final categories = context.read<MainProvider>().categories;
+    final memberStatusMap = context.read<MainProvider>().memberStatusMap;
+
     return RefreshIndicator(
-      onRefresh: _loadData,
+      onRefresh: () async {
+        await context
+            .read<MainProvider>()
+            .loadData(context.read<AuthProvider>().user!.id);
+      },
       child: CustomScrollView(
         slivers: [
           SliverList(
@@ -122,8 +83,8 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
               (context, index) {
                 final group = groups[index];
                 final category =
-                    _categories.firstWhere((c) => c.id == group.categoryId);
-                final memberStatus = _memberStatusMap[group.id];
+                    categories.firstWhere((c) => c.id == group.categoryId);
+                final memberStatus = memberStatusMap[group.id];
 
                 return Padding(
                   padding: const EdgeInsets.symmetric(
@@ -284,13 +245,16 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(
-          child: CircularProgressIndicator(),
-        ),
-      );
-    }
+    // if (_isLoading) {
+    //   return const Scaffold(
+    //     body: Center(
+    //       child: CircularProgressIndicator(),
+    //     ),
+    //   );
+    // }
+
+    final groups = context.watch<MainProvider>().groups;
+    final myGroups = context.watch<MainProvider>().myGroups;
 
     Widget currentScreen = Column(
       children: [
@@ -308,8 +272,8 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
           child: TabBarView(
             controller: _tabController,
             children: [
-              buildGroupList(_myGroups),
-              buildGroupList(_groups),
+              buildGroupList(myGroups),
+              buildGroupList(groups),
             ],
           ),
         ),
