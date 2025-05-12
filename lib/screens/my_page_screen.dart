@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
+import 'package:tamim/providers/main_provider.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({Key? key}) : super(key: key);
@@ -98,6 +100,28 @@ class _MyPageScreenState extends State<MyPageScreen> {
                   SizedBox(
                     child: TextButton.icon(
                       onPressed: () {
+                        // 모임장인 그룹이 있는지 확인
+                        final myGroups = context.read<MainProvider>().myGroups;
+                        final isGroupLeader = myGroups.any((group) =>
+                            group.members.any((member) =>
+                                member.roleId == roleIdMap[GroupRole.leader]));
+                        if (isGroupLeader) {
+                          showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('안내'),
+                              content: const Text(
+                                  '모임장인 그룹이 있어, 해당 그룹의 모임장을 위임한 후 탈퇴가 가능합니다.'),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('확인'),
+                                ),
+                              ],
+                            ),
+                          );
+                          return;
+                        }
                         showDialog(
                           context: context,
                           builder: (context) => AlertDialog(

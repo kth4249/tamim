@@ -78,6 +78,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                   const SizedBox(height: 12),
                   ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: liturgicalEvents.length,
                     itemBuilder: (context, index) {
                       return Container(
@@ -126,6 +127,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                   const SizedBox(height: 12),
                   ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     itemCount: volunteers.length,
                     itemBuilder: (context, index) {
                       return Container(

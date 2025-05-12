@@ -20,6 +20,7 @@ mixin _$ParishGroupInfo {
   int get categoryId;
   String get groupName;
   String get description;
+  List<ParishGroupMember> get members;
 
   /// Create a copy of ParishGroupInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -44,17 +45,18 @@ mixin _$ParishGroupInfo {
             (identical(other.groupName, groupName) ||
                 other.groupName == groupName) &&
             (identical(other.description, description) ||
-                other.description == description));
+                other.description == description) &&
+            const DeepCollectionEquality().equals(other.members, members));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, parish, categoryId, groupName, description);
+  int get hashCode => Object.hash(runtimeType, id, parish, categoryId,
+      groupName, description, const DeepCollectionEquality().hash(members));
 
   @override
   String toString() {
-    return 'ParishGroupInfo(id: $id, parish: $parish, categoryId: $categoryId, groupName: $groupName, description: $description)';
+    return 'ParishGroupInfo(id: $id, parish: $parish, categoryId: $categoryId, groupName: $groupName, description: $description, members: $members)';
   }
 }
 
@@ -69,7 +71,8 @@ abstract mixin class $ParishGroupInfoCopyWith<$Res> {
       Parish parish,
       int categoryId,
       String groupName,
-      String description});
+      String description,
+      List<ParishGroupMember> members});
 
   $ParishCopyWith<$Res> get parish;
 }
@@ -92,6 +95,7 @@ class _$ParishGroupInfoCopyWithImpl<$Res>
     Object? categoryId = null,
     Object? groupName = null,
     Object? description = null,
+    Object? members = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -114,6 +118,10 @@ class _$ParishGroupInfoCopyWithImpl<$Res>
           ? _self.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
+      members: null == members
+          ? _self.members
+          : members // ignore: cast_nullable_to_non_nullable
+              as List<ParishGroupMember>,
     ));
   }
 
@@ -136,7 +144,9 @@ class _ParishGroupInfo implements ParishGroupInfo {
       required this.parish,
       required this.categoryId,
       required this.groupName,
-      required this.description});
+      required this.description,
+      required final List<ParishGroupMember> members})
+      : _members = members;
   factory _ParishGroupInfo.fromJson(Map<String, dynamic> json) =>
       _$ParishGroupInfoFromJson(json);
 
@@ -150,6 +160,13 @@ class _ParishGroupInfo implements ParishGroupInfo {
   final String groupName;
   @override
   final String description;
+  final List<ParishGroupMember> _members;
+  @override
+  List<ParishGroupMember> get members {
+    if (_members is EqualUnmodifiableListView) return _members;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_members);
+  }
 
   /// Create a copy of ParishGroupInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -178,17 +195,18 @@ class _ParishGroupInfo implements ParishGroupInfo {
             (identical(other.groupName, groupName) ||
                 other.groupName == groupName) &&
             (identical(other.description, description) ||
-                other.description == description));
+                other.description == description) &&
+            const DeepCollectionEquality().equals(other._members, _members));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, parish, categoryId, groupName, description);
+  int get hashCode => Object.hash(runtimeType, id, parish, categoryId,
+      groupName, description, const DeepCollectionEquality().hash(_members));
 
   @override
   String toString() {
-    return 'ParishGroupInfo(id: $id, parish: $parish, categoryId: $categoryId, groupName: $groupName, description: $description)';
+    return 'ParishGroupInfo(id: $id, parish: $parish, categoryId: $categoryId, groupName: $groupName, description: $description, members: $members)';
   }
 }
 
@@ -205,7 +223,8 @@ abstract mixin class _$ParishGroupInfoCopyWith<$Res>
       Parish parish,
       int categoryId,
       String groupName,
-      String description});
+      String description,
+      List<ParishGroupMember> members});
 
   @override
   $ParishCopyWith<$Res> get parish;
@@ -229,6 +248,7 @@ class __$ParishGroupInfoCopyWithImpl<$Res>
     Object? categoryId = null,
     Object? groupName = null,
     Object? description = null,
+    Object? members = null,
   }) {
     return _then(_ParishGroupInfo(
       id: null == id
@@ -251,6 +271,10 @@ class __$ParishGroupInfoCopyWithImpl<$Res>
           ? _self.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
+      members: null == members
+          ? _self._members
+          : members // ignore: cast_nullable_to_non_nullable
+              as List<ParishGroupMember>,
     ));
   }
 

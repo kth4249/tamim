@@ -13,6 +13,9 @@ _ParishGroupInfo _$ParishGroupInfoFromJson(Map<String, dynamic> json) =>
       categoryId: (json['category_id'] as num).toInt(),
       groupName: json['group_name'] as String,
       description: json['description'] as String,
+      members: (json['members'] as List<dynamic>)
+          .map((e) => ParishGroupMember.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ParishGroupInfoToJson(_ParishGroupInfo instance) =>
@@ -22,4 +25,5 @@ Map<String, dynamic> _$ParishGroupInfoToJson(_ParishGroupInfo instance) =>
       'category_id': instance.categoryId,
       'group_name': instance.groupName,
       'description': instance.description,
+      'members': instance.members,
     };

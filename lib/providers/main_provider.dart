@@ -19,8 +19,9 @@ class MainProvider extends ChangeNotifier {
 
       final groupsResponse = await supabase
           .from('parish_groups')
-          .select('*, parish:parishs(*)')
-          .eq('status', 'active');
+          .select('*, parish:parishs(*), members:parish_group_members(*)')
+          .eq('status', 'active')
+          .eq('parish_group_members.user_id', userId);
       groups = (groupsResponse as List<dynamic>)
           .map((json) => ParishGroupInfo.fromJson(json))
           .toList();
