@@ -44,133 +44,149 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     final liturgicalEvents =
         context.watch<CalendarProvider>().liturgicalEvents[_selectedDay];
 
-    Widget currentScreen = SingleChildScrollView(
-      scrollDirection: Axis.vertical,
-      child: Column(
-        children: [
-          Container(
-            color: Colors.white,
-            child: CommonCalendar(
-              firstDay: _firstDay,
-              lastDay: _lastDay,
-              focusedDay: _focusedDay,
-              selectedDay: _selectedDay,
-              onDaySelected: (selectedDay, focusedDay) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-              },
-              eventLoader: _getEventsForDay,
+    List<Widget> slivers = [
+      SliverToBoxAdapter(
+        child: Container(
+          color: Colors.white,
+          child: CommonCalendar(
+            firstDay: _firstDay,
+            lastDay: _lastDay,
+            focusedDay: _focusedDay,
+            selectedDay: _selectedDay,
+            onDaySelected: (selectedDay, focusedDay) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+            },
+            eventLoader: _getEventsForDay,
+          ),
+        ),
+      ),
+      const SliverToBoxAdapter(child: SizedBox(height: 16)),
+    ];
+
+    if (liturgicalEvents != null) {
+      slivers.add(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text('이 날의 전례',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+              ],
             ),
           ),
-          const SizedBox(height: 16),
-          if (liturgicalEvents != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '이 날의 전례',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        ),
+      );
+      slivers.add(
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final event = liturgicalEvents[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(13),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: liturgicalEvents.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(13),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          leading: const Icon(Icons.church_outlined,
-                              color: AppTheme.primaryColor),
-                          title: Text(
-                            liturgicalEvents[index].summary,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          subtitle: Text(
-                            liturgicalEvents[index]
-                                    .description
-                                    ?.replaceAll('\\n', '\n') ??
-                                '',
-                          ),
-                        ),
-                      );
-                    },
+                  child: ListTile(
+                    leading: const Icon(Icons.church_outlined,
+                        color: AppTheme.primaryColor),
+                    title: Text(event.summary,
+                        style: const TextStyle(fontWeight: FontWeight.w600)),
+                    subtitle:
+                        Text(event.description?.replaceAll('\\n', '\n') ?? ''),
                   ),
-                ],
-              ),
+                ),
+              );
+            },
+            childCount: liturgicalEvents.length,
+          ),
+        ),
+      );
+    }
+
+    if (volunteers != null) {
+      slivers.add(
+        SliverToBoxAdapter(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SizedBox(height: 16),
+                const Text('이 날 봉사자',
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                const SizedBox(height: 12),
+              ],
             ),
-          const SizedBox(height: 16),
-          if (volunteers != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    '이 날 봉사자',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          ),
+        ),
+      );
+      slivers.add(
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final volunteer = volunteers[index];
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 4),
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withAlpha(13),
+                        blurRadius: 10,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 12),
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: volunteers.length,
-                    itemBuilder: (context, index) {
-                      return Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(12),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withAlpha(13),
-                              blurRadius: 10,
-                              offset: const Offset(0, 2),
-                            ),
-                          ],
-                        ),
-                        child: ListTile(
-                          leading: CircleAvatar(
-                            backgroundColor: AppTheme.primaryColor.withAlpha(
-                              26,
-                            ),
-                            backgroundImage: const AssetImage(
-                              'assets/images/profile.png',
-                            ),
-                          ),
-                          title: Text(
-                            volunteers[index].user != null
-                                ? volunteers[index].user!.name
-                                : volunteers[index].anon!.name,
-                            style: const TextStyle(fontWeight: FontWeight.w600),
-                          ),
-                          subtitle: Text(
-                            volunteers[index].position.positionName,
-                          ),
-                        ),
-                      );
-                    },
+                  child: ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: AppTheme.primaryColor.withAlpha(26),
+                      backgroundImage:
+                          const AssetImage('assets/images/profile.png'),
+                    ),
+                    title: Text(
+                      volunteer.user != null
+                          ? volunteer.user!.name
+                          : volunteer.anon!.name,
+                      style: const TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                    subtitle: Text(volunteer.position.positionName),
                   ),
-                ],
-              ),
-            ),
-          const SizedBox(height: 24),
-        ],
-      ),
+                ),
+              );
+            },
+            childCount: volunteers.length,
+          ),
+        ),
+      );
+    }
+
+    slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 24)));
+
+    Widget currentScreen = CustomScrollView(
+      slivers: slivers,
     );
+
     if (_selectedIndex == 1) {
       currentScreen = const GroupMypageScreen();
     }
