@@ -54,6 +54,13 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                               color: colorScheme.primary,
                               width: 3,
                             ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: colorScheme.primary.withOpacity(0.08),
+                                blurRadius: 12,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
                           child: const CircleAvatar(
                             radius: 50,
@@ -61,22 +68,43 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                                 AssetImage('assets/images/profile.png'),
                           ),
                         ),
-                        const SizedBox(height: 16),
+                        const SizedBox(height: 18),
                         Text(
-                          myInfo?.user.name ?? '이름',
+                          myInfo?.user.nickname ?? '닉네임',
                           style: TextStyle(
-                            fontSize: 24,
+                            fontSize: 20,
                             fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
+                            color: colorScheme.primary,
                           ),
                         ),
                         const SizedBox(height: 8),
-                        Text(
-                          myInfo?.user.baptismalName ?? '세례명',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: colorScheme.onSurface.withOpacity(0.7),
-                          ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(Icons.person,
+                                size: 18,
+                                color: colorScheme.onSurface.withOpacity(0.6)),
+                            const SizedBox(width: 4),
+                            Text(
+                              myInfo?.user.name ?? '이름',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Icon(Icons.water_drop,
+                                size: 18,
+                                color: colorScheme.onSurface.withOpacity(0.6)),
+                            const SizedBox(width: 4),
+                            Text(
+                              myInfo?.user.baptismalName ?? '세례명',
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: colorScheme.onSurface.withOpacity(0.7),
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),

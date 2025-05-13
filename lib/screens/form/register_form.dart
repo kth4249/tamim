@@ -108,11 +108,21 @@ class _RegisterFormState extends State<RegisterForm> {
                     if (value == null || value.isEmpty) {
                       return '닉네임을 입력해주세요';
                     }
+                    if (value.length < 2 || value.length > 10) {
+                      return '닉네임은 2글자 이상 10글자 이하여야 합니다.';
+                    }
                     return null;
                   },
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
+                  validator: (value) {
+                    if (!(value == null || value.isEmpty) &&
+                        (value.length < 2 || value.length > 15)) {
+                      return '세례명은 2글자 이상 15글자 이하여야 합니다.';
+                    }
+                    return null;
+                  },
                   controller: _baptismalNameController,
                   decoration: InputDecoration(
                     labelText: '세례명 (선택)',

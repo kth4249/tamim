@@ -34,23 +34,26 @@ class _CreateVolunteerScheduleScreenState
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Consumer<ParishGroupProvider>(
-          builder: (context, parishGroupProvider, child) {
-            return EditVolunteerSheet(
-              date: date,
-              positions: parishGroupProvider.positions,
-              assignments: assignments,
-              memberAvailablePositions:
-                  context.read<VolunteerScheduleProvider>().memberPositions,
-              onSave: (updatedAssignments) {
-                _viewModel.updateAssignments(date, updatedAssignments);
-              },
-            );
-          },
+      builder: (context) => SizedBox(
+        height: MediaQuery.of(context).size.height * 0.8,
+        child: Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Consumer<ParishGroupProvider>(
+            builder: (context, parishGroupProvider, child) {
+              return EditVolunteerSheet(
+                date: date,
+                positions: parishGroupProvider.positions,
+                assignments: assignments,
+                memberAvailablePositions:
+                    context.read<VolunteerScheduleProvider>().memberPositions,
+                onSave: (updatedAssignments) {
+                  _viewModel.updateAssignments(date, updatedAssignments);
+                },
+              );
+            },
+          ),
         ),
       ),
     );
