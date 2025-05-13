@@ -95,7 +95,8 @@ class ParishGroupProvider extends ChangeNotifier {
     final response = await supabase
         .from('positions')
         .select('*')
-        .eq('group_id', parishGroup!.id);
+        .eq('group_id', parishGroup!.id)
+        .order('order', ascending: true);
 
     positions = (response as List<dynamic>)
         .map((json) => Position.fromJson(json))

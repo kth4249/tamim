@@ -39,8 +39,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     final volunteers = context
         .read<ParishGroupProvider>()
         .groupByVolunteerEvents[_selectedDay];
-    volunteers?.sort((a, b) =>
-        a.position.id.compareTo(b.position.id)); // TODO: sort by sortNo
+    volunteers?.sort((a, b) => a.position.order.compareTo(b.position.order));
     final liturgicalEvents =
         context.watch<CalendarProvider>().liturgicalEvents[_selectedDay];
 

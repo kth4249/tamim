@@ -393,13 +393,38 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                   ),
                 )
               else
-                ...positions.map(
-                  (position) => _buildPositionCard(
-                    position.positionName,
-                    position.description ?? '',
-                    onEdit: () => _showPositionDialog(position: position),
-                    onDelete: () => _showDeleteConfirmDialog(position),
-                  ),
+                ReorderableListView(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  onReorder: (oldIndex, newIndex) async {
+                    if (newIndex > oldIndex) newIndex--;
+                    final newPositions = List<Position>.from(positions);
+                    final item = newPositions.removeAt(oldIndex);
+                    newPositions.insert(newIndex, item);
+                    // order 값 업데이트
+                    for (int i = 0; i < newPositions.length; i++) {
+                      final pos = newPositions[i];
+                      if (pos.order != i) {
+                        await supabase
+                            .from('positions')
+                            .update({'order': i}).eq('id', pos.id);
+                      }
+                    }
+                    context.read<ParishGroupProvider>().loadPositions();
+                  },
+                  buildDefaultDragHandles: false,
+                  children: [
+                    for (int i = 0; i < positions.length; i++)
+                      _buildPositionCard(
+                        ValueKey(positions[i].id),
+                        positions[i].positionName,
+                        positions[i].description ?? '',
+                        index: i,
+                        onEdit: () =>
+                            _showPositionDialog(position: positions[i]),
+                        onDelete: () => _showDeleteConfirmDialog(positions[i]),
+                      ),
+                  ],
                 ),
               const SizedBox(height: 24),
 
@@ -508,14 +533,17 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
   }
 
   Widget _buildPositionCard(
+    Key key,
     String title,
     String description, {
+    required int index,
     required VoidCallback onEdit,
     required VoidCallback onDelete,
   }) {
     return Container(
-      padding: const EdgeInsets.all(16),
-      margin: const EdgeInsets.only(bottom: 12),
+      key: key,
+      margin: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
@@ -527,42 +555,59 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
+          // 드래그 핸들
+          ReorderableDragStartListener(
+            index: index,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 12),
+              child: Icon(Icons.drag_handle, color: Colors.grey[400], size: 28),
+            ),
+          ),
+          // 내용
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(Icons.edit_outlined, color: Colors.grey),
+                      onPressed: onEdit,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                    const SizedBox(width: 8),
+                    IconButton(
+                      icon:
+                          const Icon(Icons.delete_outline, color: Colors.grey),
+                      onPressed: onDelete,
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ],
                 ),
-              ),
-              Row(
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.edit_outlined, color: Colors.grey),
-                    onPressed: onEdit,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
-                  ),
-                  const SizedBox(width: 16),
-                  IconButton(
-                    icon: const Icon(Icons.delete_outline, color: Colors.grey),
-                    onPressed: onDelete,
-                    padding: EdgeInsets.zero,
-                    constraints: const BoxConstraints(),
+                if (description.isNotEmpty) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    description,
+                    style: TextStyle(color: Colors.grey[600], fontSize: 13),
                   ),
                 ],
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(
-            description,
-            style: TextStyle(color: Colors.grey[600], fontSize: 14),
+              ],
+            ),
           ),
         ],
       ),

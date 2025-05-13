@@ -23,7 +23,7 @@ mixin _$Position {
   String get createdAt;
   String get updatedBy;
   String get updatedAt;
-  int? get order;
+  int get order;
 
   /// Create a copy of Position
   /// with the given fields replaced by the non-null parameter values.
@@ -82,7 +82,7 @@ abstract mixin class $PositionCopyWith<$Res> {
       String createdAt,
       String updatedBy,
       String updatedAt,
-      int? order});
+      int order});
 }
 
 /// @nodoc
@@ -105,7 +105,7 @@ class _$PositionCopyWithImpl<$Res> implements $PositionCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedBy = null,
     Object? updatedAt = null,
-    Object? order = freezed,
+    Object? order = null,
   }) {
     return _then(_self.copyWith(
       id: null == id
@@ -140,10 +140,10 @@ class _$PositionCopyWithImpl<$Res> implements $PositionCopyWith<$Res> {
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
-      order: freezed == order
+      order: null == order
           ? _self.order
           : order // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }
@@ -160,7 +160,7 @@ class _Position implements Position {
       required this.createdAt,
       required this.updatedBy,
       required this.updatedAt,
-      this.order});
+      required this.order});
   factory _Position.fromJson(Map<String, dynamic> json) =>
       _$PositionFromJson(json);
 
@@ -181,7 +181,7 @@ class _Position implements Position {
   @override
   final String updatedAt;
   @override
-  final int? order;
+  final int order;
 
   /// Create a copy of Position
   /// with the given fields replaced by the non-null parameter values.
@@ -247,7 +247,7 @@ abstract mixin class _$PositionCopyWith<$Res>
       String createdAt,
       String updatedBy,
       String updatedAt,
-      int? order});
+      int order});
 }
 
 /// @nodoc
@@ -270,7 +270,7 @@ class __$PositionCopyWithImpl<$Res> implements _$PositionCopyWith<$Res> {
     Object? createdAt = null,
     Object? updatedBy = null,
     Object? updatedAt = null,
-    Object? order = freezed,
+    Object? order = null,
   }) {
     return _then(_Position(
       id: null == id
@@ -305,10 +305,10 @@ class __$PositionCopyWithImpl<$Res> implements _$PositionCopyWith<$Res> {
           ? _self.updatedAt
           : updatedAt // ignore: cast_nullable_to_non_nullable
               as String,
-      order: freezed == order
+      order: null == order
           ? _self.order
           : order // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as int,
     ));
   }
 }

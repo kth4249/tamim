@@ -15,7 +15,7 @@ _Position _$PositionFromJson(Map<String, dynamic> json) => _Position(
       createdAt: json['created_at'] as String,
       updatedBy: json['updated_by'] as String,
       updatedAt: json['updated_at'] as String,
-      order: (json['order'] as num?)?.toInt(),
+      order: (json['order'] as num).toInt(),
     );
 
 Map<String, dynamic> _$PositionToJson(_Position instance) => <String, dynamic>{
