@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/parish_group_category.dart';
 import 'package:tamim/models/role.dart';
+import 'package:tamim/providers/main_provider.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({super.key});
@@ -19,8 +21,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   final TextEditingController _meetingNameController = TextEditingController();
   final TextEditingController _meetingDescriptionController =
       TextEditingController();
-  late Future<List<Parish>> _parishListFuture;
-  late Future<List<ParishGroupCategory>> _categoriesFuture;
 
   int? selectedCategory;
   Parish? _parish;
@@ -29,8 +29,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   void initState() {
     super.initState();
-    _parishListFuture = _fetchParishList();
-    _categoriesFuture = _fetchCategories();
   }
 
   @override
@@ -38,16 +36,6 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
     _meetingNameController.dispose();
     _meetingDescriptionController.dispose();
     super.dispose();
-  }
-
-  Future<List<ParishGroupCategory>> _fetchCategories() async {
-    final data = await supabase.from('parish_group_categories').select();
-    return (data as List).map((e) => ParishGroupCategory.fromJson(e)).toList();
-  }
-
-  Future<List<Parish>> _fetchParishList() async {
-    final data = await supabase.from('parishs').select();
-    return (data as List).map((e) => Parish.fromJson(e)).toList();
   }
 
   void _showSuccessDialog(ParishGroup response) {
@@ -131,6 +119,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final categories = context.read<MainProvider>().categories;
+    final parishes = context.read<MainProvider>().parishes;
+
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -152,48 +143,37 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 12),
-              FutureBuilder<List<Parish>>(
-                future: _parishListFuture,
-                builder: (context, snapshot) {
-                  if (!snapshot.hasData) {
-                    return const CircularProgressIndicator();
+              Autocomplete<Parish>(
+                optionsBuilder: (TextEditingValue textEditingValue) {
+                  if (textEditingValue.text == '') {
+                    return parishes;
                   }
-                  final parishList = snapshot.data!;
-                  return Autocomplete<Parish>(
-                    optionsBuilder: (TextEditingValue textEditingValue) {
-                      if (textEditingValue.text == '') {
-                        return parishList;
+                  return parishes.where((Parish parish) {
+                    return parish.parishName.contains(textEditingValue.text);
+                  });
+                },
+                displayStringForOption: (Parish parish) => parish.parishName,
+                onSelected: (Parish parish) {
+                  setState(() {
+                    _parish = parish;
+                  });
+                },
+                fieldViewBuilder:
+                    (context, controller, focusNode, onEditingComplete) {
+                  return TextFormField(
+                    controller: controller,
+                    focusNode: focusNode,
+                    decoration: InputDecoration(
+                      hintText: '본당명을 입력하거나 선택하세요.',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                    ),
+                    validator: (value) {
+                      if (_parish == null) {
+                        return '본당을 선택해주세요.';
                       }
-                      return parishList.where((Parish parish) {
-                        return parish.parishName
-                            .contains(textEditingValue.text);
-                      });
-                    },
-                    displayStringForOption: (Parish parish) =>
-                        parish.parishName,
-                    onSelected: (Parish parish) {
-                      setState(() {
-                        _parish = parish;
-                      });
-                    },
-                    fieldViewBuilder:
-                        (context, controller, focusNode, onEditingComplete) {
-                      return TextFormField(
-                        controller: controller,
-                        focusNode: focusNode,
-                        decoration: InputDecoration(
-                          hintText: '본당명을 입력하거나 선택하세요.',
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                        ),
-                        validator: (value) {
-                          if (_parish == null) {
-                            return '본당을 선택해주세요.';
-                          }
-                          return null;
-                        },
-                      );
+                      return null;
                     },
                   );
                 },
@@ -206,36 +186,28 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
               const SizedBox(height: 12),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                child: FutureBuilder(
-                  future: _categoriesFuture,
-                  builder: (context, snapshot) {
-                    if (snapshot.data == null) {
-                      return const SizedBox.shrink();
-                    }
-                    return Row(
-                      children: snapshot.data!.map((item) {
-                        final int category = item.id;
-                        final isSelected = selectedCategory == category;
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8),
-                          child: ChoiceChip(
-                            label: Text(item.categoryName),
-                            selected: isSelected,
-                            onSelected: (selected) {
-                              if (selected) {
-                                setState(() => selectedCategory = category);
-                              }
-                            },
-                            backgroundColor: Colors.white,
-                            selectedColor: Colors.blue,
-                            labelStyle: TextStyle(
-                              color: isSelected ? Colors.white : Colors.black,
-                            ),
-                          ),
-                        );
-                      }).toList(),
+                child: Row(
+                  children: categories.map((item) {
+                    final int category = item.id;
+                    final isSelected = selectedCategory == category;
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: ChoiceChip(
+                        label: Text(item.categoryName),
+                        selected: isSelected,
+                        onSelected: (selected) {
+                          if (selected) {
+                            setState(() => selectedCategory = category);
+                          }
+                        },
+                        backgroundColor: Colors.white,
+                        selectedColor: Colors.blue,
+                        labelStyle: TextStyle(
+                          color: isSelected ? Colors.white : Colors.black,
+                        ),
+                      ),
                     );
-                  },
+                  }).toList(),
                 ),
               ),
               const SizedBox(height: 24),

@@ -6,14 +6,14 @@ import 'package:tamim/providers/main_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/volunteer_schedule_provider.dart';
 
-class GroupMypageScreen extends StatefulWidget {
-  const GroupMypageScreen({Key? key}) : super(key: key);
+class GroupManagementScreen extends StatefulWidget {
+  const GroupManagementScreen({Key? key}) : super(key: key);
 
   @override
-  State<GroupMypageScreen> createState() => _GroupMypageScreenState();
+  State<GroupManagementScreen> createState() => _GroupManagementScreenState();
 }
 
-class _GroupMypageScreenState extends State<GroupMypageScreen> {
+class _GroupManagementScreenState extends State<GroupManagementScreen> {
   @override
   void initState() {
     final parishGroupId = context.read<ParishGroupProvider>().parishGroup!.id;
@@ -93,6 +93,15 @@ class _GroupMypageScreenState extends State<GroupMypageScreen> {
                       ),
                     ),
                     const SizedBox(height: 16),
+                    _buildMenuCard(
+                      context: context,
+                      label: '모임 정보 수정',
+                      icon: Icons.edit,
+                      routeName: '/edit-group',
+                      color: colorScheme.primaryContainer,
+                      iconColor: colorScheme.primary,
+                    ),
+                    const SizedBox(height: 12),
                     _buildMenuCard(
                       context: context,
                       label: '모임원 관리',

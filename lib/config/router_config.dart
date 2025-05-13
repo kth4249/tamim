@@ -16,6 +16,7 @@ import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
 import 'package:tamim/screens/volunteer_management_screen.dart';
 import 'package:tamim/screens/create_volunteer_schedule_screen.dart';
+import 'package:tamim/screens/edit_group_screen.dart';
 
 class RouterConfigClass {
   late GoRouter router;
@@ -75,6 +76,10 @@ class RouterConfigClass {
         GoRoute(
           path: '/volunteer-management',
           builder: (context, state) => const VolunteerManagementScreen(),
+        ),
+        GoRoute(
+          path: '/edit-group',
+          builder: (context, state) => const EditGroupScreen(),
         ),
       ],
       refreshListenable: authProvider,

@@ -136,4 +136,12 @@ class ParishGroupProvider extends ChangeNotifier {
     await fetchData(groupId.toString());
     notifyListeners();
   }
+
+  Future<void> updateGroup(ParishGroup group) async {
+    await supabase
+        .from('parish_groups')
+        .update(group.toJson())
+        .eq('id', group.id);
+    await fetchData(group.id.toString());
+  }
 }
