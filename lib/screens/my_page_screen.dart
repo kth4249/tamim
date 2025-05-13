@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
@@ -20,7 +21,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final authProvider = context.read<AuthProvider>();
+    final authProvider = context.watch<AuthProvider>();
 
     return Scaffold(
       backgroundColor: colorScheme.surface,
@@ -32,45 +33,111 @@ class _MyPageScreenState extends State<MyPageScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const SizedBox(height: 24),
-                  // 프로필 섹션
+                  const SizedBox(height: 32),
+                  // 프로필 카드
                   Center(
-                    child: Column(
-                      children: [
-                        Container(
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: colorScheme.primary,
-                              width: 3,
+                    child: Card(
+                      elevation: 4,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(24),
+                      ),
+                      color: colorScheme.surfaceVariant,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 32, vertical: 32),
+                        child: Column(
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(
+                                  color: colorScheme.primary,
+                                  width: 3,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color:
+                                        colorScheme.primary.withOpacity(0.08),
+                                    blurRadius: 12,
+                                    offset: const Offset(0, 4),
+                                  ),
+                                ],
+                              ),
+                              child: const CircleAvatar(
+                                radius: 48,
+                                backgroundImage:
+                                    AssetImage('assets/images/profile.png'),
+                              ),
                             ),
-                          ),
-                          child: const CircleAvatar(
-                            radius: 50,
-                            backgroundImage:
-                                AssetImage('assets/images/profile.png'),
-                          ),
+                            const SizedBox(height: 20),
+                            Text(
+                              authProvider.user?.nickname ?? '닉네임',
+                              style: TextStyle(
+                                fontSize: 22,
+                                fontWeight: FontWeight.bold,
+                                color: colorScheme.primary,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Icon(Icons.person,
+                                    size: 18,
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.6)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  authProvider.user?.name ?? '이름',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.7),
+                                  ),
+                                ),
+                                const SizedBox(width: 12),
+                                Icon(Icons.water_drop,
+                                    size: 18,
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.6)),
+                                const SizedBox(width: 4),
+                                Text(
+                                  authProvider.user?.baptismalName ?? '세례명',
+                                  style: TextStyle(
+                                    fontSize: 16,
+                                    color:
+                                        colorScheme.onSurface.withOpacity(0.7),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 24),
+                            SizedBox(
+                              width: 180,
+                              child: FilledButton.icon(
+                                onPressed: () {
+                                  context.push('/edit-profile');
+                                },
+                                icon: const Icon(Icons.edit),
+                                label: const Text('내 정보 수정'),
+                                style: FilledButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 14),
+                                  textStyle: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 16),
-                        Text(
-                          authProvider.user?.name ?? '이름',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: colorScheme.onSurface,
-                          ),
-                        ),
-                        const SizedBox(height: 8),
-                        Text(
-                          authProvider.user?.baptismalName ?? '세례명',
-                          style: TextStyle(
-                            fontSize: 16,
-                            color: colorScheme.onSurface.withOpacity(0.7),
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
                   ),
+                  const SizedBox(height: 40),
                 ],
               ),
             ),
@@ -83,6 +150,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SizedBox(
+                    width: double.infinity,
                     child: TextButton.icon(
                       onPressed: () {
                         context.read<AuthProvider>().signOut();
@@ -92,15 +160,17 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        foregroundColor: colorScheme.error,
                       ),
                       icon: const Icon(Icons.logout),
                       label: const Text('로그아웃'),
                     ),
                   ),
+                  const SizedBox(height: 12),
                   SizedBox(
+                    width: double.infinity,
                     child: TextButton.icon(
                       onPressed: () {
-                        // 모임장인 그룹이 있는지 확인
                         final myGroups = context.read<MainProvider>().myGroups;
                         final isGroupLeader = myGroups.any((group) =>
                             group.members.any((member) =>
@@ -134,7 +204,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                               ),
                               FilledButton(
                                 onPressed: () async {
-                                  await authProvider.withdraw();
+                                  await context.read<AuthProvider>().withdraw();
                                   if (context.mounted) {
                                     Navigator.pop(context);
                                   }
@@ -150,11 +220,13 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
                         ),
+                        foregroundColor: colorScheme.error,
                       ),
                       icon: const Icon(Icons.delete),
                       label: const Text('탈퇴하기'),
                     ),
                   ),
+                  const SizedBox(height: 32),
                 ],
               ),
             ),

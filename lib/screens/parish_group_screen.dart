@@ -122,17 +122,17 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
     if (volunteers != null) {
       slivers.add(
-        SliverToBoxAdapter(
+        const SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 16),
-                const Text('이 날 봉사자',
+                SizedBox(height: 16),
+                Text('이 날 봉사자',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
               ],
             ),
           ),
@@ -219,8 +219,8 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '마이페이지',
+            icon: Icon(Icons.settings),
+            label: '모임 설정',
           ),
         ],
       ),

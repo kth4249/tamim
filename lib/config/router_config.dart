@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/providers/auth_provider.dart';
 import 'package:tamim/screens/connection_method_screen.dart';
 import 'package:tamim/screens/create_group_screen.dart';
+import 'package:tamim/screens/edit_profile_screen.dart';
 import 'package:tamim/screens/join.dart';
 import 'package:tamim/screens/login_screen.dart';
 import 'package:tamim/screens/member_management_screen.dart';
@@ -39,6 +42,10 @@ class RouterConfigClass {
         GoRoute(
           path: '/register',
           builder: (context, state) => const RegisterScreen(),
+        ),
+        GoRoute(
+          path: '/edit-profile',
+          builder: (context, state) => const EditProfileScreen(),
         ),
         GoRoute(
           path: '/connection-method',
@@ -111,11 +118,6 @@ class RouterConfigClass {
             return "/";
           }
         }
-
-        // 추후 삭제: 모임 가입되어 있는 경우 해당 모임으로 리다이렉트
-        // if (currentPath == "/" && joinedGroups.isNotEmpty) {
-        //   return "/parish-groups/${joinedGroups[0]['group_id']}";
-        // }
 
         return null;
       },

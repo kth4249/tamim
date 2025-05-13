@@ -120,6 +120,9 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
           context.read<ParishGroupProvider>().groupByVolunteerEvents[date] ??
               [];
 
+      availableMembers.removeWhere((member) =>
+          existingEvents.any((event) => event.user?.id == member.id));
+
       final positions = context.read<ParishGroupProvider>().positions;
       for (final position in positions) {
         final existPosition = existingEvents

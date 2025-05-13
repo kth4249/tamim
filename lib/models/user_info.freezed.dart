@@ -17,9 +17,9 @@ T _$identity<T>(T value) => value;
 mixin _$UserInfo {
   String get id;
   String get name;
+  String get nickname;
   String? get email;
   String? get baptismalName;
-  String? get nickName;
   String? get status;
   DateTime? get createdAt;
   DateTime? get updatedAt;
@@ -42,11 +42,11 @@ mixin _$UserInfo {
             other is UserInfo &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.baptismalName, baptismalName) ||
                 other.baptismalName == baptismalName) &&
-            (identical(other.nickName, nickName) ||
-                other.nickName == nickName) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -58,12 +58,12 @@ mixin _$UserInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email, baptismalName,
-      nickName, status, createdAt, updatedAt, agreePushAt);
+  int get hashCode => Object.hash(runtimeType, id, name, nickname, email,
+      baptismalName, status, createdAt, updatedAt, agreePushAt);
 
   @override
   String toString() {
-    return 'UserInfo(id: $id, name: $name, email: $email, baptismalName: $baptismalName, nickName: $nickName, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, agreePushAt: $agreePushAt)';
+    return 'UserInfo(id: $id, name: $name, nickname: $nickname, email: $email, baptismalName: $baptismalName, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, agreePushAt: $agreePushAt)';
   }
 }
 
@@ -75,9 +75,9 @@ abstract mixin class $UserInfoCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
+      String nickname,
       String? email,
       String? baptismalName,
-      String? nickName,
       String? status,
       DateTime? createdAt,
       DateTime? updatedAt,
@@ -98,9 +98,9 @@ class _$UserInfoCopyWithImpl<$Res> implements $UserInfoCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? nickname = null,
     Object? email = freezed,
     Object? baptismalName = freezed,
-    Object? nickName = freezed,
     Object? status = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -115,6 +115,10 @@ class _$UserInfoCopyWithImpl<$Res> implements $UserInfoCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
+              as String,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -122,10 +126,6 @@ class _$UserInfoCopyWithImpl<$Res> implements $UserInfoCopyWith<$Res> {
       baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      nickName: freezed == nickName
-          ? _self.nickName
-          : nickName // ignore: cast_nullable_to_non_nullable
               as String?,
       status: freezed == status
           ? _self.status
@@ -153,9 +153,9 @@ class _UserInfo implements UserInfo {
   const _UserInfo(
       {required this.id,
       required this.name,
+      required this.nickname,
       required this.email,
       required this.baptismalName,
-      required this.nickName,
       required this.status,
       required this.createdAt,
       required this.updatedAt,
@@ -168,11 +168,11 @@ class _UserInfo implements UserInfo {
   @override
   final String name;
   @override
+  final String nickname;
+  @override
   final String? email;
   @override
   final String? baptismalName;
-  @override
-  final String? nickName;
   @override
   final String? status;
   @override
@@ -204,11 +204,11 @@ class _UserInfo implements UserInfo {
             other is _UserInfo &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
             (identical(other.email, email) || other.email == email) &&
             (identical(other.baptismalName, baptismalName) ||
                 other.baptismalName == baptismalName) &&
-            (identical(other.nickName, nickName) ||
-                other.nickName == nickName) &&
             (identical(other.status, status) || other.status == status) &&
             (identical(other.createdAt, createdAt) ||
                 other.createdAt == createdAt) &&
@@ -220,12 +220,12 @@ class _UserInfo implements UserInfo {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, email, baptismalName,
-      nickName, status, createdAt, updatedAt, agreePushAt);
+  int get hashCode => Object.hash(runtimeType, id, name, nickname, email,
+      baptismalName, status, createdAt, updatedAt, agreePushAt);
 
   @override
   String toString() {
-    return 'UserInfo(id: $id, name: $name, email: $email, baptismalName: $baptismalName, nickName: $nickName, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, agreePushAt: $agreePushAt)';
+    return 'UserInfo(id: $id, name: $name, nickname: $nickname, email: $email, baptismalName: $baptismalName, status: $status, createdAt: $createdAt, updatedAt: $updatedAt, agreePushAt: $agreePushAt)';
   }
 }
 
@@ -239,9 +239,9 @@ abstract mixin class _$UserInfoCopyWith<$Res>
   $Res call(
       {String id,
       String name,
+      String nickname,
       String? email,
       String? baptismalName,
-      String? nickName,
       String? status,
       DateTime? createdAt,
       DateTime? updatedAt,
@@ -262,9 +262,9 @@ class __$UserInfoCopyWithImpl<$Res> implements _$UserInfoCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? nickname = null,
     Object? email = freezed,
     Object? baptismalName = freezed,
-    Object? nickName = freezed,
     Object? status = freezed,
     Object? createdAt = freezed,
     Object? updatedAt = freezed,
@@ -279,6 +279,10 @@ class __$UserInfoCopyWithImpl<$Res> implements _$UserInfoCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
+              as String,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -286,10 +290,6 @@ class __$UserInfoCopyWithImpl<$Res> implements _$UserInfoCopyWith<$Res> {
       baptismalName: freezed == baptismalName
           ? _self.baptismalName
           : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
-      nickName: freezed == nickName
-          ? _self.nickName
-          : nickName // ignore: cast_nullable_to_non_nullable
               as String?,
       status: freezed == status
           ? _self.status
