@@ -8,7 +8,7 @@ abstract class UserInfo with _$UserInfo {
   const factory UserInfo({
     required String id,
     required String name,
-    required String nickname,
+    required String? nickname,
     required String? email,
     required String? baptismalName,
     required String? status,

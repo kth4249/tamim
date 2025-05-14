@@ -9,7 +9,7 @@ part of 'user_info.dart';
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
       id: json['id'] as String,
       name: json['name'] as String,
-      nickname: json['nickname'] as String,
+      nickname: json['nickname'] as String?,
       email: json['email'] as String?,
       baptismalName: json['baptismal_name'] as String?,
       status: json['status'] as String?,

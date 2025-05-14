@@ -171,7 +171,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                   ...availableMembers.map((member) {
                                     return DropdownMenuItem<String>(
                                       value: member.id,
-                                      child: Text(member.nickname),
+                                      child: Text(member.nickname ?? ''),
                                     );
                                   }),
                                 ],
@@ -179,26 +179,27 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                   final current =
                                       _currentAssignments[position.id];
                                   setState(() {
-                                    _currentAssignments[position.id] =
-                                        value == null
-                                            ? VolunteerCreateVO(
-                                                id: current?.id,
-                                                userId: null,
-                                                name: '',
-                                                nickname: '',
-                                              )
-                                            : VolunteerCreateVO(
-                                                id: current?.id,
-                                                userId: value,
-                                                name: availableMembers
+                                    _currentAssignments[position.id] = value ==
+                                            null
+                                        ? VolunteerCreateVO(
+                                            id: current?.id,
+                                            userId: null,
+                                            name: '',
+                                            nickname: '',
+                                          )
+                                        : VolunteerCreateVO(
+                                            id: current?.id,
+                                            userId: value,
+                                            name: availableMembers
+                                                .firstWhere(
+                                                    (e) => e.id == value)
+                                                .name,
+                                            nickname: availableMembers
                                                     .firstWhere(
                                                         (e) => e.id == value)
-                                                    .name,
-                                                nickname: availableMembers
-                                                    .firstWhere(
-                                                        (e) => e.id == value)
-                                                    .nickname,
-                                              );
+                                                    .nickname ??
+                                                '',
+                                          );
                                     _manualInputControllers[position.id]
                                         ?.clear();
                                   });

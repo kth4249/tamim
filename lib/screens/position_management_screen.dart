@@ -357,7 +357,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                     borderRadius: BorderRadius.circular(12),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 2),
                       ),
@@ -443,7 +443,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                     borderRadius: BorderRadius.circular(8),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black.withOpacity(0.05),
+                        color: Colors.black.withValues(alpha: 0.05),
                         blurRadius: 10,
                         offset: const Offset(0, 2),
                       ),
@@ -492,7 +492,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  member.user.nickname,
+                                  member.user.nickname ?? '',
                                   style: const TextStyle(color: Colors.black87),
                                 ),
                               ),
@@ -549,7 +549,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

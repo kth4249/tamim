@@ -29,7 +29,7 @@ class AppTheme {
           foregroundColor: primaryColor,
           minimumSize: const Size(double.infinity, 52),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          side: BorderSide(color: primaryColor.withOpacity(0.3)),
+          side: BorderSide(color: primaryColor.withValues(alpha: 0.3)),
         ),
       ),
       textButtonTheme: TextButtonThemeData(
@@ -38,11 +38,11 @@ class AppTheme {
       inputDecorationTheme: InputDecorationTheme(
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: primaryColor.withOpacity(0.3)),
+          borderSide: BorderSide(color: primaryColor.withValues(alpha: 0.3)),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
-          borderSide: BorderSide(color: primaryColor.withOpacity(0.3)),
+          borderSide: BorderSide(color: primaryColor.withValues(alpha: 0.3)),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
@@ -53,7 +53,7 @@ class AppTheme {
           vertical: 16,
         ),
         labelStyle: const TextStyle(color: primaryColor),
-        hintStyle: TextStyle(color: primaryColor.withOpacity(0.5)),
+        hintStyle: TextStyle(color: primaryColor.withValues(alpha: 0.5)),
       ),
     );
   }

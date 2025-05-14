@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$UserInfo {
   String get id;
   String get name;
-  String get nickname;
+  String? get nickname;
   String? get email;
   String? get baptismalName;
   String? get status;
@@ -75,7 +75,7 @@ abstract mixin class $UserInfoCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
-      String nickname,
+      String? nickname,
       String? email,
       String? baptismalName,
       String? status,
@@ -98,7 +98,7 @@ class _$UserInfoCopyWithImpl<$Res> implements $UserInfoCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? nickname = null,
+    Object? nickname = freezed,
     Object? email = freezed,
     Object? baptismalName = freezed,
     Object? status = freezed,
@@ -115,10 +115,10 @@ class _$UserInfoCopyWithImpl<$Res> implements $UserInfoCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
+      nickname: freezed == nickname
           ? _self.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable
@@ -168,7 +168,7 @@ class _UserInfo implements UserInfo {
   @override
   final String name;
   @override
-  final String nickname;
+  final String? nickname;
   @override
   final String? email;
   @override
@@ -239,7 +239,7 @@ abstract mixin class _$UserInfoCopyWith<$Res>
   $Res call(
       {String id,
       String name,
-      String nickname,
+      String? nickname,
       String? email,
       String? baptismalName,
       String? status,
@@ -262,7 +262,7 @@ class __$UserInfoCopyWithImpl<$Res> implements _$UserInfoCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? nickname = null,
+    Object? nickname = freezed,
     Object? email = freezed,
     Object? baptismalName = freezed,
     Object? status = freezed,
@@ -279,10 +279,10 @@ class __$UserInfoCopyWithImpl<$Res> implements _$UserInfoCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
+      nickname: freezed == nickname
           ? _self.nickname
           : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       email: freezed == email
           ? _self.email
           : email // ignore: cast_nullable_to_non_nullable

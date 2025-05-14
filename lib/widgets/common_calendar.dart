@@ -78,7 +78,7 @@ class _CommonCalendarState extends State<CommonCalendar> {
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
-            color: AppTheme.primaryColor.withAlpha(51),
+            color: AppTheme.primaryColor.withValues(alpha: 0.2),
             shape: BoxShape.circle,
           ),
           markerDecoration: const BoxDecoration(

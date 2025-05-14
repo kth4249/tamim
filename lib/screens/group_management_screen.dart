@@ -56,7 +56,8 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                             ),
                             boxShadow: [
                               BoxShadow(
-                                color: colorScheme.primary.withOpacity(0.08),
+                                color:
+                                    colorScheme.primary.withValues(alpha: 0.08),
                                 blurRadius: 12,
                                 offset: const Offset(0, 4),
                               ),
@@ -83,25 +84,29 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                           children: [
                             Icon(Icons.person,
                                 size: 18,
-                                color: colorScheme.onSurface.withOpacity(0.6)),
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.6)),
                             const SizedBox(width: 4),
                             Text(
                               myInfo?.user.name ?? '이름',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: colorScheme.onSurface.withOpacity(0.7),
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.7),
                               ),
                             ),
                             const SizedBox(width: 12),
                             Icon(Icons.water_drop,
                                 size: 18,
-                                color: colorScheme.onSurface.withOpacity(0.6)),
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.6)),
                             const SizedBox(width: 4),
                             Text(
                               myInfo?.user.baptismalName ?? '세례명',
                               style: TextStyle(
                                 fontSize: 16,
-                                color: colorScheme.onSurface.withOpacity(0.7),
+                                color: colorScheme.onSurface
+                                    .withValues(alpha: 0.7),
                               ),
                             ),
                           ],
@@ -117,7 +122,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                       style: TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w600,
-                        color: colorScheme.onSurface.withOpacity(0.7),
+                        color: colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
                     const SizedBox(height: 16),
@@ -168,21 +173,6 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SizedBox(
-                    child: TextButton.icon(
-                      onPressed: () {
-                        context.read<AuthProvider>().signOut();
-                      },
-                      style: TextButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      icon: const Icon(Icons.logout),
-                      label: const Text('로그아웃'),
-                    ),
-                  ),
                   SizedBox(
                     child: TextButton.icon(
                       onPressed: () {
@@ -274,7 +264,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: iconColor.withOpacity(0.1),
+                  color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
@@ -296,7 +286,10 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
               Icon(
                 Icons.arrow_forward_ios,
                 size: 16,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                color: Theme.of(context)
+                    .colorScheme
+                    .onSurface
+                    .withValues(alpha: 0.5),
               ),
             ],
           ),

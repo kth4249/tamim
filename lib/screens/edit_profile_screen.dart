@@ -51,8 +51,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: _nicknameController,
                 decoration: InputDecoration(
                   labelText: '닉네임',
-                  labelStyle:
-                      TextStyle(color: colorScheme.onSurface.withOpacity(0.7)),
+                  labelStyle: TextStyle(
+                      color: colorScheme.onSurface.withValues(alpha: 0.7)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -91,8 +91,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: _baptismalNameController,
                 decoration: InputDecoration(
                   labelText: '세례명 (선택)',
-                  labelStyle:
-                      TextStyle(color: colorScheme.onSurface.withOpacity(0.7)),
+                  labelStyle: TextStyle(
+                      color: colorScheme.onSurface.withValues(alpha: 0.7)),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
