@@ -8,17 +8,11 @@ part of 'user_info.dart';
 
 _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
       id: json['id'] as String,
-      name: json['name'] as String,
-      nickname: json['nickname'] as String?,
-      email: json['email'] as String?,
+      nickname: json['nickname'] as String,
       baptismalName: json['baptismal_name'] as String?,
-      status: json['status'] as String?,
-      createdAt: json['created_at'] == null
-          ? null
-          : DateTime.parse(json['created_at'] as String),
-      updatedAt: json['updated_at'] == null
-          ? null
-          : DateTime.parse(json['updated_at'] as String),
+      status: json['status'] as String,
+      createdAt: DateTime.parse(json['created_at'] as String),
+      updatedAt: DateTime.parse(json['updated_at'] as String),
       agreePushAt: json['agree_push_at'] == null
           ? null
           : DateTime.parse(json['agree_push_at'] as String),
@@ -26,12 +20,10 @@ _UserInfo _$UserInfoFromJson(Map<String, dynamic> json) => _UserInfo(
 
 Map<String, dynamic> _$UserInfoToJson(_UserInfo instance) => <String, dynamic>{
       'id': instance.id,
-      'name': instance.name,
       'nickname': instance.nickname,
-      'email': instance.email,
       'baptismal_name': instance.baptismalName,
       'status': instance.status,
-      'created_at': instance.createdAt?.toIso8601String(),
-      'updated_at': instance.updatedAt?.toIso8601String(),
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
       'agree_push_at': instance.agreePushAt?.toIso8601String(),
     };

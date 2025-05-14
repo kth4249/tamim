@@ -99,7 +99,7 @@ class RouterConfigClass {
         final user = context.read<AuthProvider>().user!;
         final isProfilingIn = matchedLocation == '/register';
 
-        if (user.status == null || user.status == 'inactive') {
+        if (user.userInfo == null || user.userInfo!.status == 'inactive') {
           return isProfilingIn ? null : '/register$savedLocation';
         }
         if (isProfilingIn) return state.uri.queryParameters['from'] ?? '/';

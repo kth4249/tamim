@@ -71,7 +71,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                         ),
                         const SizedBox(height: 18),
                         Text(
-                          myInfo?.user.nickname ?? '닉네임',
+                          myInfo?.user.userInfo?.nickname ?? '닉네임',
                           style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
@@ -102,7 +102,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                                     .withValues(alpha: 0.6)),
                             const SizedBox(width: 4),
                             Text(
-                              myInfo?.user.baptismalName ?? '세례명',
+                              myInfo?.user.userInfo?.baptismalName ?? '세례명',
                               style: TextStyle(
                                 fontSize: 16,
                                 color: colorScheme.onSurface
@@ -125,7 +125,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                         color: colorScheme.onSurface.withValues(alpha: 0.7),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 4),
                     _buildMenuCard(
                       context: context,
                       label: '모임 정보 수정',
@@ -134,7 +134,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                       color: colorScheme.primaryContainer,
                       iconColor: colorScheme.primary,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     _buildMenuCard(
                       context: context,
                       label: '모임원 관리',
@@ -143,7 +143,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                       color: colorScheme.primaryContainer,
                       iconColor: colorScheme.primary,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     _buildMenuCard(
                       context: context,
                       label: '봉사 관리',
@@ -152,7 +152,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                       color: colorScheme.primaryContainer,
                       iconColor: colorScheme.primary,
                     ),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 4),
                     _buildMenuCard(
                       context: context,
                       label: '봉사 일정 생성',
@@ -258,11 +258,11 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
         onTap: () => context.push(routeName),
         borderRadius: BorderRadius.circular(16),
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(12.0),
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
                   color: iconColor.withValues(alpha: 0.1),
                   borderRadius: BorderRadius.circular(12),
@@ -278,7 +278,7 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                 child: Text(
                   label,
                   style: const TextStyle(
-                    fontSize: 18,
+                    fontSize: 15,
                     fontWeight: FontWeight.w600,
                   ),
                 ),

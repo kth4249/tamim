@@ -15,7 +15,7 @@ _ParishGroupMemberInfo _$ParishGroupMemberInfoFromJson(
       status: json['status'] as String,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
-      user: UserInfo.fromJson(json['user'] as Map<String, dynamic>),
+      user: TamimUser.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$ParishGroupMemberInfoToJson(

@@ -21,7 +21,7 @@ mixin _$ParishGroupMemberInfo {
   String get status;
   DateTime get createdAt;
   DateTime get updatedAt;
-  UserInfo get user;
+  TamimUser get user;
 
   /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -74,9 +74,9 @@ abstract mixin class $ParishGroupMemberInfoCopyWith<$Res> {
       String status,
       DateTime createdAt,
       DateTime updatedAt,
-      UserInfo user});
+      TamimUser user});
 
-  $UserInfoCopyWith<$Res> get user;
+  $TamimUserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -128,7 +128,7 @@ class _$ParishGroupMemberInfoCopyWithImpl<$Res>
       user: null == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as TamimUser,
     ));
   }
 
@@ -136,8 +136,8 @@ class _$ParishGroupMemberInfoCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get user {
-    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+  $TamimUserCopyWith<$Res> get user {
+    return $TamimUserCopyWith<$Res>(_self.user, (value) {
       return _then(_self.copyWith(user: value));
     });
   }
@@ -170,7 +170,7 @@ class _ParishGroupMemberInfo implements ParishGroupMemberInfo {
   @override
   final DateTime updatedAt;
   @override
-  final UserInfo user;
+  final TamimUser user;
 
   /// Create a copy of ParishGroupMemberInfo
   /// with the given fields replaced by the non-null parameter values.
@@ -230,10 +230,10 @@ abstract mixin class _$ParishGroupMemberInfoCopyWith<$Res>
       String status,
       DateTime createdAt,
       DateTime updatedAt,
-      UserInfo user});
+      TamimUser user});
 
   @override
-  $UserInfoCopyWith<$Res> get user;
+  $TamimUserCopyWith<$Res> get user;
 }
 
 /// @nodoc
@@ -285,7 +285,7 @@ class __$ParishGroupMemberInfoCopyWithImpl<$Res>
       user: null == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo,
+              as TamimUser,
     ));
   }
 
@@ -293,8 +293,8 @@ class __$ParishGroupMemberInfoCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res> get user {
-    return $UserInfoCopyWith<$Res>(_self.user, (value) {
+  $TamimUserCopyWith<$Res> get user {
+    return $TamimUserCopyWith<$Res>(_self.user, (value) {
       return _then(_self.copyWith(user: value));
     });
   }

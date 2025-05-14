@@ -7,13 +7,11 @@ part 'user_info.g.dart';
 abstract class UserInfo with _$UserInfo {
   const factory UserInfo({
     required String id,
-    required String name,
-    required String? nickname,
-    required String? email,
+    required String nickname,
     required String? baptismalName,
-    required String? status,
-    required DateTime? createdAt,
-    required DateTime? updatedAt,
+    required String status,
+    required DateTime createdAt,
+    required DateTime updatedAt,
     required DateTime? agreePushAt,
   }) = _UserInfo;
 

@@ -2,7 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/tamim_user.dart';
 import 'package:tamim/models/volunteer_event.dart';
 import 'package:tamim/models/volunteer_create.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
@@ -80,7 +80,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
   }
 
   VolunteerCreateVO? findBestMemberForPosition(BuildContext context,
-      DateTime date, int positionId, List<UserInfo> availableMembers) {
+      DateTime date, int positionId, List<TamimUser> availableMembers) {
     final sortedMembers = availableMembers
         .where((member) =>
             isMemberAvailableForDate(context, member.id, date) &&
@@ -94,7 +94,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
             id: null,
             userId: sortedMembers.first.id,
             name: sortedMembers.first.name,
-            nickname: sortedMembers.first.nickname ?? '',
+            nickname: sortedMembers.first.userInfo?.nickname ?? '',
           )
         : null;
   }
@@ -111,7 +111,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
 
     for (final date in _selectedDays) {
       final assignments = <int, VolunteerCreateVO?>{};
-      final availableMembers = List<UserInfo>.from(context
+      final availableMembers = List<TamimUser>.from(context
           .read<ParishGroupProvider>()
           .parishGroupMemberInfos
           .where((e) => e.status == 'active')
@@ -133,8 +133,9 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
           id: existPosition?.id,
           userId: existPosition?.user?.id,
           name: existPosition?.user?.name ?? existPosition?.anon?.name ?? '',
-          nickname:
-              existPosition?.user?.nickname ?? existPosition?.anon?.name ?? '',
+          nickname: existPosition?.user?.userInfo?.nickname ??
+              existPosition?.anon?.name ??
+              '',
         );
 
         final selectedMember = existPosition == null

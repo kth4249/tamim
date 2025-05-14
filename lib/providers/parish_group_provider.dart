@@ -35,11 +35,17 @@ class ParishGroupProvider extends ChangeNotifier {
         *, 
         positions!positions_group_id_fkey(*),
         volunteer_schedules(*),
-        parish_group_members(*, user: users!inner(*))
+        parish_group_members(*, 
+          user: users!inner(
+            id,
+            name,
+            email,
+            user_info!inner(*)
+          )
+        )
         ''')
         .eq('id', parishGroupId)
-        // .eq('parish_group_members.status', 'active') // <- 주석처리: 모든 상태 포함
-        .eq('parish_group_members.user.status', 'active')
+        .eq('parish_group_members.user.user_info.status', 'active')
         .single();
     logger.d('response: $response');
 
@@ -54,7 +60,6 @@ class ParishGroupProvider extends ChangeNotifier {
         .map((json) => Position.fromJson(json))
         .toList();
     parishGroupMemberInfos = (response['parish_group_members'] as List<dynamic>)
-        // .where((json) => json['user']['status'] == 'active')
         .map((json) => ParishGroupMemberInfo.fromJson(json))
         .toList();
 
@@ -68,12 +73,15 @@ class ParishGroupProvider extends ChangeNotifier {
   }
 
   Future<void> fetchGroupByVolunteerEvents(String parishGroupId) async {
-    final volunteerResponse = await supabase
-        .from('volunteer_schedules')
-        .select(
-            '*,position: positions(*),user: users(*),anon: volunteer_schedules_anon(id, name)')
-        .eq('group_id', parishGroupId)
-        .eq('status', 'completed');
+    final volunteerResponse =
+        await supabase.from('volunteer_schedules').select('''
+          *,
+          position: positions(*),
+          user: users(id, name, email, 
+            user_info!inner(*)
+          ),
+          anon: volunteer_schedules_anon(id, name)
+          ''').eq('group_id', parishGroupId).eq('status', 'completed');
     final volunteerEvents =
         volunteerResponse.map((json) => VolunteerEvent.fromJson(json)).toList();
     groupByVolunteerEvents = LinkedHashMap(

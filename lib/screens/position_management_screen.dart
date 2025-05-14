@@ -492,7 +492,7 @@ class _PositionManagementScreenState extends State<PositionManagementScreen> {
                               Expanded(
                                 flex: 2,
                                 child: Text(
-                                  member.user.nickname ?? '',
+                                  member.user.userInfo?.nickname ?? '',
                                   style: const TextStyle(color: Colors.black87),
                                 ),
                               ),

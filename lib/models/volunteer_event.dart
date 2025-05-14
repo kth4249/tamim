@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:tamim/models/position.dart';
-import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/tamim_user.dart';
 import 'package:tamim/models/volunteer_schedule.dart';
 
 part 'volunteer_event.freezed.dart';
@@ -12,7 +12,7 @@ abstract class VolunteerEvent with _$VolunteerEvent {
     required int id,
     required DateTime volunteerDate,
     required Position position,
-    required UserInfo? user,
+    required TamimUser? user,
     required VolunteerScheduleAnon? anon,
   }) = _VolunteerEvent;
 

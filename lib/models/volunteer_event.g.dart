@@ -13,7 +13,7 @@ _VolunteerEvent _$VolunteerEventFromJson(Map<String, dynamic> json) =>
       position: Position.fromJson(json['position'] as Map<String, dynamic>),
       user: json['user'] == null
           ? null
-          : UserInfo.fromJson(json['user'] as Map<String, dynamic>),
+          : TamimUser.fromJson(json['user'] as Map<String, dynamic>),
       anon: json['anon'] == null
           ? null
           : VolunteerScheduleAnon.fromJson(

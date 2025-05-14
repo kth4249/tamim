@@ -8,9 +8,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:tamim/main.dart';
-import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/tamim_user.dart';
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:crypto/crypto.dart';
+import 'package:tamim/models/user_info.dart';
 
 class AuthProvider extends ChangeNotifier {
   late StreamSubscription authSubscription;
@@ -24,7 +25,7 @@ class AuthProvider extends ChangeNotifier {
   bool isInitialized = false;
   bool isAuthenticated = false;
 
-  UserInfo? user;
+  TamimUser? user;
 
   AuthProvider() {
     authSubscription = supabase.auth.onAuthStateChange.listen((data) async {
@@ -36,15 +37,16 @@ class AuthProvider extends ChangeNotifier {
       switch (event) {
         case AuthChangeEvent.initialSession:
           if (session != null) {
-            final data = await supabase
-                .from('users')
-                .select()
-                .eq('id', session.user.id)
-                .maybeSingle();
-            isAuthenticated = true;
+            final data = await supabase.from('users').select('''
+              id,
+              name,
+              email,
+              user_info(*)
+          ''').eq('id', session.user.id).maybeSingle();
+            logger.d('initial data: $data');
             if (data != null) {
-              final userInfo = UserInfo.fromJson(data);
-              user = userInfo;
+              isAuthenticated = true;
+              user = TamimUser.fromJson(data);
             }
           }
           isInitialized = true;
@@ -94,19 +96,28 @@ class AuthProvider extends ChangeNotifier {
       accessToken: accessToken,
     );
 
-    final data = await supabase
-        .from('users')
-        .upsert({
-          'id': response.user!.id,
-          'name': googleUser.displayName,
-          'email': googleUser.email,
-        })
-        .select()
-        .single();
+    var data = await supabase.from('users').select('''
+          id,
+          name,
+          email,
+          user_info(*)
+          ''').eq('id', response.user!.id).maybeSingle();
+    logger.d('data: $data');
+    if (data == null) {
+      final insertData = await supabase
+          .from('users')
+          .insert({
+            'id': response.user!.id,
+            'name': googleUser.displayName,
+            'email': googleUser.email,
+          })
+          .select()
+          .single();
+      data = insertData;
+    }
 
-    final userInfo = UserInfo.fromJson(data);
     isAuthenticated = true;
-    user = userInfo;
+    user = TamimUser.fromJson(data);
     notifyListeners();
   }
 
@@ -131,28 +142,23 @@ class AuthProvider extends ChangeNotifier {
       nonce: rawNonce,
     );
 
-    var data = await supabase
-        .from('users')
-        .select()
-        .eq('id', response.user!.id)
-        .maybeSingle();
-
-    if (data == null) {
-      final insertData = await supabase
-          .from('users')
-          .insert({
-            'id': response.user!.id,
-            'name': '${credential.familyName}${credential.givenName}',
-            'email': credential.email,
-          })
-          .select()
-          .single();
-      data = insertData;
+    if (credential.email != null) {
+      await supabase.from('users').upsert({
+        'id': response.user!.id,
+        'name': '${credential.familyName}${credential.givenName}',
+        'email': credential.email,
+      });
     }
 
-    final userInfo = UserInfo.fromJson(data);
+    final data = await supabase.from('users').select('''
+          id,
+          name,
+          email,
+          user_info(*)
+          ''').eq('id', response.user!.id).single();
+
     isAuthenticated = true;
-    user = userInfo;
+    user = TamimUser.fromJson(data);
     notifyListeners();
   }
 
@@ -170,15 +176,32 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> upsetUser(final json) async {
+  Future<void> insertUserInfo(final json) async {
+    final loginUser = user;
+    if (loginUser == null) return;
+    json['created_at'] = DateTime.now().toIso8601String();
+    json['updated_at'] = DateTime.now().toIso8601String();
+
+    final data =
+        await supabase.from('user_info').insert(json).select().single();
+
+    user = loginUser.copyWith(userInfo: UserInfo.fromJson(data));
+    notifyListeners();
+  }
+
+  Future<void> updateUserInfo(Map<String, dynamic> json) async {
+    final loginUser = user;
+    if (loginUser == null) return;
+    json['updated_at'] = DateTime.now().toIso8601String();
+
     final data = await supabase
-        .from('users')
-        .upsert(json)
-        .eq('id', supabase.auth.currentUser!.id)
+        .from('user_info')
+        .update(json)
+        .eq('id', loginUser.id)
         .select()
         .single();
 
-    user = UserInfo.fromJson(data);
+    user = loginUser.copyWith(userInfo: UserInfo.fromJson(data));
     notifyListeners();
   }
 
@@ -189,9 +212,7 @@ class AuthProvider extends ChangeNotifier {
       await revokeSignInWithApple();
     }
 
-    await supabase
-        .from('users')
-        .update({'status': 'inactive'}).eq('id', user!.id);
+    updateUserInfo({'status': 'inactive'});
 
     signOut();
     notifyListeners();
@@ -206,15 +227,14 @@ class AuthProvider extends ChangeNotifier {
 
       isAuthenticated = true;
 
-      final data = await supabase
-          .from('users')
-          .select()
-          .eq('id', response.user!.id)
-          .eq('status', 'active')
-          .maybeSingle();
+      final data = await supabase.from('users').select('''
+          id,
+          name,
+          email,
+          user_info!inner(*)
+          ''').eq('id', response.user!.id).eq('status', 'active').maybeSingle();
       if (data != null) {
-        final userInfo = UserInfo.fromJson(data);
-        user = userInfo;
+        user = TamimUser.fromJson(data);
       }
       notifyListeners();
     } catch (e) {
@@ -241,7 +261,7 @@ class AuthProvider extends ChangeNotifier {
       );
 
       final data = response.user?.toJson() ?? {};
-      final userInfo = UserInfo.fromJson(data);
+      final userInfo = TamimUser.fromJson(data);
       user = userInfo;
       notifyListeners();
     } catch (e) {
@@ -253,7 +273,7 @@ class AuthProvider extends ChangeNotifier {
     try {
       final response = await supabase.auth.getUser();
       final data = response.user?.toJson() ?? {};
-      user = UserInfo.fromJson(data);
+      user = TamimUser.fromJson(data);
       notifyListeners();
     } catch (e) {
       rethrow;

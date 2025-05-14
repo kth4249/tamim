@@ -165,7 +165,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
                     ),
                     title: Text(
                       volunteer.user != null
-                          ? volunteer.user!.nickname ?? ''
+                          ? volunteer.user!.userInfo?.nickname ?? ''
                           : volunteer.anon!.name,
                       style: const TextStyle(fontWeight: FontWeight.w600),
                     ),

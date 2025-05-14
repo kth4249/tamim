@@ -71,7 +71,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             ),
                             const SizedBox(height: 20),
                             Text(
-                              authProvider.user?.nickname ?? '닉네임',
+                              authProvider.user?.userInfo?.nickname ?? '닉네임',
                               style: TextStyle(
                                 fontSize: 22,
                                 fontWeight: FontWeight.bold,
@@ -102,7 +102,8 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                         .withValues(alpha: 0.6)),
                                 const SizedBox(width: 4),
                                 Text(
-                                  authProvider.user?.baptismalName ?? '세례명',
+                                  authProvider.user?.userInfo?.baptismalName ??
+                                      '세례명',
                                   style: TextStyle(
                                     fontSize: 16,
                                     color: colorScheme.onSurface

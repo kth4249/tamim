@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/models/position.dart';
-import 'package:tamim/models/user_info.dart';
+import 'package:tamim/models/tamim_user.dart';
 import 'package:tamim/models/member_positions.dart';
 import 'package:tamim/models/volunteer_create.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
@@ -51,7 +51,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
     super.dispose();
   }
 
-  List<UserInfo> _getAvailableMembersForPosition(Position position) {
+  List<TamimUser> _getAvailableMembersForPosition(Position position) {
     return context
         .read<ParishGroupProvider>()
         .parishGroupMemberInfos
@@ -171,7 +171,8 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                   ...availableMembers.map((member) {
                                     return DropdownMenuItem<String>(
                                       value: member.id,
-                                      child: Text(member.nickname ?? ''),
+                                      child:
+                                          Text(member.userInfo?.nickname ?? ''),
                                     );
                                   }),
                                 ],
@@ -197,7 +198,8 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                             nickname: availableMembers
                                                     .firstWhere(
                                                         (e) => e.id == value)
-                                                    .nickname ??
+                                                    .userInfo
+                                                    ?.nickname ??
                                                 '',
                                           );
                                     _manualInputControllers[position.id]

@@ -180,11 +180,12 @@ class _RegisterFormState extends State<RegisterForm> {
                 );
                 return;
               }
-              await context.read<AuthProvider>().upsetUser({
+              await context.read<AuthProvider>().insertUserInfo({
                 'id': supabase.auth.currentUser!.id,
                 'nickname': _nicknameController.text,
                 'baptismal_name': _baptismalNameController.text,
                 'status': 'active',
+                'agree_push_at': DateTime.now().toIso8601String(),
               });
             },
             style: ElevatedButton.styleFrom(

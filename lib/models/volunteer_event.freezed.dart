@@ -18,7 +18,7 @@ mixin _$VolunteerEvent {
   int get id;
   DateTime get volunteerDate;
   Position get position;
-  UserInfo? get user;
+  TamimUser? get user;
   VolunteerScheduleAnon? get anon;
 
   /// Create a copy of VolunteerEvent
@@ -67,11 +67,11 @@ abstract mixin class $VolunteerEventCopyWith<$Res> {
       {int id,
       DateTime volunteerDate,
       Position position,
-      UserInfo? user,
+      TamimUser? user,
       VolunteerScheduleAnon? anon});
 
   $PositionCopyWith<$Res> get position;
-  $UserInfoCopyWith<$Res>? get user;
+  $TamimUserCopyWith<$Res>? get user;
   $VolunteerScheduleAnonCopyWith<$Res>? get anon;
 }
 
@@ -110,7 +110,7 @@ class _$VolunteerEventCopyWithImpl<$Res>
       user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo?,
+              as TamimUser?,
       anon: freezed == anon
           ? _self.anon
           : anon // ignore: cast_nullable_to_non_nullable
@@ -132,12 +132,12 @@ class _$VolunteerEventCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res>? get user {
+  $TamimUserCopyWith<$Res>? get user {
     if (_self.user == null) {
       return null;
     }
 
-    return $UserInfoCopyWith<$Res>(_self.user!, (value) {
+    return $TamimUserCopyWith<$Res>(_self.user!, (value) {
       return _then(_self.copyWith(user: value));
     });
   }
@@ -176,7 +176,7 @@ class _VolunteerEvent implements VolunteerEvent {
   @override
   final Position position;
   @override
-  final UserInfo? user;
+  final TamimUser? user;
   @override
   final VolunteerScheduleAnon? anon;
 
@@ -232,13 +232,13 @@ abstract mixin class _$VolunteerEventCopyWith<$Res>
       {int id,
       DateTime volunteerDate,
       Position position,
-      UserInfo? user,
+      TamimUser? user,
       VolunteerScheduleAnon? anon});
 
   @override
   $PositionCopyWith<$Res> get position;
   @override
-  $UserInfoCopyWith<$Res>? get user;
+  $TamimUserCopyWith<$Res>? get user;
   @override
   $VolunteerScheduleAnonCopyWith<$Res>? get anon;
 }
@@ -278,7 +278,7 @@ class __$VolunteerEventCopyWithImpl<$Res>
       user: freezed == user
           ? _self.user
           : user // ignore: cast_nullable_to_non_nullable
-              as UserInfo?,
+              as TamimUser?,
       anon: freezed == anon
           ? _self.anon
           : anon // ignore: cast_nullable_to_non_nullable
@@ -300,12 +300,12 @@ class __$VolunteerEventCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $UserInfoCopyWith<$Res>? get user {
+  $TamimUserCopyWith<$Res>? get user {
     if (_self.user == null) {
       return null;
     }
 
-    return $UserInfoCopyWith<$Res>(_self.user!, (value) {
+    return $TamimUserCopyWith<$Res>(_self.user!, (value) {
       return _then(_self.copyWith(user: value));
     });
   }
