@@ -31,7 +31,19 @@ class _JoinScreenState extends State<JoinScreen> {
           .from('parish_groups')
           .select('id')
           .eq('join_key', widget.joinKey)
+          .eq('status', 'active')
           .single();
+
+      final joinedGroups = await supabase
+          .from('parish_group_members')
+          .select('*')
+          .eq('group_id', parishGroup['id'])
+          .eq('user_id', authProvider.user!.id)
+          .eq('status', 'active');
+
+      if (joinedGroups.isNotEmpty && mounted) {
+        return mounted ? context.go('/') : null;
+      }
 
       await supabase.from('parish_group_members').upsert({
         'group_id': parishGroup['id'],
@@ -40,10 +52,9 @@ class _JoinScreenState extends State<JoinScreen> {
         "status": "active",
         "updated_at": DateTime.now().toIso8601String(),
       });
+
       if (mounted) {
-        context.push('/parish-groups/${parishGroup['id']}').then((value) {
-          mounted ? context.go('/') : null;
-        });
+        context.go('/');
       }
     } catch (e) {
       if (mounted) {

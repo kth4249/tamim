@@ -319,7 +319,7 @@ class MemberManagementScreen extends StatelessWidget {
                 children: [
                   QrImageView(
                     data:
-                        'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}',
+                        'https://tamim-landing.vercel.app/bridge?key=${context.read<ParishGroupProvider>().parishGroup!.joinKey}',
                     version: QrVersions.auto,
                     size: 200.0,
                   ),
@@ -327,7 +327,7 @@ class MemberManagementScreen extends StatelessWidget {
                   ElevatedButton(
                     onPressed: () {
                       final url = Uri.parse(
-                          'https://kth4249.github.io/join/${context.read<ParishGroupProvider>().parishGroup!.joinKey}');
+                          'https://tamim-landing.vercel.app/bridge?key=${context.read<ParishGroupProvider>().parishGroup!.joinKey}');
                       Clipboard.setData(ClipboardData(text: url.toString()));
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('링크가 복사되었습니다.')),

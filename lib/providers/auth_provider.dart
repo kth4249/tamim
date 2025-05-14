@@ -212,7 +212,8 @@ class AuthProvider extends ChangeNotifier {
       await revokeSignInWithApple();
     }
 
-    updateUserInfo({'status': 'inactive'});
+    // updateUserInfo({'status': 'inactive'});
+    await supabase.from('user_info').delete().eq('id', user!.id); // TODO: 임시방편
 
     signOut();
     notifyListeners();

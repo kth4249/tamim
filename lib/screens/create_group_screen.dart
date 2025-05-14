@@ -42,7 +42,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
       barrierDismissible: false,
       context: context,
       builder: (context) {
-        var joinUrl = 'https://kth4249.github.io/join/${response.joinKey}';
+        var joinUrl =
+            'https://tamim-landing.vercel.app/bridge?key=${response.joinKey}';
         return Dialog(
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
