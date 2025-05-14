@@ -11,6 +11,7 @@ _VolunteerCreateVO _$VolunteerCreateVOFromJson(Map<String, dynamic> json) =>
       id: (json['id'] as num?)?.toInt(),
       userId: json['user_id'] as String?,
       name: json['name'] as String,
+      nickname: json['nickname'] as String,
     );
 
 Map<String, dynamic> _$VolunteerCreateVOToJson(_VolunteerCreateVO instance) =>
@@ -18,4 +19,5 @@ Map<String, dynamic> _$VolunteerCreateVOToJson(_VolunteerCreateVO instance) =>
       'id': instance.id,
       'user_id': instance.userId,
       'name': instance.name,
+      'nickname': instance.nickname,
     };

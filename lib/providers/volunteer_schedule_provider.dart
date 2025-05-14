@@ -14,7 +14,7 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     final response = await supabase
         .from('users')
         .select('''
-            id, name, baptismal_name,
+            id, name, nickname, baptismal_name,
             parish_group_members!inner(group_id, status), 
             member_dates(available_date, group_id)
             ''')
@@ -94,6 +94,7 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     availableDateByMember[memberIndex] = MemberDates(
       id: availableDateByMember[memberIndex].id,
       name: availableDateByMember[memberIndex].name,
+      nickname: availableDateByMember[memberIndex].nickname,
       baptismalName: availableDateByMember[memberIndex].baptismalName,
       memberDates: selectedDays,
     );

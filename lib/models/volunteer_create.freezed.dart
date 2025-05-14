@@ -18,6 +18,7 @@ mixin _$VolunteerCreateVO {
   int? get id; // volunteerScheduleId
   String? get userId;
   String get name;
+  String get nickname;
 
   /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
@@ -37,16 +38,18 @@ mixin _$VolunteerCreateVO {
             other is VolunteerCreateVO &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, name);
+  int get hashCode => Object.hash(runtimeType, id, userId, name, nickname);
 
   @override
   String toString() {
-    return 'VolunteerCreateVO(id: $id, userId: $userId, name: $name)';
+    return 'VolunteerCreateVO(id: $id, userId: $userId, name: $name, nickname: $nickname)';
   }
 }
 
@@ -56,7 +59,7 @@ abstract mixin class $VolunteerCreateVOCopyWith<$Res> {
           VolunteerCreateVO value, $Res Function(VolunteerCreateVO) _then) =
       _$VolunteerCreateVOCopyWithImpl;
   @useResult
-  $Res call({int? id, String? userId, String name});
+  $Res call({int? id, String? userId, String name, String nickname});
 }
 
 /// @nodoc
@@ -75,6 +78,7 @@ class _$VolunteerCreateVOCopyWithImpl<$Res>
     Object? id = freezed,
     Object? userId = freezed,
     Object? name = null,
+    Object? nickname = null,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -89,6 +93,10 @@ class _$VolunteerCreateVOCopyWithImpl<$Res>
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -97,7 +105,10 @@ class _$VolunteerCreateVOCopyWithImpl<$Res>
 @JsonSerializable()
 class _VolunteerCreateVO implements VolunteerCreateVO {
   const _VolunteerCreateVO(
-      {required this.id, required this.userId, required this.name});
+      {required this.id,
+      required this.userId,
+      required this.name,
+      required this.nickname});
   factory _VolunteerCreateVO.fromJson(Map<String, dynamic> json) =>
       _$VolunteerCreateVOFromJson(json);
 
@@ -108,6 +119,8 @@ class _VolunteerCreateVO implements VolunteerCreateVO {
   final String? userId;
   @override
   final String name;
+  @override
+  final String nickname;
 
   /// Create a copy of VolunteerCreateVO
   /// with the given fields replaced by the non-null parameter values.
@@ -131,16 +144,18 @@ class _VolunteerCreateVO implements VolunteerCreateVO {
             other is _VolunteerCreateVO &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.userId, userId) || other.userId == userId) &&
-            (identical(other.name, name) || other.name == name));
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, userId, name);
+  int get hashCode => Object.hash(runtimeType, id, userId, name, nickname);
 
   @override
   String toString() {
-    return 'VolunteerCreateVO(id: $id, userId: $userId, name: $name)';
+    return 'VolunteerCreateVO(id: $id, userId: $userId, name: $name, nickname: $nickname)';
   }
 }
 
@@ -152,7 +167,7 @@ abstract mixin class _$VolunteerCreateVOCopyWith<$Res>
       __$VolunteerCreateVOCopyWithImpl;
   @override
   @useResult
-  $Res call({int? id, String? userId, String name});
+  $Res call({int? id, String? userId, String name, String nickname});
 }
 
 /// @nodoc
@@ -171,6 +186,7 @@ class __$VolunteerCreateVOCopyWithImpl<$Res>
     Object? id = freezed,
     Object? userId = freezed,
     Object? name = null,
+    Object? nickname = null,
   }) {
     return _then(_VolunteerCreateVO(
       id: freezed == id
@@ -184,6 +200,10 @@ class __$VolunteerCreateVOCopyWithImpl<$Res>
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
               as String,
     ));
   }

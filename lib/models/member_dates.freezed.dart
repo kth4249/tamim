@@ -17,6 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberDates {
   String get id;
   String get name;
+  String get nickname;
   String? get baptismalName;
   List<DateTime> get memberDates;
 
@@ -37,6 +38,8 @@ mixin _$MemberDates {
             other is MemberDates &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
             (identical(other.baptismalName, baptismalName) ||
                 other.baptismalName == baptismalName) &&
             const DeepCollectionEquality()
@@ -45,12 +48,12 @@ mixin _$MemberDates {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, baptismalName,
-      const DeepCollectionEquality().hash(memberDates));
+  int get hashCode => Object.hash(runtimeType, id, name, nickname,
+      baptismalName, const DeepCollectionEquality().hash(memberDates));
 
   @override
   String toString() {
-    return 'MemberDates(id: $id, name: $name, baptismalName: $baptismalName, memberDates: $memberDates)';
+    return 'MemberDates(id: $id, name: $name, nickname: $nickname, baptismalName: $baptismalName, memberDates: $memberDates)';
   }
 }
 
@@ -63,6 +66,7 @@ abstract mixin class $MemberDatesCopyWith<$Res> {
   $Res call(
       {String id,
       String name,
+      String nickname,
       String? baptismalName,
       List<DateTime> memberDates});
 }
@@ -81,6 +85,7 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? nickname = null,
     Object? baptismalName = freezed,
     Object? memberDates = null,
   }) {
@@ -92,6 +97,10 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
               as String,
       baptismalName: freezed == baptismalName
           ? _self.baptismalName
@@ -111,6 +120,7 @@ class _MemberDates implements MemberDates {
   const _MemberDates(
       {required this.id,
       required this.name,
+      required this.nickname,
       required this.baptismalName,
       required final List<DateTime> memberDates})
       : _memberDates = memberDates;
@@ -121,6 +131,8 @@ class _MemberDates implements MemberDates {
   final String id;
   @override
   final String name;
+  @override
+  final String nickname;
   @override
   final String? baptismalName;
   final List<DateTime> _memberDates;
@@ -153,6 +165,8 @@ class _MemberDates implements MemberDates {
             other is _MemberDates &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
+            (identical(other.nickname, nickname) ||
+                other.nickname == nickname) &&
             (identical(other.baptismalName, baptismalName) ||
                 other.baptismalName == baptismalName) &&
             const DeepCollectionEquality()
@@ -161,12 +175,12 @@ class _MemberDates implements MemberDates {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, baptismalName,
-      const DeepCollectionEquality().hash(_memberDates));
+  int get hashCode => Object.hash(runtimeType, id, name, nickname,
+      baptismalName, const DeepCollectionEquality().hash(_memberDates));
 
   @override
   String toString() {
-    return 'MemberDates(id: $id, name: $name, baptismalName: $baptismalName, memberDates: $memberDates)';
+    return 'MemberDates(id: $id, name: $name, nickname: $nickname, baptismalName: $baptismalName, memberDates: $memberDates)';
   }
 }
 
@@ -181,6 +195,7 @@ abstract mixin class _$MemberDatesCopyWith<$Res>
   $Res call(
       {String id,
       String name,
+      String nickname,
       String? baptismalName,
       List<DateTime> memberDates});
 }
@@ -199,6 +214,7 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
+    Object? nickname = null,
     Object? baptismalName = freezed,
     Object? memberDates = null,
   }) {
@@ -210,6 +226,10 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
       name: null == name
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      nickname: null == nickname
+          ? _self.nickname
+          : nickname // ignore: cast_nullable_to_non_nullable
               as String,
       baptismalName: freezed == baptismalName
           ? _self.baptismalName

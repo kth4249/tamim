@@ -154,14 +154,14 @@ class _CreateVolunteerScheduleScreenState
                                         const SizedBox(width: 4),
                                         Expanded(
                                           child: Text(
-                                            assignedMember?.name ?? '미정',
+                                            assignedMember?.nickname ?? '미정',
                                             style: TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 12,
-                                              color:
-                                                  assignedMember?.name != null
-                                                      ? colorScheme.onSurface
-                                                      : colorScheme.error,
+                                              color: assignedMember?.nickname !=
+                                                      null
+                                                  ? colorScheme.onSurface
+                                                  : colorScheme.error,
                                             ),
                                           ),
                                         ),

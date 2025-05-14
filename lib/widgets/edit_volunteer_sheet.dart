@@ -37,7 +37,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
     _currentAssignments = Map.from(widget.assignments);
     for (final position in widget.positions) {
       String? text = _currentAssignments[position.id]?.userId == null
-          ? _currentAssignments[position.id]?.name
+          ? _currentAssignments[position.id]?.nickname
           : null;
       _manualInputControllers[position.id] = TextEditingController(text: text);
     }
@@ -73,6 +73,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
         id: _currentAssignments[positionId]?.id,
         userId: null,
         name: name,
+        nickname: name,
       );
     });
   }
@@ -170,7 +171,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                   ...availableMembers.map((member) {
                                     return DropdownMenuItem<String>(
                                       value: member.id,
-                                      child: Text(member.name),
+                                      child: Text(member.nickname),
                                     );
                                   }),
                                 ],
@@ -184,6 +185,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                                 id: current?.id,
                                                 userId: null,
                                                 name: '',
+                                                nickname: '',
                                               )
                                             : VolunteerCreateVO(
                                                 id: current?.id,
@@ -192,6 +194,10 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                                     .firstWhere(
                                                         (e) => e.id == value)
                                                     .name,
+                                                nickname: availableMembers
+                                                    .firstWhere(
+                                                        (e) => e.id == value)
+                                                    .nickname,
                                               );
                                     _manualInputControllers[position.id]
                                         ?.clear();
@@ -233,7 +239,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                           Padding(
                             padding: const EdgeInsets.only(top: 4),
                             child: Text(
-                              '수동 입력: ${assignedMember.name}',
+                              '수동 입력: ${assignedMember.nickname}',
                               style: TextStyle(
                                 color: colorScheme.error,
                                 fontSize: 12,

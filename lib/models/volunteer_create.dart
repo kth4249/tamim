@@ -32,6 +32,7 @@ abstract class VolunteerCreateVO with _$VolunteerCreateVO {
     required int? id, // volunteerScheduleId
     required String? userId,
     required String name,
+    required String nickname,
   }) = _VolunteerCreateVO;
 
   factory VolunteerCreateVO.fromJson(Map<String, dynamic> json) =>

@@ -371,7 +371,8 @@ class MemberManagementScreen extends StatelessWidget {
                         backgroundImage:
                             AssetImage('assets/images/profile.png'),
                       ),
-                      title: Text(member.user.name),
+                      title:
+                          Text('${member.user.name} (${member.user.nickname})'),
                       subtitle: Text(
                           '가입 신청일: ${member.createdAt.toLocal().toString().substring(0, 10)}'),
                       trailing: Row(
@@ -432,7 +433,7 @@ class MemberManagementScreen extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                              member.user.name,
+                              '${member.user.name} (${member.user.nickname})',
                               style: const TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w500,

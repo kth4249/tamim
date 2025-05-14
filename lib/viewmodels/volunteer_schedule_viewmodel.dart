@@ -94,6 +94,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
             id: null,
             userId: sortedMembers.first.id,
             name: sortedMembers.first.name,
+            nickname: sortedMembers.first.nickname,
           )
         : null;
   }
@@ -132,6 +133,8 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
           id: existPosition?.id,
           userId: existPosition?.user?.id,
           name: existPosition?.user?.name ?? existPosition?.anon?.name ?? '',
+          nickname:
+              existPosition?.user?.nickname ?? existPosition?.anon?.name ?? '',
         );
 
         final selectedMember = existPosition == null
