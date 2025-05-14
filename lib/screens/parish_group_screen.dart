@@ -67,16 +67,16 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
     if (liturgicalEvents != null) {
       slivers.add(
-        SliverToBoxAdapter(
+        const SliverToBoxAdapter(
           child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('이 날의 전례',
+                Text('이 날의 전례',
                     style:
                         TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 12),
+                SizedBox(height: 12),
               ],
             ),
           ),

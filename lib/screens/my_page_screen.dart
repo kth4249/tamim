@@ -41,7 +41,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(24),
                       ),
-                      color: colorScheme.surfaceVariant,
+                      color: colorScheme.surfaceContainerHighest,
                       child: Padding(
                         padding: const EdgeInsets.symmetric(
                             horizontal: 32, vertical: 32),

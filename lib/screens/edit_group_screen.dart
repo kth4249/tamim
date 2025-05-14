@@ -45,7 +45,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
   Future<void> _updateGroup() async {
     if (!_formKey.currentState!.validate() ||
         _selectedParish == null ||
-        _selectedCategory == null) return;
+        _selectedCategory == null) {
+      return;
+    }
     setState(() => _isLoading = true);
     final group = context.read<ParishGroupProvider>().parishGroup;
     await supabase.from('parish_groups').update({
@@ -120,7 +122,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(16),
                 ),
-                color: colorScheme.surfaceVariant,
+                color: colorScheme.surfaceContainerHighest,
                 child: Padding(
                   padding: const EdgeInsets.all(20),
                   child: Column(
@@ -171,7 +173,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                             decoration: InputDecoration(
                               hintText: '본당명을 입력하거나 선택하세요.',
                               filled: true,
-                              fillColor: colorScheme.background,
+                              fillColor: colorScheme.surface,
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(
@@ -206,7 +208,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                             setState(() => _selectedCategory = val),
                         decoration: InputDecoration(
                           filled: true,
-                          fillColor: colorScheme.background,
+                          fillColor: colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide:
@@ -230,7 +232,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                         decoration: InputDecoration(
                           hintText: '모임명을 입력하세요.',
                           filled: true,
-                          fillColor: colorScheme.background,
+                          fillColor: colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide:
@@ -240,8 +242,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                               horizontal: 16, vertical: 14),
                         ),
                         validator: (value) {
-                          if (value == null || value.isEmpty)
+                          if (value == null || value.isEmpty) {
                             return '모임명을 입력하세요.';
+                          }
                           if (value.length > 10) return '모임명은 10자 이하로 입력해주세요.';
                           return null;
                         },
@@ -259,7 +262,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                         decoration: InputDecoration(
                           hintText: '모임에 대한 설명을 입력하세요.',
                           filled: true,
-                          fillColor: colorScheme.background,
+                          fillColor: colorScheme.surface,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide:
@@ -269,8 +272,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                               horizontal: 16, vertical: 14),
                         ),
                         validator: (value) {
-                          if (value != null && value.length > 50)
+                          if (value != null && value.length > 50) {
                             return '설명은 50자 이하로 입력해주세요.';
+                          }
                           return null;
                         },
                       ),

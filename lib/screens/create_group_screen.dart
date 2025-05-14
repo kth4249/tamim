@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
-import 'package:tamim/models/parish_group_category.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/main_provider.dart';
 
