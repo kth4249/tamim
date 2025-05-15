@@ -34,7 +34,7 @@ class RouterConfigClass {
         GoRoute(
           path: '/parish-groups/:id',
           builder: (context, state) =>
-              ParishGroupScreen(id: state.pathParameters['id']!),
+              ParishGroupScreen(id: int.parse(state.pathParameters['id']!)),
         ),
         GoRoute(
             path: '/login', builder: (context, state) => const LoginScreen()),

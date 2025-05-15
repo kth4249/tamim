@@ -174,7 +174,7 @@ class VolunteerScheduleViewModel extends ChangeNotifier {
           );
       await context
           .read<ParishGroupProvider>()
-          .fetchGroupByVolunteerEvents(parishGroupId.toString());
+          .fetchGroupByVolunteerEvents(parishGroupId);
 
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

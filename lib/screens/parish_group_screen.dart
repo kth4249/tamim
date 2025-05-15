@@ -1,16 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tamim/models/volunteer_event.dart';
+import 'package:tamim/models/schedule.dart';
+import 'package:tamim/models/schedule_event.dart';
 import 'package:tamim/providers/calendar_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
+import 'package:tamim/providers/schedule_provider.dart';
 import 'package:tamim/screens/group_management_screen.dart';
 import 'package:tamim/widgets/common_calendar.dart';
+import 'package:tamim/widgets/schedule_create_sheet.dart';
 import '../theme/app_theme.dart';
 
 class ParishGroupScreen extends StatefulWidget {
   const ParishGroupScreen({super.key, required this.id});
 
-  final String id;
+  final int id;
 
   @override
   State<ParishGroupScreen> createState() => _ParishGroupScreenState();
@@ -26,12 +29,89 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
   @override
   void initState() {
     context.read<ParishGroupProvider>().fetchData(widget.id);
+    context.read<ScheduleProvider>().fetchSchedules(widget.id);
     super.initState();
   }
 
-  List<VolunteerEvent> _getEventsForDay(DateTime day) {
-    return context.read<ParishGroupProvider>().groupByVolunteerEvents[day] ??
-        [];
+  List<ScheduleEvent> _getSchedulesForDay(DateTime day) {
+    final map = context.watch<ScheduleProvider>().schedulesByDate;
+    // 날짜 key는 DateTime(year, month, day)로 맞춰야 함
+    final key = DateTime(day.year, day.month, day.day);
+    return map[key] ?? [];
+  }
+
+  List<dynamic> _getEventsForDay(DateTime day) {
+    final volnteerEvents =
+        context.read<ParishGroupProvider>().groupByVolunteerEvents[day] ?? [];
+    final scheduleEvents = _getSchedulesForDay(day);
+    return [...volnteerEvents, ...scheduleEvents];
+  }
+
+  void _showCreateScheduleDialog(DateTime selectedDay) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => ScheduleCreateSheet(
+        groupId: widget.id,
+        selectedDate: selectedDay,
+      ),
+    );
+  }
+
+  void _showEditScheduleDialog(ScheduleEvent event) {
+    final schedule = Schedule(
+      id: event.id,
+      groupId: event.parishGroup.id,
+      userId: event.tamimUser.id,
+      scheduleDatetime: event.scheduleDatetime,
+      scheduleName: event.scheduleName,
+      scheduleDesc: event.scheduleDesc,
+      openChatUrl: event.openChatUrl,
+      recruiteCount: event.recruiteCount,
+      shareScope: event.shareScope,
+    );
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => ScheduleEditSheet(
+        schedule: schedule,
+      ),
+    );
+  }
+
+  void _deleteSchedule(ScheduleEvent event) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('일정 삭제'),
+        content: const Text('정말로 이 일정을 삭제하시겠습니까?'),
+        actions: [
+          TextButton(
+              onPressed: () => Navigator.pop(context, false),
+              child: const Text('취소')),
+          TextButton(
+              onPressed: () => Navigator.pop(context, true),
+              child: const Text('삭제', style: TextStyle(color: Colors.red))),
+        ],
+      ),
+    );
+
+    final schedule = Schedule(
+      id: event.id,
+      groupId: event.parishGroup.id,
+      userId: event.tamimUser.id,
+      scheduleDatetime: event.scheduleDatetime,
+      scheduleName: event.scheduleName,
+      scheduleDesc: event.scheduleDesc,
+      openChatUrl: event.openChatUrl,
+      recruiteCount: event.recruiteCount,
+      shareScope: event.shareScope,
+    );
+
+    if (confirm == true) {
+      await context.read<ScheduleProvider>().deleteSchedule(schedule);
+    }
   }
 
   @override
@@ -175,6 +255,87 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
               );
             },
             childCount: volunteers.length,
+          ),
+        ),
+      );
+    }
+
+    // ... 기존 slivers 코드 중간에 추가 ...
+    final schedules = _getSchedulesForDay(_selectedDay!);
+
+    slivers.add(
+      SliverToBoxAdapter(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text('이 날의 일정',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              ElevatedButton.icon(
+                onPressed: () => _showCreateScheduleDialog(_selectedDay!),
+                icon: const Icon(Icons.add),
+                label: const Text('일정 생성'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppTheme.primaryColor,
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+
+    if (schedules.isEmpty) {
+      slivers.add(
+        const SliverToBoxAdapter(
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(vertical: 32),
+              child: Text('일정이 없습니다.', style: TextStyle(color: Colors.grey)),
+            ),
+          ),
+        ),
+      );
+    } else {
+      slivers.add(
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final schedule = schedules[index];
+              return Card(
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                elevation: 2,
+                child: ListTile(
+                  title: Text(schedule.scheduleName,
+                      style: const TextStyle(fontWeight: FontWeight.w600)),
+                  subtitle: Text(schedule.scheduleDesc),
+                  trailing: PopupMenuButton<String>(
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        _showEditScheduleDialog(schedule);
+                      } else if (value == 'delete') {
+                        _deleteSchedule(schedule);
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      const PopupMenuItem(value: 'edit', child: Text('수정')),
+                      const PopupMenuItem(value: 'delete', child: Text('삭제')),
+                    ],
+                  ),
+                  onTap: () {
+                    // 상세보기/수정 등
+                    _showEditScheduleDialog(schedule);
+                  },
+                ),
+              );
+            },
+            childCount: schedules.length,
           ),
         ),
       );

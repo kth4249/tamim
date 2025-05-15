@@ -28,7 +28,7 @@ class ParishGroupProvider extends ChangeNotifier {
     myInfo = null;
   }
 
-  Future<void> fetchData(String parishGroupId) async {
+  Future<void> fetchData(int parishGroupId) async {
     final response = await supabase
         .from('parish_groups')
         .select('''
@@ -72,7 +72,7 @@ class ParishGroupProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchGroupByVolunteerEvents(String parishGroupId) async {
+  Future<void> fetchGroupByVolunteerEvents(int parishGroupId) async {
     final volunteerResponse =
         await supabase.from('volunteer_schedules').select('''
           *,
@@ -130,7 +130,7 @@ class ParishGroupProvider extends ChangeNotifier {
         .update({'status': 'active'})
         .eq('group_id', groupId)
         .eq('user_id', userId);
-    await fetchData(groupId.toString());
+    await fetchData(groupId);
     notifyListeners();
   }
 
@@ -141,7 +141,7 @@ class ParishGroupProvider extends ChangeNotifier {
         .update({'status': 'inactive'})
         .eq('group_id', groupId)
         .eq('user_id', userId);
-    await fetchData(groupId.toString());
+    await fetchData(groupId);
     notifyListeners();
   }
 
@@ -150,6 +150,6 @@ class ParishGroupProvider extends ChangeNotifier {
         .from('parish_groups')
         .update(group.toJson())
         .eq('id', group.id);
-    await fetchData(group.id.toString());
+    await fetchData(group.id);
   }
 }

@@ -57,7 +57,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
       'description': _descController.text,
       'updated_at': DateTime.now().toIso8601String(),
     }).eq('id', group!.id);
-    await context.read<ParishGroupProvider>().fetchData(group.id.toString());
+    await context.read<ParishGroupProvider>().fetchData(group.id);
     setState(() => _isLoading = false);
     if (mounted) {
       ScaffoldMessenger.of(context)

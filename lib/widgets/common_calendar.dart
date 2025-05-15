@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:tamim/models/schedule_event.dart';
+import 'package:tamim/models/volunteer_event.dart';
 import '../theme/app_theme.dart';
 
 class CommonCalendar extends StatefulWidget {
@@ -98,17 +100,28 @@ class _CommonCalendarState extends State<CommonCalendar> {
             return null;
           },
           markerBuilder: (context, day, events) {
-            if (events.isNotEmpty) {
-              return Container(
+            List<Widget> children = [];
+            if (events.any((event) => event is VolunteerEvent)) {
+              children.add(Container(
                 margin: const EdgeInsets.only(top: 30),
-                child: const Icon(
-                  size: 16,
-                  Icons.church_outlined,
-                  color: Colors.green,
-                ),
-              );
+                child:
+                    const Icon(Icons.church_outlined, color: Colors.lightGreen),
+              ));
             }
-            return null;
+
+            for (var event in events) {
+              if (event is ScheduleEvent) {
+                children.add(Container(
+                  margin: const EdgeInsets.only(top: 30),
+                  child: const Icon(Icons.event_outlined,
+                      color: Colors.lightBlueAccent),
+                ));
+              }
+            }
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: children,
+            );
           },
         ),
       ),

@@ -169,7 +169,7 @@ class MemberManagementScreen extends StatelessWidget {
                         Navigator.pop(context);
                         await context
                             .read<ParishGroupProvider>()
-                            .fetchData(groupId.toString());
+                            .fetchData(groupId);
                       }
                     },
                     style: ElevatedButton.styleFrom(
@@ -264,9 +264,7 @@ class MemberManagementScreen extends StatelessWidget {
 
                       if (context.mounted) {
                         Navigator.pop(context);
-                        context
-                            .read<ParishGroupProvider>()
-                            .fetchData(groupId.toString());
+                        context.read<ParishGroupProvider>().fetchData(groupId);
                       }
                     },
                     style: ElevatedButton.styleFrom(
