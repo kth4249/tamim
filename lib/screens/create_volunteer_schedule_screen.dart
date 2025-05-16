@@ -123,6 +123,11 @@ class _CreateVolunteerScheduleScreenState
                               fontWeight: FontWeight.bold,
                             ),
                           ),
+                          const Expanded(
+                            child: SizedBox(),
+                          ),
+                          Icon(Icons.arrow_forward_ios,
+                              size: 14, color: Colors.grey.shade600),
                         ],
                       ),
                       const SizedBox(height: 12),

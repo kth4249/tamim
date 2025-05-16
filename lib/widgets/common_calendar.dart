@@ -109,14 +109,12 @@ class _CommonCalendarState extends State<CommonCalendar> {
               ));
             }
 
-            for (var event in events) {
-              if (event is ScheduleEvent) {
-                children.add(Container(
-                  margin: const EdgeInsets.only(top: 30),
-                  child: const Icon(Icons.event_outlined,
-                      color: Colors.lightBlueAccent),
-                ));
-              }
+            if (events.any((event) => event is ScheduleEvent)) {
+              children.add(Container(
+                margin: const EdgeInsets.only(top: 30),
+                child: const Icon(Icons.event_outlined,
+                    color: Colors.lightBlueAccent),
+              ));
             }
             return Row(
               mainAxisAlignment: MainAxisAlignment.center,

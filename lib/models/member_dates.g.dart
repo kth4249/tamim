@@ -9,8 +9,7 @@ part of 'member_dates.dart';
 _MemberDates _$MemberDatesFromJson(Map<String, dynamic> json) => _MemberDates(
       id: json['id'] as String,
       name: json['name'] as String,
-      nickname: json['nickname'] as String,
-      baptismalName: json['baptismal_name'] as String?,
+      userInfo: UserInfo.fromJson(json['user_info'] as Map<String, dynamic>),
       memberDates: (json['member_dates'] as List<dynamic>)
           .map((e) => DateTime.parse(e as String))
           .toList(),
@@ -20,8 +19,7 @@ Map<String, dynamic> _$MemberDatesToJson(_MemberDates instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
-      'nickname': instance.nickname,
-      'baptismal_name': instance.baptismalName,
+      'user_info': instance.userInfo,
       'member_dates':
           instance.memberDates.map((e) => e.toIso8601String()).toList(),
     };

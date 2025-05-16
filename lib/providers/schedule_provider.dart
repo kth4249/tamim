@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class ScheduleProvider with ChangeNotifier {
           id,
           schedule_datetime,
           parish_group: parish_groups!inner(*),
-          tamim_user: users!inner(*),
+          tamim_user: users!user_id(*),
           schedule_name,
           schedule_desc,
           open_chat_url,
@@ -53,8 +54,14 @@ class ScheduleProvider with ChangeNotifier {
 
   // 일정 생성
   Future<void> createSchedule(Map<String, dynamic> event) async {
-    await _client.from('schedules').insert(event);
-    await fetchSchedules(event['groupId']); // 새로고침
+    final response =
+        await _client.from('schedules').insert(event).select().single();
+    await _client.from('schedule_users').insert({
+      'schedule_id': response['id'],
+      'user_id': event['user_id'],
+    });
+    debugger();
+    await fetchSchedules(event['group_id']); // 새로고침
   }
 
   // 일정 수정

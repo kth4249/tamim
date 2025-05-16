@@ -42,7 +42,7 @@ class _JoinScreenState extends State<JoinScreen> {
           .eq('status', 'active');
 
       if (joinedGroups.isNotEmpty && mounted) {
-        return mounted ? context.go('/') : null;
+        return context.go('/');
       }
 
       await supabase.from('parish_group_members').upsert({

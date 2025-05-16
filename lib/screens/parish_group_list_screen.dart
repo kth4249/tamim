@@ -66,6 +66,22 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
     }
   }
 
+  Future<void> _cancelJoinGroup(ParishGroupInfo group) async {
+    await supabase
+        .from('parish_group_members')
+        .delete()
+        .eq('group_id', group.id)
+        .eq('user_id', context.read<AuthProvider>().user!.id);
+    if (mounted) {
+      context.read<MainProvider>().setMemberStatus(group.id, 'inactive');
+    }
+    if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('가입 신청이 취소되었습니다')),
+      );
+    }
+  }
+
   Widget buildGroupList(List<ParishGroupInfo> groups) {
     final categories = context.read<MainProvider>().categories;
     final memberStatusMap = context.read<MainProvider>().memberStatusMap;
@@ -171,23 +187,26 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
                                     child: const Text('가입하기'),
                                   )
                                 else if (memberStatus == 'pending')
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 6,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      color: Colors.grey.shade100,
-                                      borderRadius: BorderRadius.circular(6),
+                                  FilledButton(
+                                    onPressed: () => _cancelJoinGroup(group),
+                                    style: FilledButton.styleFrom(
+                                      backgroundColor: Colors.grey.shade100,
+                                      foregroundColor: Colors.grey.shade700,
                                     ),
                                     child: Text(
-                                      '가입신청중',
+                                      '가입신청 취소',
                                       style: TextStyle(
                                         color: Colors.grey.shade700,
                                         fontSize: 12,
                                         fontWeight: FontWeight.w500,
                                       ),
                                     ),
+                                  ),
+                                if (memberStatus == 'active')
+                                  Icon(
+                                    Icons.arrow_forward_ios,
+                                    size: 18,
+                                    color: Colors.grey.shade400,
                                   ),
                               ],
                             ),

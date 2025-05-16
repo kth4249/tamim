@@ -17,8 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberDates {
   String get id;
   String get name;
-  String get nickname;
-  String? get baptismalName;
+  UserInfo get userInfo;
   List<DateTime> get memberDates;
 
   /// Create a copy of MemberDates
@@ -38,22 +37,20 @@ mixin _$MemberDates {
             other is MemberDates &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.nickname, nickname) ||
-                other.nickname == nickname) &&
-            (identical(other.baptismalName, baptismalName) ||
-                other.baptismalName == baptismalName) &&
+            (identical(other.userInfo, userInfo) ||
+                other.userInfo == userInfo) &&
             const DeepCollectionEquality()
                 .equals(other.memberDates, memberDates));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, nickname,
-      baptismalName, const DeepCollectionEquality().hash(memberDates));
+  int get hashCode => Object.hash(runtimeType, id, name, userInfo,
+      const DeepCollectionEquality().hash(memberDates));
 
   @override
   String toString() {
-    return 'MemberDates(id: $id, name: $name, nickname: $nickname, baptismalName: $baptismalName, memberDates: $memberDates)';
+    return 'MemberDates(id: $id, name: $name, userInfo: $userInfo, memberDates: $memberDates)';
   }
 }
 
@@ -64,11 +61,9 @@ abstract mixin class $MemberDatesCopyWith<$Res> {
       _$MemberDatesCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String nickname,
-      String? baptismalName,
-      List<DateTime> memberDates});
+      {String id, String name, UserInfo userInfo, List<DateTime> memberDates});
+
+  $UserInfoCopyWith<$Res> get userInfo;
 }
 
 /// @nodoc
@@ -85,8 +80,7 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? nickname = null,
-    Object? baptismalName = freezed,
+    Object? userInfo = null,
     Object? memberDates = null,
   }) {
     return _then(_self.copyWith(
@@ -98,19 +92,25 @@ class _$MemberDatesCopyWithImpl<$Res> implements $MemberDatesCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
-          ? _self.nickname
-          : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
-      baptismalName: freezed == baptismalName
-          ? _self.baptismalName
-          : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
+      userInfo: null == userInfo
+          ? _self.userInfo
+          : userInfo // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       memberDates: null == memberDates
           ? _self.memberDates
           : memberDates // ignore: cast_nullable_to_non_nullable
               as List<DateTime>,
     ));
+  }
+
+  /// Create a copy of MemberDates
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get userInfo {
+    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+      return _then(_self.copyWith(userInfo: value));
+    });
   }
 }
 
@@ -120,8 +120,7 @@ class _MemberDates implements MemberDates {
   const _MemberDates(
       {required this.id,
       required this.name,
-      required this.nickname,
-      required this.baptismalName,
+      required this.userInfo,
       required final List<DateTime> memberDates})
       : _memberDates = memberDates;
   factory _MemberDates.fromJson(Map<String, dynamic> json) =>
@@ -132,9 +131,7 @@ class _MemberDates implements MemberDates {
   @override
   final String name;
   @override
-  final String nickname;
-  @override
-  final String? baptismalName;
+  final UserInfo userInfo;
   final List<DateTime> _memberDates;
   @override
   List<DateTime> get memberDates {
@@ -165,22 +162,20 @@ class _MemberDates implements MemberDates {
             other is _MemberDates &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.nickname, nickname) ||
-                other.nickname == nickname) &&
-            (identical(other.baptismalName, baptismalName) ||
-                other.baptismalName == baptismalName) &&
+            (identical(other.userInfo, userInfo) ||
+                other.userInfo == userInfo) &&
             const DeepCollectionEquality()
                 .equals(other._memberDates, _memberDates));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, nickname,
-      baptismalName, const DeepCollectionEquality().hash(_memberDates));
+  int get hashCode => Object.hash(runtimeType, id, name, userInfo,
+      const DeepCollectionEquality().hash(_memberDates));
 
   @override
   String toString() {
-    return 'MemberDates(id: $id, name: $name, nickname: $nickname, baptismalName: $baptismalName, memberDates: $memberDates)';
+    return 'MemberDates(id: $id, name: $name, userInfo: $userInfo, memberDates: $memberDates)';
   }
 }
 
@@ -193,11 +188,10 @@ abstract mixin class _$MemberDatesCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String nickname,
-      String? baptismalName,
-      List<DateTime> memberDates});
+      {String id, String name, UserInfo userInfo, List<DateTime> memberDates});
+
+  @override
+  $UserInfoCopyWith<$Res> get userInfo;
 }
 
 /// @nodoc
@@ -214,8 +208,7 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? nickname = null,
-    Object? baptismalName = freezed,
+    Object? userInfo = null,
     Object? memberDates = null,
   }) {
     return _then(_MemberDates(
@@ -227,19 +220,25 @@ class __$MemberDatesCopyWithImpl<$Res> implements _$MemberDatesCopyWith<$Res> {
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      nickname: null == nickname
-          ? _self.nickname
-          : nickname // ignore: cast_nullable_to_non_nullable
-              as String,
-      baptismalName: freezed == baptismalName
-          ? _self.baptismalName
-          : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
+      userInfo: null == userInfo
+          ? _self.userInfo
+          : userInfo // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       memberDates: null == memberDates
           ? _self._memberDates
           : memberDates // ignore: cast_nullable_to_non_nullable
               as List<DateTime>,
     ));
+  }
+
+  /// Create a copy of MemberDates
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get userInfo {
+    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+      return _then(_self.copyWith(userInfo: value));
+    });
   }
 }
 

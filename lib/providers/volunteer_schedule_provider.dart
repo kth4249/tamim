@@ -14,14 +14,15 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     final response = await supabase
         .from('users')
         .select('''
-            id, name, nickname, baptismal_name,
+            id, name,
             parish_group_members!inner(group_id, status), 
-            member_dates(available_date, group_id)
+            member_dates(available_date, group_id),
+            user_info!inner(*)
             ''')
         .eq("parish_group_members.group_id", parishGroupId)
         .eq('member_dates.group_id', parishGroupId)
         .eq('parish_group_members.status', 'active')
-        .eq('status', 'active');
+        .eq('user_info.status', 'active');
     final transformed = response.map((e) {
       final memberDates =
           e['member_dates'].map((e) => e['available_date']).toList();
@@ -38,7 +39,8 @@ class VolunteerScheduleProvider extends ChangeNotifier {
 
   Future<void> fetchMemberPositions(parishGroupId) async {
     final response = await supabase.from('users').select('''
-            id, name, baptismal_name,
+            id, name,
+            user_info!inner(*),
             parish_group_members!inner(group_id), 
             positions: member_positions(positions(*))
             ''').eq("parish_group_members.group_id", parishGroupId);
@@ -94,8 +96,7 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     availableDateByMember[memberIndex] = MemberDates(
       id: availableDateByMember[memberIndex].id,
       name: availableDateByMember[memberIndex].name,
-      nickname: availableDateByMember[memberIndex].nickname,
-      baptismalName: availableDateByMember[memberIndex].baptismalName,
+      userInfo: availableDateByMember[memberIndex].userInfo,
       memberDates: selectedDays,
     );
 

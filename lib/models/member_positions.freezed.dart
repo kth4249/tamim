@@ -17,7 +17,7 @@ T _$identity<T>(T value) => value;
 mixin _$MemberPositions {
   String get id;
   String get name;
-  String? get baptismalName;
+  UserInfo get userInfo;
   List<Position> get positions;
 
   /// Create a copy of MemberPositions
@@ -38,19 +38,19 @@ mixin _$MemberPositions {
             other is MemberPositions &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.baptismalName, baptismalName) ||
-                other.baptismalName == baptismalName) &&
+            (identical(other.userInfo, userInfo) ||
+                other.userInfo == userInfo) &&
             const DeepCollectionEquality().equals(other.positions, positions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, baptismalName,
+  int get hashCode => Object.hash(runtimeType, id, name, userInfo,
       const DeepCollectionEquality().hash(positions));
 
   @override
   String toString() {
-    return 'MemberPositions(id: $id, name: $name, baptismalName: $baptismalName, positions: $positions)';
+    return 'MemberPositions(id: $id, name: $name, userInfo: $userInfo, positions: $positions)';
   }
 }
 
@@ -61,10 +61,9 @@ abstract mixin class $MemberPositionsCopyWith<$Res> {
       _$MemberPositionsCopyWithImpl;
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? baptismalName,
-      List<Position> positions});
+      {String id, String name, UserInfo userInfo, List<Position> positions});
+
+  $UserInfoCopyWith<$Res> get userInfo;
 }
 
 /// @nodoc
@@ -82,7 +81,7 @@ class _$MemberPositionsCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = freezed,
+    Object? userInfo = null,
     Object? positions = null,
   }) {
     return _then(_self.copyWith(
@@ -94,15 +93,25 @@ class _$MemberPositionsCopyWithImpl<$Res>
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: freezed == baptismalName
-          ? _self.baptismalName
-          : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
+      userInfo: null == userInfo
+          ? _self.userInfo
+          : userInfo // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       positions: null == positions
           ? _self.positions
           : positions // ignore: cast_nullable_to_non_nullable
               as List<Position>,
     ));
+  }
+
+  /// Create a copy of MemberPositions
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get userInfo {
+    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+      return _then(_self.copyWith(userInfo: value));
+    });
   }
 }
 
@@ -112,7 +121,7 @@ class _MemberPositions implements MemberPositions {
   const _MemberPositions(
       {required this.id,
       required this.name,
-      required this.baptismalName,
+      required this.userInfo,
       required final List<Position> positions})
       : _positions = positions;
   factory _MemberPositions.fromJson(Map<String, dynamic> json) =>
@@ -123,7 +132,7 @@ class _MemberPositions implements MemberPositions {
   @override
   final String name;
   @override
-  final String? baptismalName;
+  final UserInfo userInfo;
   final List<Position> _positions;
   @override
   List<Position> get positions {
@@ -154,20 +163,20 @@ class _MemberPositions implements MemberPositions {
             other is _MemberPositions &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.baptismalName, baptismalName) ||
-                other.baptismalName == baptismalName) &&
+            (identical(other.userInfo, userInfo) ||
+                other.userInfo == userInfo) &&
             const DeepCollectionEquality()
                 .equals(other._positions, _positions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, baptismalName,
+  int get hashCode => Object.hash(runtimeType, id, name, userInfo,
       const DeepCollectionEquality().hash(_positions));
 
   @override
   String toString() {
-    return 'MemberPositions(id: $id, name: $name, baptismalName: $baptismalName, positions: $positions)';
+    return 'MemberPositions(id: $id, name: $name, userInfo: $userInfo, positions: $positions)';
   }
 }
 
@@ -180,10 +189,10 @@ abstract mixin class _$MemberPositionsCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
-      String name,
-      String? baptismalName,
-      List<Position> positions});
+      {String id, String name, UserInfo userInfo, List<Position> positions});
+
+  @override
+  $UserInfoCopyWith<$Res> get userInfo;
 }
 
 /// @nodoc
@@ -201,7 +210,7 @@ class __$MemberPositionsCopyWithImpl<$Res>
   $Res call({
     Object? id = null,
     Object? name = null,
-    Object? baptismalName = freezed,
+    Object? userInfo = null,
     Object? positions = null,
   }) {
     return _then(_MemberPositions(
@@ -213,15 +222,25 @@ class __$MemberPositionsCopyWithImpl<$Res>
           ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
-      baptismalName: freezed == baptismalName
-          ? _self.baptismalName
-          : baptismalName // ignore: cast_nullable_to_non_nullable
-              as String?,
+      userInfo: null == userInfo
+          ? _self.userInfo
+          : userInfo // ignore: cast_nullable_to_non_nullable
+              as UserInfo,
       positions: null == positions
           ? _self._positions
           : positions // ignore: cast_nullable_to_non_nullable
               as List<Position>,
     ));
+  }
+
+  /// Create a copy of MemberPositions
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $UserInfoCopyWith<$Res> get userInfo {
+    return $UserInfoCopyWith<$Res>(_self.userInfo, (value) {
+      return _then(_self.copyWith(userInfo: value));
+    });
   }
 }
 

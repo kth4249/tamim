@@ -52,7 +52,7 @@ class _AvailableScheduleScreenState extends State<AvailableScheduleScreen> {
                     child: FilterChip(
                       selected: isSelected,
                       label: Text(
-                        member.nickname,
+                        member.userInfo.nickname,
                         style: TextStyle(
                           color: isSelected
                               ? Theme.of(context).colorScheme.onPrimary
