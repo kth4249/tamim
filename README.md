@@ -1,16 +1,35 @@
 # tamim
 
-A new Flutter project.
+### **앱 특징**
 
-## Getting Started
+- 전례부, 성가대, 성서모임 등 교회 단체를 위한 모임 관리 앱입니다.
+- 봉사 일정 조율 및 관리, 성가대 연습, 특송 일정 등을 쉽고 빠르게 관리할 수 있습니다.
+- 모임 초대 링크 및 QR 코드를 통한 간편한 가입 및 초대 기능을 제공합니다.
+- Firebase 기반 푸시 알림 지원으로 봉사일정 알림 기능 제공.
+- 서울대교구 청년부를 시작으로 향후 성인 단체까지 지원 예정입니다.
 
-This project is a starting point for a Flutter application.
+**주요 기능**
 
-A few resources to get you started if this is your first Flutter project:
+- 차월 전례봉사표 작성 및 봉사자 스케줄링
+- 전례력과 연동된 일정 관리
+- 모임 개설 및 모임원 관리 (초대 링크/QR 제공)
+- 성가대 연습 및 특송 일정 등록
+- 구글 로그인 및 내 정보 관리
+- 향후 취미와 관련된 커뮤니티 기능 추가 예정
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+**기술 및 마케팅**
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- DeepLink
+- Firebase를 통한 푸시 알림
+- 모임장과 모임원을 구분하여 초대 및 링크 관리
+
+**지원 대상**
+
+- 서울대교구 본당 청년부 중심 → 추후 성인 전례단, 성가대, 다양한 소모임으로 확대 예정
+- 추후 기독교, 불교 소모임까지 확장 가능성 검토 중
+
+
+
+[아이폰 스토어](https://apps.apple.com/kr/app/%EC%84%B1%EB%8B%B9-%ED%99%9C%EB%8F%99%EC%9D%84-%ED%95%A8%EA%BB%98-tamim/id6744606805)
+
+[안드로이드 스토어](https://play.google.com/store/apps/details?id=com.hun.tamim)
