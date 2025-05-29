@@ -5,86 +5,62 @@ import 'package:tamim/main.dart';
 import 'package:tamim/models/parish_group_info.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/auth_provider.dart';
-import 'package:tamim/providers/calendar_provider.dart';
 import 'package:tamim/providers/main_provider.dart';
-import 'package:tamim/screens/my_page_screen.dart';
-import 'package:tamim/theme/app_theme.dart';
+import 'package:tamim/widgets/parish_groups/join_method_card.dart';
 
-class ParishGroupListScreen extends StatefulWidget {
-  const ParishGroupListScreen({super.key});
+class GroupList extends StatelessWidget {
+  final List<ParishGroupInfo> groups;
 
-  @override
-  State<ParishGroupListScreen> createState() => _ParishGroupListScreenState();
-}
-
-class _ParishGroupListScreenState extends State<ParishGroupListScreen>
-    with SingleTickerProviderStateMixin {
-  int _selectedIndex = 0;
-  late TabController _tabController;
+  const GroupList({super.key, required this.groups});
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-    context
-        .read<MainProvider>()
-        .loadData(context.read<AuthProvider>().user!.id);
-    context.read<CalendarProvider>().fetchIcsEvents();
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  Future<void> _joinGroup(ParishGroupInfo group) async {
-    try {
-      await supabase.from('parish_group_members').upsert({
-        'group_id': group.id,
-        'user_id': context.read<AuthProvider>().user!.id,
-        'role_id': roleIdMap[GroupRole.member],
-        'status': 'pending',
-      });
-
-      if (mounted) {
-        context.read<MainProvider>().setMemberStatus(group.id, 'pending');
-      }
-
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('가입 신청이 완료되었습니다')),
-        );
-      }
-    } catch (e) {
-      logger.e('Error joining group: $e');
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('가입 신청에 실패했습니다')),
-        );
-      }
-    }
-  }
-
-  Future<void> _cancelJoinGroup(ParishGroupInfo group) async {
-    await supabase
-        .from('parish_group_members')
-        .delete()
-        .eq('group_id', group.id)
-        .eq('user_id', context.read<AuthProvider>().user!.id);
-    if (mounted) {
-      context.read<MainProvider>().setMemberStatus(group.id, 'inactive');
-    }
-    if (mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('가입 신청이 취소되었습니다')),
-      );
-    }
-  }
-
-  Widget buildGroupList(List<ParishGroupInfo> groups) {
+  Widget build(BuildContext context) {
     final categories = context.read<MainProvider>().categories;
     final memberStatusMap = context.read<MainProvider>().memberStatusMap;
+
+    Future<void> joinGroup(ParishGroupInfo group) async {
+      try {
+        await supabase.from('parish_group_members').upsert({
+          'group_id': group.id,
+          'user_id': context.read<AuthProvider>().user!.id,
+          'role_id': roleIdMap[GroupRole.member],
+          'status': 'pending',
+        });
+
+        if (context.mounted) {
+          context.read<MainProvider>().setMemberStatus(group.id, 'pending');
+        }
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('가입 신청이 완료되었습니다')),
+          );
+        }
+      } catch (e) {
+        logger.e('Error joining group: $e');
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('가입 신청에 실패했습니다')),
+          );
+        }
+      }
+    }
+
+    Future<void> cancelJoinGroup(ParishGroupInfo group) async {
+      await supabase
+          .from('parish_group_members')
+          .delete()
+          .eq('group_id', group.id)
+          .eq('user_id', context.read<AuthProvider>().user!.id);
+      if (context.mounted) {
+        context.read<MainProvider>().setMemberStatus(group.id, 'inactive');
+      }
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('가입 신청이 취소되었습니다')),
+        );
+      }
+    }
 
     return RefreshIndicator(
       onRefresh: () async {
@@ -177,7 +153,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
                                 const Spacer(),
                                 if (memberStatus == 'inactive')
                                   FilledButton(
-                                    onPressed: () => _joinGroup(group),
+                                    onPressed: () => joinGroup(group),
                                     style: FilledButton.styleFrom(
                                       padding: const EdgeInsets.symmetric(
                                         horizontal: 16,
@@ -188,7 +164,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
                                   )
                                 else if (memberStatus == 'pending')
                                   FilledButton(
-                                    onPressed: () => _cancelJoinGroup(group),
+                                    onPressed: () => cancelJoinGroup(group),
                                     style: FilledButton.styleFrom(
                                       backgroundColor: Colors.grey.shade100,
                                       foregroundColor: Colors.grey.shade700,
@@ -247,7 +223,7 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
               children: [
                 Padding(
                   padding: EdgeInsets.fromLTRB(16, 24, 16, 32),
-                  child: _ConnectionMethodInfoCard(
+                  child: JoinMethodCard(
                     icon: Icons.link_rounded,
                     title: '빠른 가입 방법이 있나요?',
                     subtitle:
@@ -257,150 +233,6 @@ class _ParishGroupListScreenState extends State<ParishGroupListScreen>
               ],
             ),
           ),
-        ],
-      ),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // if (_isLoading) {
-    //   return const Scaffold(
-    //     body: Center(
-    //       child: CircularProgressIndicator(),
-    //     ),
-    //   );
-    // }
-
-    final groups = context.watch<MainProvider>().groups;
-    final myGroups = context.watch<MainProvider>().myGroups;
-
-    Widget currentScreen = Column(
-      children: [
-        TabBar(
-          controller: _tabController,
-          labelColor: AppTheme.primaryColor,
-          unselectedLabelColor: Colors.grey,
-          indicatorColor: AppTheme.primaryColor,
-          tabs: const [
-            Tab(text: '내가 가입한 모임'),
-            Tab(text: '전체 모임'),
-          ],
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _tabController,
-            children: [
-              buildGroupList(myGroups),
-              buildGroupList(groups),
-            ],
-          ),
-        ),
-      ],
-    );
-
-    if (_selectedIndex == 1) {
-      currentScreen = const MyPageScreen();
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('모임 목록'),
-      ),
-      body: currentScreen,
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _selectedIndex,
-        selectedItemColor: AppTheme.primaryColor,
-        unselectedItemColor: Colors.grey,
-        type: BottomNavigationBarType.fixed,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-          });
-        },
-        items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.home), label: '홈'),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: '마이페이지',
-          ),
-        ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          context.push('/create-group');
-        },
-        child: const Icon(Icons.add),
-      ),
-    );
-  }
-}
-
-class _ConnectionMethodInfoCard extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-
-  const _ConnectionMethodInfoCard({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(20),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor.withValues(alpha: 0.05),
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(
-          color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  icon,
-                  color: Theme.of(context).primaryColor,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  title,
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w600,
-                    color: Theme.of(context).primaryColor,
-                    height: 1.4,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Text(
-            subtitle,
-            style: TextStyle(
-              fontSize: 15,
-              color: Colors.grey.shade700,
-              fontWeight: FontWeight.w400,
-              height: 1.5,
-            ),
-          ),
-          const SizedBox(height: 12),
         ],
       ),
     );

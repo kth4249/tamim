@@ -174,7 +174,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                       onPressed: () {
                         final myGroups = context.read<MainProvider>().myGroups;
                         final isGroupLeader = myGroups.any((group) =>
-                            group.members.any((member) =>
+                            group.myInfo.any((member) =>
                                 member.roleId == roleIdMap[GroupRole.leader]));
                         if (isGroupLeader) {
                           showDialog(

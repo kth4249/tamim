@@ -8,7 +8,7 @@ import 'package:tamim/screens/edit_profile_screen.dart';
 import 'package:tamim/screens/join.dart';
 import 'package:tamim/screens/login_screen.dart';
 import 'package:tamim/screens/member_management_screen.dart';
-import 'package:tamim/screens/parish_group_list_screen.dart';
+import 'package:tamim/screens/main/main_screen.dart';
 import 'package:tamim/screens/parish_group_screen.dart';
 import 'package:tamim/screens/position_management_screen.dart';
 import 'package:tamim/screens/register_screen.dart';
@@ -25,11 +25,11 @@ class RouterConfigClass {
       routes: [
         GoRoute(
           path: '/deeplink',
-          builder: (context, state) => const ParishGroupListScreen(),
+          builder: (context, state) => const MainScreen(),
         ),
         GoRoute(
           path: '/',
-          builder: (context, state) => const ParishGroupListScreen(),
+          builder: (context, state) => const MainScreen(),
         ),
         GoRoute(
           path: '/parish-groups/:id',
