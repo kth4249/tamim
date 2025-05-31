@@ -32,7 +32,7 @@ class _HomeScreenState extends State<HomeScreen>
 
     List<Widget> slivers = [
       SliverPadding(
-        padding: const EdgeInsets.only(left: 16, top: 24, right: 8, bottom: 8),
+        padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
         sliver: SliverToBoxAdapter(
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,

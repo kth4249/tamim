@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:tamim/models/schedule.dart';
 import 'package:tamim/models/schedule_event.dart';
@@ -468,6 +469,14 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
+        leading: IconButton(
+          onPressed: () {
+            context.read<ParishGroupProvider>().reset();
+            context.read<ScheduleProvider>().reset();
+            context.pop();
+          },
+          icon: const Icon(Icons.arrow_back),
+        ),
         centerTitle: true,
         title: Text(
           context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',

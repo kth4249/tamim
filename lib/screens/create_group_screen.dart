@@ -7,6 +7,7 @@ import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/main_provider.dart';
+import 'package:tamim/widgets/custom_scaffold.dart';
 
 class CreateGroupScreen extends StatefulWidget {
   const CreateGroupScreen({super.key});
@@ -120,9 +121,9 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
   @override
   Widget build(BuildContext context) {
     final categories = context.read<MainProvider>().categories;
-    final parishes = context.read<MainProvider>().parishes;
+    final parishes = context.read<MainProvider>().parishs;
 
-    return Scaffold(
+    return CustomScaffold(
       appBar: AppBar(
         leading: IconButton(
           onPressed: () => context.pop(),
@@ -284,43 +285,43 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
                 ),
                 maxLines: 4,
               ),
-              const SizedBox(height: 32),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () async {
-                    if (_isLoading) return;
-                    setState(() => _isLoading = true);
-                    if (!_formKey.currentState!.validate() ||
-                        selectedCategory == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('필수 입력 값을 입력해주세요.'),
-                          showCloseIcon: true,
-                          duration: Duration(seconds: 2),
-                        ),
-                      );
-                      setState(() => _isLoading = false);
-                      return;
-                    }
-                    final response = await _createGroup();
-                    _showSuccessDialog(response);
-                    setState(() => _isLoading = false);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                  ),
-                  child: _isLoading
-                      ? const CircularProgressIndicator()
-                      : const Text(
-                          '모임 생성하기',
-                          style: TextStyle(color: Colors.white, fontSize: 16),
-                        ),
-                ),
-              ),
+              const SizedBox(height: 87),
             ],
           ),
+        ),
+      ),
+      bottomSheet: Container(
+        padding: const EdgeInsets.all(16),
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: () async {
+            if (_isLoading) return;
+            setState(() => _isLoading = true);
+            if (!_formKey.currentState!.validate() ||
+                selectedCategory == null) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('필수 입력 값을 입력해주세요.'),
+                  showCloseIcon: true,
+                  duration: Duration(seconds: 2),
+                ),
+              );
+              setState(() => _isLoading = false);
+              return;
+            }
+            final response = await _createGroup();
+            _showSuccessDialog(response);
+            setState(() => _isLoading = false);
+          },
+          style: ElevatedButton.styleFrom(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+          ),
+          child: _isLoading
+              ? const CircularProgressIndicator()
+              : const Text(
+                  '모임 생성하기',
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
         ),
       ),
     );

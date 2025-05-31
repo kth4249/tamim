@@ -31,13 +31,15 @@ class _MainScreenState extends State<MainScreen>
 
   @override
   Widget build(BuildContext context) {
-    Widget body = PageView(
-      physics: const NeverScrollableScrollPhysics(),
-      controller: controller,
-      children: const [
-        HomeScreen(),
-        MyPageScreen(),
-      ],
+    Widget body = SafeArea(
+      child: PageView(
+        physics: const NeverScrollableScrollPhysics(),
+        controller: controller,
+        children: const [
+          HomeScreen(),
+          MyPageScreen(),
+        ],
+      ),
     );
 
     return Scaffold(

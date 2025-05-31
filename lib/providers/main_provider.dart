@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tamim/api/parishs_api.dart';
 import 'package:tamim/main.dart';
 import 'package:tamim/models/main/group_main_info.dart';
 import 'package:tamim/models/main/my_group.dart';
@@ -8,7 +9,7 @@ import 'package:tamim/models/parish_group_info.dart';
 
 class MainProvider extends ChangeNotifier {
   List<ParishGroupCategory> categories = [];
-  List<Parish> parishes = [];
+  List<Parish> parishs = [];
   List<ParishGroupInfo> groups = [];
   List<MyGroup> myGroups = [];
   Map<int, String> memberStatusMap = {};
@@ -17,7 +18,7 @@ class MainProvider extends ChangeNotifier {
   Future<void> loadData(String userId) async {
     try {
       await fetchCategories();
-      await fetchParishes();
+      await fetchParishs();
       await fetchGroups(userId);
 
       final myGroupsResponse = await supabase
@@ -70,11 +71,11 @@ class MainProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> fetchParishes() async {
-    final parishesResponse = await supabase.from('parishs').select('*');
-    parishes = (parishesResponse as List<dynamic>)
-        .map((json) => Parish.fromJson(json))
-        .toList();
+  Future<void> fetchParishs() async {
+    final parishesResponse = await ParishsApi.getParishsEqParams();
+    parishs = parishesResponse;
+
+    notifyListeners();
   }
 
   Future<void> fetchCategories() async {
@@ -83,6 +84,8 @@ class MainProvider extends ChangeNotifier {
     categories = (categoriesResponse as List<dynamic>)
         .map((json) => ParishGroupCategory.fromJson(json))
         .toList();
+
+    notifyListeners();
   }
 
   void setMemberStatus(int groupId, String status) {

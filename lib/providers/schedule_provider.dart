@@ -18,6 +18,11 @@ class ScheduleProvider with ChangeNotifier {
   // parishGroupId별 전체 일정 캐싱
   List<ScheduleEvent> allSchedules = [];
 
+  void reset() {
+    schedulesByDate = {};
+    allSchedules = [];
+  }
+
   // groupId로 일정 불러오기
   Future<void> fetchSchedules(int groupId) async {
     final response = await _client

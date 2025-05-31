@@ -20,19 +20,22 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
   final TextEditingController _descController = TextEditingController();
 
   int? _selectedCategory;
-  Parish? _selectedParish;
+  int? _selectedParishId;
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    final group = context.read<ParishGroupProvider>().parishGroup;
-    if (group != null) {
+    context.read<MainProvider>().fetchParishs();
+    context.read<MainProvider>().fetchCategories();
+
+    final group = context.read<ParishGroupProvider>().parishGroup!;
+    setState(() {
       _nameController.text = group.groupName;
       _descController.text = group.description;
       _selectedCategory = group.categoryId;
-      // parishId로 Parish 객체를 찾음 (비동기라서 FutureBuilder에서 처리)
-    }
+      _selectedParishId = group.parishId;
+    });
   }
 
   @override
@@ -44,14 +47,14 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
 
   Future<void> _updateGroup() async {
     if (!_formKey.currentState!.validate() ||
-        _selectedParish == null ||
+        _selectedParishId == null ||
         _selectedCategory == null) {
       return;
     }
     setState(() => _isLoading = true);
     final group = context.read<ParishGroupProvider>().parishGroup;
     await supabase.from('parish_groups').update({
-      'parish_id': _selectedParish!.id,
+      'parish_id': _selectedParishId,
       'category_id': _selectedCategory,
       'group_name': _nameController.text,
       'description': _descController.text,
@@ -100,8 +103,8 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
   @override
   Widget build(BuildContext context) {
     final group = context.watch<ParishGroupProvider>().parishGroup!;
-    final parishes = context.read<MainProvider>().parishes;
-    final categories = context.read<MainProvider>().categories;
+    final parishs = context.watch<MainProvider>().parishs;
+    final categories = context.watch<MainProvider>().categories;
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       appBar: AppBar(
@@ -149,13 +152,14 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                       const SizedBox(height: 8),
                       Autocomplete<Parish>(
                         initialValue: TextEditingValue(
-                            text: parishes
-                                .firstWhere(
-                                    (parish) => parish.id == group.parishId)
-                                .parishName),
+                            text: context
+                                    .read<ParishGroupProvider>()
+                                    .parish
+                                    ?.parishName ??
+                                ''),
                         optionsBuilder: (TextEditingValue textEditingValue) {
-                          if (textEditingValue.text == '') return parishes;
-                          return parishes.where((Parish parish) {
+                          if (textEditingValue.text == '') return parishs;
+                          return parishs.where((Parish parish) {
                             return parish.parishName
                                 .contains(textEditingValue.text);
                           });
@@ -163,7 +167,7 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                         displayStringForOption: (Parish parish) =>
                             parish.parishName,
                         onSelected: (Parish parish) {
-                          setState(() => _selectedParish = parish);
+                          setState(() => _selectedParishId = parish.id);
                         },
                         fieldViewBuilder: (context, controller, focusNode,
                             onEditingComplete) {
@@ -183,7 +187,9 @@ class _EditGroupScreenState extends State<EditGroupScreen> {
                                   horizontal: 16, vertical: 14),
                             ),
                             validator: (value) {
-                              if (_selectedParish == null) return '본당을 선택해주세요.';
+                              if (_selectedParishId == null) {
+                                return '본당을 선택해주세요.';
+                              }
                               return null;
                             },
                           );

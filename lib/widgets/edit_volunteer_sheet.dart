@@ -151,6 +151,7 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                           children: [
                             Expanded(
                               child: DropdownButtonFormField<String>(
+                                isExpanded: true,
                                 value: isManualInput
                                     ? null
                                     : assignedMember?.userId,
@@ -171,8 +172,10 @@ class _EditVolunteerSheetState extends State<EditVolunteerSheet> {
                                   ...availableMembers.map((member) {
                                     return DropdownMenuItem<String>(
                                       value: member.id,
-                                      child:
-                                          Text(member.userInfo?.nickname ?? ''),
+                                      child: Text(
+                                        member.userInfo?.nickname ?? '',
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     );
                                   }),
                                 ],
