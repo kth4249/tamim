@@ -67,7 +67,7 @@ class _HomeScreenState extends State<HomeScreen>
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications),
+            icon: const Icon(Icons.notifications_none_outlined),
           ),
         ],
       ),

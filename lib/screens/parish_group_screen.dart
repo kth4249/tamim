@@ -127,6 +127,7 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
 
     List<Widget> slivers = [
       SliverAppBar(
+        centerTitle: true,
         title: Text(
           context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
           style: const TextStyle(
