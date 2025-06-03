@@ -75,8 +75,12 @@ class _CommonCalendarState extends State<CommonCalendar> {
           outsideDaysVisible: true,
           weekendTextStyle: const TextStyle(color: Colors.red),
           holidayTextStyle: const TextStyle(color: Colors.red),
-          selectedDecoration: const BoxDecoration(
-            color: AppTheme.primaryColor,
+          selectedTextStyle: const TextStyle(color: Colors.black),
+          selectedDecoration: BoxDecoration(
+            border: Border.all(
+              color: AppTheme.primaryColor,
+              width: 2,
+            ),
             shape: BoxShape.circle,
           ),
           todayDecoration: BoxDecoration(
@@ -104,15 +108,14 @@ class _CommonCalendarState extends State<CommonCalendar> {
             if (events.any((event) => event is VolunteerEvent)) {
               children.add(Container(
                 margin: const EdgeInsets.only(top: 30),
-                child:
-                    const Icon(Icons.church_outlined, color: Colors.lightGreen),
+                child: const Icon(Icons.church, color: Colors.lightGreen),
               ));
             }
 
             if (events.any((event) => event is ScheduleEvent)) {
               children.add(Container(
                 margin: const EdgeInsets.only(top: 30),
-                child: const Icon(Icons.event_outlined,
+                child: const Icon(Icons.event_available,
                     color: Colors.lightBlueAccent),
               ));
             }

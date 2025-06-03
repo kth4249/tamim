@@ -105,9 +105,14 @@ class MainProvider extends ChangeNotifier {
             , volunteers:volunteer_schedules(
                 id,
                 position:positions!inner(*),
-                user:users!inner(*),
+                user:users!inner(
+                  id,
+                  name,
+                  email,
+                  user_info:user_info!inner(*)
+                ),
                 anon:volunteer_schedules_anon(*)
-            )
+              )
             ''')
         .eq('id', groupId)
         .eq('volunteers.volunteer_date',

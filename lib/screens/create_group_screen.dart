@@ -7,6 +7,7 @@ import 'package:tamim/models/parish.dart';
 import 'package:tamim/models/parish_group.dart';
 import 'package:tamim/models/role.dart';
 import 'package:tamim/providers/main_provider.dart';
+import 'package:tamim/services/storage_service.dart';
 import 'package:tamim/widgets/custom_scaffold.dart';
 
 class CreateGroupScreen extends StatefulWidget {
@@ -28,6 +29,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   void initState() {
+    context.read<MainProvider>().fetchParishs();
+    context.read<MainProvider>().fetchCategories();
     super.initState();
   }
 
@@ -120,8 +123,8 @@ class _CreateGroupScreenState extends State<CreateGroupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final categories = context.read<MainProvider>().categories;
-    final parishes = context.read<MainProvider>().parishs;
+    final categories = context.watch<MainProvider>().categories;
+    final parishes = context.watch<MainProvider>().parishs;
 
     return CustomScaffold(
       appBar: AppBar(

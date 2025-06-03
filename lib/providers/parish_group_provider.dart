@@ -58,6 +58,7 @@ class ParishGroupProvider extends ChangeNotifier {
     parishGroup = ParishGroup.fromJson(response);
     positions = (response['positions'] as List<dynamic>)
         .map((json) => Position.fromJson(json))
+        .sorted((a, b) => a.order.compareTo(b.order))
         .toList();
     parishGroupMemberInfos = (response['parish_group_members'] as List<dynamic>)
         .map((json) => ParishGroupMemberInfo.fromJson(json))

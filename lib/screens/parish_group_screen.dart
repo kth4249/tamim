@@ -7,7 +7,9 @@ import 'package:tamim/providers/calendar_provider.dart';
 import 'package:tamim/providers/parish_group_provider.dart';
 import 'package:tamim/providers/schedule_provider.dart';
 import 'package:tamim/screens/group_management_screen.dart';
+import 'package:tamim/services/storage_service.dart';
 import 'package:tamim/widgets/common_calendar.dart';
+import 'package:tamim/widgets/custom_scaffold.dart';
 import 'package:tamim/widgets/schedule_create_sheet.dart';
 import '../theme/app_theme.dart';
 
@@ -124,6 +126,15 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
         context.watch<CalendarProvider>().liturgicalEvents[_selectedDay];
 
     List<Widget> slivers = [
+      SliverAppBar(
+        title: Text(
+          context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
+          style: const TextStyle(
+            color: Colors.black87,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
       SliverToBoxAdapter(
         child: Container(
           color: Colors.white,
@@ -466,28 +477,27 @@ class _ParishGroupScreenState extends State<ParishGroupScreen> {
       currentScreen = const GroupManagementScreen();
     }
 
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        leading: IconButton(
-          onPressed: () {
-            context.read<ParishGroupProvider>().reset();
-            context.read<ScheduleProvider>().reset();
-            context.pop();
-          },
-          icon: const Icon(Icons.arrow_back),
-        ),
-        centerTitle: true,
-        title: Text(
-          context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
-          style: const TextStyle(
-            color: Colors.black87,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-        // backgroundColor: Colors.white,
-        elevation: 0,
-      ),
+    return CustomScaffold(
+      // appBar: AppBar(
+      //   leading: IconButton(
+      //     onPressed: () {
+      //       context.read<ParishGroupProvider>().reset();
+      //       context.read<ScheduleProvider>().reset();
+      //       context.pop();
+      //     },
+      //     icon: const Icon(Icons.arrow_back),
+      //   ),
+      //   centerTitle: true,
+      //   title: Text(
+      //     context.watch<ParishGroupProvider>().parishGroup?.groupName ?? '',
+      //     style: const TextStyle(
+      //       color: Colors.black87,
+      //       fontWeight: FontWeight.w600,
+      //     ),
+      //   ),
+      //   // backgroundColor: Colors.white,
+      //   elevation: 0,
+      // ),
       body: currentScreen,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

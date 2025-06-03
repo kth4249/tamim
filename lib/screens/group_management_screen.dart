@@ -176,7 +176,6 @@ class _GroupManagementScreenState extends State<GroupManagementScreen> {
                   SizedBox(
                     child: TextButton.icon(
                       onPressed: () {
-                        context.push('/create-group');
                         // 모임장의 경우 탈퇴하지 못한다는 안내메시지
                         if (myInfo?.roleId == 1) {
                           showDialog(

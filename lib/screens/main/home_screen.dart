@@ -31,42 +31,82 @@ class _HomeScreenState extends State<HomeScreen>
         context.watch<CalendarProvider>().liturgicalEvents[DateTime.now()];
 
     List<Widget> slivers = [
-      SliverPadding(
-        padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
-        sliver: SliverToBoxAdapter(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Image.asset('assets/images/logo.png', width: screenWidth * 0.05),
-              const SizedBox(width: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.baseline,
-                textBaseline: TextBaseline.alphabetic,
-                children: [
-                  Text(
-                    "Tamim",
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.05,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
-                    ),
+      SliverAppBar(
+        floating: true,
+        snap: true,
+        title: Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Image.asset('assets/images/logo.png', width: screenWidth * 0.05),
+            const SizedBox(width: 8),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.baseline,
+              textBaseline: TextBaseline.alphabetic,
+              children: [
+                Text(
+                  "Tamim",
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.05,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
                   ),
-                  const SizedBox(width: 4),
-                  Text(
-                    '성당 커뮤니티',
-                    style: TextStyle(
-                      fontSize: screenWidth * 0.03,
-                      fontWeight: FontWeight.bold,
-                      color: AppTheme.primaryColor,
-                    ),
+                ),
+                const SizedBox(width: 4),
+                Text(
+                  '성당 커뮤니티',
+                  style: TextStyle(
+                    fontSize: screenWidth * 0.03,
+                    fontWeight: FontWeight.bold,
+                    color: AppTheme.primaryColor,
                   ),
-                ],
-              ),
-              const Expanded(child: SizedBox()),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
+        actions: [
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(Icons.notifications),
+          ),
+        ],
       ),
+      // SliverPadding(
+      //   padding: const EdgeInsets.only(left: 16, right: 8, bottom: 8),
+      //   sliver: SliverToBoxAdapter(
+      //     child: Row(
+      //       crossAxisAlignment: CrossAxisAlignment.end,
+      //       children: [
+      //         Image.asset('assets/images/logo.png', width: screenWidth * 0.05),
+      //         const SizedBox(width: 8),
+      //         Row(
+      //           crossAxisAlignment: CrossAxisAlignment.baseline,
+      //           textBaseline: TextBaseline.alphabetic,
+      //           children: [
+      //             Text(
+      //               "Tamim",
+      //               style: TextStyle(
+      //                 fontSize: screenWidth * 0.05,
+      //                 fontWeight: FontWeight.bold,
+      //                 color: AppTheme.primaryColor,
+      //               ),
+      //             ),
+      //             const SizedBox(width: 4),
+      //             Text(
+      //               '성당 커뮤니티',
+      //               style: TextStyle(
+      //                 fontSize: screenWidth * 0.03,
+      //                 fontWeight: FontWeight.bold,
+      //                 color: AppTheme.primaryColor,
+      //               ),
+      //             ),
+      //           ],
+      //         ),
+      //         const Expanded(child: SizedBox()),
+      //       ],
+      //     ),
+      //   ),
+      // ),
       SliverToBoxAdapter(
         child: Row(
           children: [
@@ -186,6 +226,57 @@ class _HomeScreenState extends State<HomeScreen>
           ),
         ),
       ));
+
+      // if (groupMainInfo.volunteers.isNotEmpty) {
+      //   final volunteers = groupMainInfo.volunteers;
+      //   slivers.add(
+      //     SliverToBoxAdapter(
+      //       child: SizedBox(
+      //         height: 70,
+      //         child: ListView.separated(
+      //           scrollDirection: Axis.horizontal,
+      //           padding: const EdgeInsets.symmetric(horizontal: 16),
+      //           itemCount: volunteers.length,
+      //           separatorBuilder: (_, __) => const SizedBox(width: 8),
+      //           itemBuilder: (context, index) {
+      //             final volunteer = volunteers[index];
+      //             return IntrinsicWidth(
+      //               // TODO: 성능 저하 우려가 있어 추후 개선
+      //               child: Container(
+      //                 decoration: BoxDecoration(
+      //                   color: Colors.white,
+      //                   borderRadius: BorderRadius.circular(12),
+      //                   boxShadow: [
+      //                     BoxShadow(
+      //                       color: Colors.black.withAlpha(13),
+      //                       blurRadius: 10,
+      //                       offset: const Offset(0, 2),
+      //                     ),
+      //                   ],
+      //                 ),
+      //                 child: ListTile(
+      //                   leading: CircleAvatar(
+      //                     backgroundColor: AppTheme.primaryColor.withAlpha(26),
+      //                     backgroundImage:
+      //                         const AssetImage('assets/images/profile.png'),
+      //                   ),
+      //                   title: Text(
+      //                     volunteer.user != null
+      //                         ? volunteer.user!.userInfo?.nickname ?? ''
+      //                         : volunteer.anon!.name,
+      //                     style: const TextStyle(fontWeight: FontWeight.w600),
+      //                   ),
+      //                   subtitle: Text(volunteer.position.positionName),
+      //                 ),
+      //               ),
+      //             );
+      //           },
+      //         ),
+      //       ),
+      //     ),
+      //   );
+      //   slivers.add(const SliverToBoxAdapter(child: SizedBox(height: 16)));
+      // }
     }
 
     return SizedBox(

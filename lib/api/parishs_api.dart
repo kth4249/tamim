@@ -9,7 +9,6 @@ class ParishsApi {
       query = query.eq(param.key, param.value);
     }
     final response = await query;
-    logger.d("getParishsEqParams: $response");
     return response.map((json) => Parish.fromJson(json)).toList();
   }
 

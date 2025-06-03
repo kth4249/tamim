@@ -41,21 +41,11 @@ class VolunteerScheduleProvider extends ChangeNotifier {
     final response = await supabase.from('users').select('''
             id, name,
             user_info!inner(*),
-            parish_group_members!inner(group_id), 
-            positions: member_positions(positions(*))
+            parish_group_members!inner(group_id),
+            positions!member_positions(*)
             ''').eq("parish_group_members.group_id", parishGroupId);
 
-    final transformed = response.map((e) {
-      final memberPositions =
-          e['positions'].map((e) => e['positions']).toList();
-      return {
-        ...e,
-        'positions': memberPositions,
-      };
-    });
-
-    memberPositions =
-        transformed.map((e) => MemberPositions.fromJson(e)).toList();
+    memberPositions = response.map((e) => MemberPositions.fromJson(e)).toList();
 
     notifyListeners();
   }
